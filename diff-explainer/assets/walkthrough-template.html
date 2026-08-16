@@ -1,0 +1,188 @@
+<title>Session Store Swap</title>
+
+<!--
+  DIFF WALKTHROUGH TEMPLATE
+  =========================
+  Pico CSS does the design (assets/pico.classless.min.css, the classless build).
+  There are no layout classes here on purpose: pick the element that describes the
+  content and Pico styles it. The <style> block below is only the handful of things
+  Pico has no opinion about, and every colour in it comes from a Pico token, so the
+  page follows the reader's light or dark theme on its own. Don't rewrite it - every
+  walkthrough is supposed to look the same so a reviewer learns the page once.
+
+  Everything inside <main> is a WORKED EXAMPLE (an Express app moving sessions to
+  Redis, explained for a Rails reviewer). Replace it with the real change.
+
+  The elements and what they mean here:
+    <header> + <hgroup>   title and one-line thesis; the <dl> under it is branch/churn
+    <article>             "Start here" - the summary card and the watch list
+    <ol> / <li>           the walkthrough, one item per file or tight group of files
+    <pre><code>           the diff. <ins> a added line, <del> a removed line,
+                          bare text a context line, <small> a hunk header,
+                          <em> an elision ("41 lines not shown")
+    <aside data-note>     an annotation. data-note is why | risk | tradeoff |
+                          alternative, and the colour follows it, so pick the one
+                          that's true. The <h3> inside is its label.
+
+  The page ends when the diff ends. There is no closing argument block: the
+  reviewer forms the verdict, not this page.
+
+  Two encoding rules that keep this page readable everywhere it gets opened:
+  escape ampersands and angle brackets inside diff lines, and write typographic
+  characters as HTML entities (&mdash; &minus; &hellip;) rather than raw bytes.
+  These pages get opened as local files and emailed around, and a raw em dash
+  turns into mojibake the moment something guesses the wrong encoding.
+
+  Delete this comment block before publishing.
+-->
+
+<style>
+  /* Pico paints the page with :where(:root), which is specificity zero, so any
+     background the artifact wrapper puts on <body> covers it. Repaint both, from
+     Pico's tokens, so the page keeps whichever theme Pico resolved. */
+  :root, body { background: var(--pico-background-color); color: var(--pico-color); }
+
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; }
+  dt { color: var(--pico-muted-color); font-weight: 600; }
+  dd { margin: 0; }
+
+  ol > li + li { margin-top: calc(var(--pico-block-spacing-vertical) * 1.5); }
+
+  code { padding: 0.1em 0.3em; }
+  h2 > code, h3 > code { padding: 0; background: none; font-size: inherit; }
+  li h2 { font-size: 1.15rem; overflow-wrap: anywhere; }
+
+  del { text-decoration: none; }
+  pre small, pre em { color: var(--pico-muted-color); }
+
+  aside {
+    --note: var(--pico-muted-color);
+    margin: var(--pico-spacing) 0;
+    padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+    border-left: 0.25rem solid var(--note);
+    background: var(--pico-card-sectioning-background-color);
+  }
+  aside > :last-child { margin-bottom: 0; }
+  aside h3 {
+    margin-bottom: 0.35rem;
+    color: var(--note);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  aside[data-note="why"] { --note: var(--pico-primary); }
+  aside[data-note="risk"] { --note: var(--pico-del-color); }
+  aside[data-note="tradeoff"] { --note: var(--pico-contrast); }
+  aside[data-note="alternative"] { --note: var(--pico-secondary); }
+</style>
+
+<main>
+
+  <header>
+    <hgroup>
+      <h1>Session Store Swap</h1>
+      <p>Logins stopped surviving deploys. Sessions now live in Redis instead of the web process's memory.</p>
+    </hgroup>
+    <dl>
+      <dt>Branch</dt><dd><code>redis-sessions</code> onto <code>main</code></dd>
+      <dt>Change</dt><dd>4 files, +86 / &minus;21</dd>
+    </dl>
+  </header>
+
+  <article>
+    <header><h2>Start here</h2></header>
+    <p>Every deploy logged everyone out. Sessions were held in the web process's own memory, so restarting the process threw them away &mdash; and with two processes running, a user could land on the one that had never seen them. This moves sessions into Redis so any process can read them and a restart doesn't matter.</p>
+    <p>The change is small on purpose. Nothing about how login works changed; only where the session is kept. Not in this branch: no migration of existing sessions, and no Redis in the test suite &mdash; tests still use the in-memory store.</p>
+    <dl>
+      <dt>Risk</dt>
+      <dd>Deploying this logs everyone out once. Existing sessions live in the old store and nothing copies them over.</dd>
+      <dt>Tradeoff</dt>
+      <dd>Redis is now required to boot, so <code>REDIS_URL</code> has to be set before the release goes out &mdash; same ordering problem as adding a required config var on Heroku.</dd>
+      <dt>Alternative</dt>
+      <dd>Signed cookies would have needed no Redis at all, the way a stock Rails app keeps sessions in the cookie. Our payload is over the 4KB limit, so that was out.</dd>
+    </dl>
+  </article>
+
+  <ol>
+
+    <li>
+      <hgroup>
+        <h2><code>src/session.js</code></h2>
+        <p>+31 / &minus;6</p>
+      </hgroup>
+      <p>This is the whole change. Everything else is here to support it.</p>
+
+<pre><code><small>@@ -1,9 +1,14 @@</small>
+ const session = require("express-session");
+<ins>+const RedisStore = require("connect-redis").default;</ins>
+<ins>+const { createClient } = require("redis");</ins>
+
+<ins>+const client = createClient({ url: process.env.REDIS_URL });</ins>
+<ins>+client.connect().catch(console.error);</ins>
+
+ module.exports = session({
+<ins>+  store: new RedisStore({ client, prefix: "sess:" }),</ins>
+   secret: process.env.SESSION_SECRET,
+<del>-  resave: true,</del>
+<ins>+  resave: false,</ins>
+ });
+</code></pre>
+
+      <aside data-note="why">
+        <h3>Why</h3>
+        <p>With no <code>store</code> set, this library keeps sessions in the process's own memory &mdash; the same as if Rails stored sessions in a class variable instead of the cookie or a session store. One dyno restart and they're gone. Pointing it at Redis is the one-line fix; the rest of this PR is wiring.</p>
+      </aside>
+
+      <aside data-note="tradeoff">
+        <h3>Tradeoff</h3>
+        <p><code>resave: false</code> stops us writing the session back to Redis on every single request. Cheaper, but a session that's read and never written won't have its expiry pushed forward &mdash; so an idle-but-active user can get logged out at the 2 week mark rather than 2 weeks after their last click. That felt like the right trade at our traffic.</p>
+      </aside>
+    </li>
+
+    <li>
+      <hgroup>
+        <h2><code>src/health.js</code></h2>
+        <p>+12 / &minus;1</p>
+      </hgroup>
+      <p>The health check now fails if Redis is unreachable, so a broken session store takes the process out of rotation instead of quietly logging everyone out.</p>
+
+<pre><code><small>@@ -4,7 +4,11 @@ router.get("/healthz", async (req, res) =&gt; {</small>
+<del>-  res.json({ ok: true });</del>
+<ins>+  try {</ins>
+<ins>+    await client.ping();</ins>
+<ins>+  } catch {</ins>
+<ins>+    return res.status(503).json({ ok: false, redis: false });</ins>
+<ins>+  }</ins>
+<ins>+  res.json({ ok: true });</ins>
+</code></pre>
+
+      <aside data-note="risk">
+        <h3>Risk</h3>
+        <p>This makes Redis a hard dependency for booting healthy. If Redis has a blip, every process reports unhealthy at once and the whole app goes down rather than degrading. That's deliberate &mdash; a running app that silently loses logins is worse &mdash; but it's a real change in failure mode, and worth disagreeing with if you'd rather stay up.</p>
+      </aside>
+    </li>
+
+    <li>
+      <hgroup>
+        <h2><code>package.json</code> &middot; <code>package-lock.json</code></h2>
+        <p>+43 / &minus;14</p>
+      </hgroup>
+      <p>Two new dependencies, same as adding two gems. The lockfile churn is generated &mdash; nothing to read there.</p>
+
+<pre><code><small>@@ -12,6 +12,8 @@ "dependencies": {</small>
+<ins>+    "connect-redis": "^7.1.1",</ins>
+<ins>+    "redis": "^4.6.13",</ins>
+     "express": "^4.18.2",
+<em>&hellip; 41 lines of package-lock.json not shown</em>
+</code></pre>
+
+      <aside data-note="alternative">
+        <h3>Alternative tried</h3>
+        <p>First attempt used <code>ioredis</code>, which is the more common client. It works, but the session library ships types for the other one and the mismatch meant hand-writing an adapter. Not worth it for a client we only call <code>ping</code> on.</p>
+      </aside>
+    </li>
+
+  </ol>
+
+</main>

@@ -1,0 +1,114 @@
+---
+name: diff-explainer
+description: Builds a shareable HTML walkthrough of the current changes, highlighting risks, tradeoffs, and alternatives considered.
+disable-model-invocation: true
+---
+
+# Diff explainer
+
+The diff already shows what changed. What it can't show is why — why this approach
+and not the obvious one, what broke when you tried that, what you're nervous about,
+what you decided not to do. Supply that. Your reader is a sharp, time-poor Rails
+developer who knows Rails and Heroku well and this stack barely.
+
+## 1. Work out what you're explaining
+
+No argument means the current branch against its base, diffed from the merge base
+so other people's commits don't leak in.
+
+```bash
+BASE=$(git rev-parse --verify main >/dev/null 2>&1 && echo main || echo master)
+MB=$(git merge-base $BASE HEAD)
+git diff --stat $MB && git log --oneline $MB..HEAD && git diff $MB
+git status --porcelain   # untracked files the diff won't show
+```
+
+`git diff $MB` covers committed and uncommitted work both, so a branch with no
+commits of its own still works. An argument overrides: a number is a PR
+(`gh pr diff <n>`, plus `gh pr view <n>` for the body and linked issue), a branch
+name is that branch, a path limits the diff. If the change is obvious — a version
+bump, a typo — say so and skip the artifact.
+
+## 2. Rails, or not
+
+Rails means a `Gemfile` listing `rails`, `bin/rails`, or `config/application.rb`.
+If it is, the reviewer already speaks the language: write plainly, no analogies. If
+it isn't, translate each unfamiliar concept into Rails and Heroku terms inline, in
+the annotation where the reviewer meets it. Never build a glossary or translation
+table — that makes them hold a mapping and look things up, where an analogy in the
+sentence costs nothing. Read `references/rails-heroku-translation.md` first: it has
+the mappings and how to use one without it becoming noise.
+
+## 3. Gather the why
+
+If the change was made in this session, that's your best source by far — what got
+tried and thrown away, what surprised you, none of which survives in the diff.
+Otherwise reconstruct from commits, the PR body, the linked issue, and surrounding
+code, then ask the author — two sharp questions beat a page of confident guessing.
+
+**Never invent rationale.** A plausible why that's wrong is worse than none, because
+the reviewer approves on it. If you can't establish why, leave it unannotated or say
+plainly that it isn't recorded anywhere. If you find a real bug while writing up,
+tell the user directly rather than burying it in a note they may skim.
+
+## 4. Choose the annotations, then write them
+
+Show the whole diff; annotate only where you have something to say — a decision, a
+risk, a tradeoff, an abandoned alternative, or a surprise: a change that looks wrong
+until you know the reason, a deletion that looks unrelated. Skip renames, formatting,
+and mechanical churn. Generated files get one line saying so and an `<em>` elision
+line instead of their diff.
+
+The pull toward over-annotating is strong, since every hunk has *something* sayable.
+Resist it: a walkthrough beats the raw diff only by being shorter than it, so a big
+diff gets a shorter page, not a longer one. Ten annotations read beat thirty
+skimmed. Before publishing, delete every annotation a competent reviewer would
+already know, or wouldn't review any differently for — that pass is where most of
+the value gets made. **Order the steps as an argument, not an alphabetical
+listing:** lead with the file where the change actually lives, group files that only
+make sense together, and if B must be understood before A means anything, B first.
+
+Write each annotation in one to three sentences; a longer one is usually two, or a
+paragraph belonging in "Start here". If a sentence would still be true with the diff
+hidden, it's a *what* and can go. The ones that earn their place are the ones an
+author would rather not write — this is a workaround, this gets slow at 10x the
+data — and the dead ends, since "we tried X, it failed because Y" pre-empts the
+reviewer's first suggestion. Plain words: no "it's worth noting", "this ensures".
+
+## 5. Fill in the template and publish
+
+`assets/walkthrough-template.html` is the page, and its own comment lists the
+elements. Pico CSS does the design, so there are no layout classes to choose: pick the
+element that describes the content — `<ins>` and `<del>` for diff lines,
+`<aside data-note>` for an annotation — and leave the `<style>` block alone, so every
+walkthrough reads the same way. Everything inside `<main>` is a worked example —
+replace it. Three calls the comment doesn't make: the `<hgroup>` carries the change's
+*name*, two to four words, not a summary; the watch list `<dl>` holds the two to four
+things a reviewer would regret missing; and the `data-note` kinds are color-coded, so
+pick the one that's true. Four things reliably spoil the page: unescaped `&`, `<`, `>`
+in diff lines; raw typographic characters (write `&mdash;`, `&minus;`, `&hellip;` —
+these pages get saved locally, where raw multi-byte characters turn into mojibake);
+leftover example content; and the template's instruction comment.
+
+**The page ends when the diff ends.** No verdict, recommendation, "where I'd most
+like a second opinion", or pre-approval checklist — each hands the reviewer your
+conclusion and invites them to ratify it, the opposite of a review. Disclose, don't
+steer: "this makes Redis a hard dependency for booting healthy, so a blip takes the
+whole app down" is a fact they'd have to dig for; "that's the call I'd like you to
+sign off on" steers. What the branch deliberately doesn't do is a fact too: put it
+in "Start here", without "easy to add if you'd rather".
+
+Write the filled file to your scratchpad, then inline Pico. An artifact's CSP blocks
+external stylesheets, so the vendored copy has to go into the page itself, below the
+`<title>` on line 1 — only the first 8KB gets scanned for it, and the stylesheet is
+70KB:
+
+```bash
+{ head -1 filled.html
+  echo '<style>'; cat assets/pico.classless.min.css; echo '</style>'
+  tail -n +2 filled.html; } > walkthrough.html
+```
+
+Publish `walkthrough.html` with the Artifact tool (favicon `🔍`, a one-sentence
+description, the change's name as the title) and hand over the link. If your
+environment wants `artifact-design` loaded first, load it, don't redesign.
