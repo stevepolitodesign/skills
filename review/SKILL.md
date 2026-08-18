@@ -15,13 +15,13 @@ Three reviewers, dispatched in parallel, each reading the same change from a dif
 | `agents/conventions.md` | Does this look like the rest of the codebase? |
 | `agents/domains.md` | Is a domain concept trying to emerge here? |
 
-They stay separate because the altitudes don't mix. One reviewer asked all three questions spends its attention on the cheapest findings, and thirty naming nits bury "these four files are one domain object in a trenchcoat." Splitting them leaves the structural reviewer nothing else to do.
+They stay separate so the structural reviewer has nothing cheaper to do. One reviewer asked all three questions spends its attention on naming nits, and never reaches "these four files are one domain object in a trenchcoat."
 
 ## The confidence bar
 
-Every finding carries a confidence out of 100: how sure the reviewer is that it's true and that the author would agree it's worth changing. Below 80, drop it without mentioning it.
+Every finding carries a confidence out of 100: how sure the reviewer is that it's true and that the author would agree it's worth changing. Below 80, the agent drops it without mentioning it. Print the score with each finding so the author can calibrate how much to argue.
 
-The scarce thing in a review isn't reading time, it's the author's trust. Twenty findings where six are wrong teaches them to skim the next review. Six findings that are all right get acted on. Print the score with each finding so the author can calibrate how much to argue.
+What's scarce in a review is the author's trust, not their reading time.
 
 ## Workflow
 
@@ -33,18 +33,24 @@ The scarce thing in a review isn't reading time, it's the author's trust. Twenty
 
 ### 1. Fix the target
 
-`$ARGUMENTS` may hold a PR number, a branch, paths, or nothing.
+`$ARGUMENTS` may hold a PR number, a branch, paths, or nothing. A path under `docs/specs/` is the intent, never the target; anything else is a target. If one argument could be either, ask — reviewing a SPEC file against nothing is a wasted run.
 
 Resolve it to one diff, then capture that diff to a file (`mktemp`) and hand every agent the same path. If each agent runs its own `git diff` instead, one reviews the commits while another reviews the working tree, and their findings won't line up with each other or with what the author sees.
 
-- A number: `gh pr diff <n>`.
-- A branch or ref: diff against its merge-base with the default branch.
-- Nothing: everything not on the default branch, committed and uncommitted both — `git diff $(git merge-base HEAD origin/HEAD)`.
-- Paths: diff limited to them.
+First resolve a base — `base=$(git rev-parse --verify --quiet origin/HEAD || git rev-parse --verify --quiet origin/main)`. If that comes back empty, ask which branch to diff against rather than proceeding; the substitution failing silently collapses `git diff $base` into a bare `git diff`, which is unstaged changes only.
+
+Then `git add -N .`, so new files land in the diff. Without it they don't appear at all, and the criterion a new file implements comes back unmet.
+
+- A number: `gh pr diff <n>`, and `gh pr checkout <n>` — the agents read the code around the diff, and without the checkout that code is whatever `HEAD` happened to be.
+- A branch or ref: `git diff "$(git merge-base <ref> "$base")" <ref>`. Both refs, or you've diffed the working tree.
+- Nothing: `git diff "$(git merge-base HEAD "$base")"` — committed and uncommitted both.
+- Paths: `git diff "$(git merge-base HEAD "$base")" -- <paths>`.
+
+Check the result before going further. An empty diff means stop and say so — three agents handed an empty file will find something in the neighboring code they read instead. Past roughly 1500 lines, ask for paths or a commit range; agents silently review the first part of a diff that big and report nothing to say they did.
 
 ### 2. Find the intent
 
-Fidelity needs acceptance criteria the change was measured against. Two places hold them: a path in `$ARGUMENTS`, or `docs/specs/`, where `/slice` writes. Match on the branch name or a slug in the commit messages, and if two are close, ask instead of guessing.
+Fidelity needs acceptance criteria the change was measured against. Two places hold them: a path in `$ARGUMENTS`, or `docs/specs/`, where `/slice` writes. Match on the branch name or a slug in the commit messages, and if two are close, ask instead of guessing. A PR has both locally, because step 1 checked its branch out.
 
 PR bodies, issues, and commit messages don't count. They describe goals in prose, and prose doesn't draw a scope boundary — so creep is invisible against it, and every finding turns into an argument about what the sentence implied. Criteria or nothing.
 
@@ -58,28 +64,35 @@ If they'd rather not, skip the agent and say the fidelity check didn't run. An a
 
 ### 3. Dispatch
 
-Read the three agent files and launch them as `Explore` agents in one message so they run concurrently. `Explore` can't edit, which is what makes the read-only promise real rather than a request — a reviewer holding `Edit` will eventually decide some finding is too small to bother reporting and quietly fix it, and the author never learns it happened.
+Read the three agent files and launch them as `Explore` agents in one message so they run concurrently. `Explore` has no `Edit` or `Write` — but it does have `Bash`, so tell each agent plainly: no command that writes, stages, or checks anything out. A reviewer that quietly fixes a finding instead of reporting it is one the author can't learn from.
 
-Give each the diff path, the base ref, this skill's own absolute directory (so an agent can read a reference file it's pointed at), and this finding format:
+Tell them to read whole files and the whole diff. `Explore` samples excerpts by default, and an agent that reviewed the first third of a diff reports nothing to say so.
+
+Give each the diff path, this skill's own absolute directory — the agent files write it as `{skill_dir}`, so substitute the real path before handing the text over, or the reference file they're pointed at won't resolve from the target repo — and this finding format:
 
 ```
 {one-line claim}
 {file}:{line} · confidence {N}
+evidence: {the citation this reviewer's own file demands}
 {Why it costs something, in a sentence or two. Name the smell or the convention.}
 {The change you'd make.}
 ```
 
-Pass the confidence bar along with the format, in your own words but carrying the reason: score every finding out of 100 on whether it's true *and* worth changing, drop anything under 80 without mentioning it, and understand that the budget being protected is the author's trust rather than anyone's reading time. An agent told only to print a number has no reason not to inflate it — the threshold is what makes the number mean something, and the reason is what stops it becoming a formality.
+Line numbers come off the new side of the `@@` header plus the offset inside the hunk. If one can't be computed, name the file and the enclosing function or class instead of guessing — a wrong line number costs the author more than a missing one. A domains finding spanning several files lists them all.
+
+The evidence line is what makes the score checkable. Each agent file says what its own evidence is — a convention needs the path of the file that establishes it, a domain needs its three occurrence sites, a fidelity finding needs the criterion quoted. A finding that can't produce one isn't a finding, and unlike a self-reported number it's something synthesis can verify.
+
+The confidence bar is stated in each agent file; don't restate it here.
 
 The fidelity agent also needs the criteria from step 2, as a path. If they came out of the conversation rather than a SPEC file, write them to a temp file first so all three agents are reading files rather than transcript.
 
-Ask for findings only — no summary, no praise, no "overall this looks good." Anything an agent adds around the findings is noise the synthesis step has to strip.
+Ask for findings only — no summary, no praise, no "overall this looks good." Some will add it anyway, which is why step 4 throws it away rather than trusting the instruction.
 
 ### 4. Synthesize
 
 Lead with what you reviewed: the target, the intent source and its kind, and a one-line verdict a person can act on. Say up front if a check didn't run — a review missing its fidelity pass looks identical to one that passed it, unless you name the difference.
 
-Then the findings under three headings, highest confidence first inside each. Drop anything that came back under 80 even though the agent was told the bar — an agent arguing for its own finding is the one party with a reason to round up, so the threshold needs enforcing where the report is assembled too.
+Then the findings under three headings, highest confidence first inside each. Discard anything an agent returned outside the format — its preamble, its summary, its verdict — instead of editing it down. Drop any finding whose evidence line is missing, or whose cited path doesn't exist — check them. An agent arguing for its own finding is the one party with a reason to round its score up, so the number can't be the filter; the citation can.
 
 Two agents often catch the same code from different heights — duplication as a smell and as an unnamed domain. Keep the higher-altitude version and drop the other, because the author fixes it once.
 
@@ -93,7 +106,9 @@ Apply only what they name, one finding at a time, and stop if a fix turns out to
 
 ## Notes
 
+- None of the three looks for bugs. An off-by-one, a swallowed exception, or a query in a loop passes all three checks clean, so say that in the report and point the author at the built-in `/code-review`.
 - The agents run read-only, so anything they'd change comes back as a recommendation rather than a diff. If `Explore` isn't available, say so and pick the most restricted agent type there is rather than reaching for a general-purpose one.
 - Nothing here assumes a language or a framework, and the review is worse the moment it starts to. Whatever pattern you're about to recommend, point at the place this repo already does it. If you can't find one, you're recommending a habit from somewhere else.
-- Findings about generated files, lockfiles, and vendored code are almost always noise. Skip them unless the change to one is the actual bug.
+- `agents/` holds prompt fragments, not registered subagents — no frontmatter, nothing validates them. What an agent can touch comes from the agent type dispatch launches, not from anything declared in those files.
+- Findings about generated files, lockfiles, vendored code, and binaries are almost always noise. Skip them unless the change to one is the actual bug.
 - Don't report what a linter or formatter already catches. The author gets that for free, and spending review on it makes the review look cheap.

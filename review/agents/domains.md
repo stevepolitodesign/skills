@@ -24,3 +24,9 @@ Don't propose a restructure larger than the change it came from. A forty-line di
 Name the concept, list where it currently lives, and say what it would own. "There's a `Subscription` spread across `accounts/user.*` (lines 40-72), the billing request handler, and the status template; it owns expiry, the grace period, and the status string." That gives the author something to agree or disagree with.
 
 "Consider extracting a service object" is not a finding. It names nothing, so nobody can act on it or refute it.
+
+## The confidence bar
+
+Score every finding out of 100: how sure you are it's true *and* that the author would agree it's worth changing. Below 80, drop it without mentioning it. What you're protecting is the author's trust — six findings that are all right get acted on; twenty where six are wrong teach them to skim the next review.
+
+Every finding carries an evidence line: the three occurrence sites, as paths. Two is a coincidence, so a finding that can only cite two isn't one.
