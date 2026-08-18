@@ -30,6 +30,16 @@ understanding of what's going on.
 Finally, in order to be consistent across artifacts, we use [Pico
 CSS][] in our template.
 
+### Preparatory refactor
+
+[`/preparatory-refactor`](preparatory-refactor/SKILL.md) takes a SPEC or
+plan and identifies opportunities for a [preparatory refactor][].
+
+Intended to be run after `/slice`, but before `/implement-with-tdd`.
+
+Note that `/review` contains an Agent responsible for identifying
+emerging Domains.
+
 ### Review
 
 [`/review`](review/SKILL.md) reviews a change with three parallel
@@ -51,6 +61,8 @@ The idea is that the smaller the slice, the easier it'll be for an LLM
 or human to implement and ship.
 
 [artifact]: https://code.claude.com/docs/en/artifacts
+[preparatory refactor]:
+https://martinfowler.com/articles/preparatory-refactoring-example.html
 [Pico CSS]: https://picocss.com
 [smells]: https://refactoring.guru/refactoring/smells
 [command]: https://code.claude.com/docs/en/commands
