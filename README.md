@@ -47,8 +47,8 @@ subagents. One to ensure we adhered to the SPEC, one that focuses on
 code quality and reducing [smells][], and another that identifies any
 emerging domains.
 
-This is different from the built-in `/code-review` [command][], since
-that command is only interesting in code quality and simplification.
+It doesn't replace the built-in `/code-review` [command][], which hunts
+for correctness bugs. None of these three reviewers do. Run both.
 
 ### Slice
 

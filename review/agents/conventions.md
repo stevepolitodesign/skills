@@ -12,7 +12,7 @@ Convention findings that hold up look like "the other three of these do X, at `<
 
 ## Smells
 
-`../references/smells.md` has the catalog with the tell for each one. Read it and name the smell you're reporting — a named smell gives the author a concept and a refactoring to look up, where "this feels messy" gives them an argument to have with you.
+`{skill_dir}/references/smells.md` has the catalog with the tell for each one. Read it and name the smell you're reporting — a named smell gives the author a concept and a refactoring to look up, where "this feels messy" gives them an argument to have with you.
 
 A smell earns a finding when it's already costing something in this diff:
 
@@ -26,3 +26,9 @@ Several smells in the catalog only mean something in an object-oriented codebase
 A textbook smell that costs nothing yet is the author's option to fix later, not your finding. Reporting it spends their trust on nothing and makes the findings that matter look the same size as the ones that don't.
 
 Structural work larger than the change — new namespaces, extracted concepts, redrawn boundaries — belongs to the domains reviewer. Stay inside the files that changed and their immediate neighbors.
+
+## The confidence bar
+
+Score every finding out of 100: how sure you are it's true *and* that the author would agree it's worth changing. Below 80, drop it without mentioning it. What you're protecting is the author's trust — six findings that are all right get acted on; twenty where six are wrong teach them to skim the next review.
+
+Every finding carries an evidence line: the path of the existing file that establishes the convention, or for a smell, the named smell plus a `file:line` for each occurrence. No citation, no finding.
