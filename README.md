@@ -30,6 +30,16 @@ understanding of what's going on.
 Finally, in order to be consistent across artifacts, we use [Pico
 CSS][] in our template.
 
+### Review
+
+[`/review`](review/SKILL.md) reviews a change with three parallel
+subagents. One to ensure we adhered to the SPEC, one that focuses on
+code quality and reducing [smells][], and another that identifies any
+emerging domains.
+
+This is different from the built-in `/code-review` [command][], since
+that command is only interesting in code quality and simplification.
+
 ### Slice
 
 [`/slice`](slice/SKILL.md) turns a rough idea into a [vertical
@@ -42,6 +52,8 @@ or human to implement and ship.
 
 [artifact]: https://code.claude.com/docs/en/artifacts
 [Pico CSS]: https://picocss.com
+[smells]: https://refactoring.guru/refactoring/smells
+[command]: https://code.claude.com/docs/en/commands
 [vertical slice]:
 https://thoughtbot.com/blog/break-apart-your-features-into-full-stack-slices
 [job stories]:
