@@ -30,6 +30,15 @@ understanding of what's going on.
 Finally, in order to be consistent across artifacts, we use [Pico
 CSS][] in our template.
 
+### Implement with TDD
+
+[`/implement-with-tdd`](implement-with-tdd/SKILL.md) uses a [shameless
+green][] approach to drive out the implementation of a feature [from
+the outside in][] with TDD.
+
+The idea is that you'd run this after `/slice` and
+`/preparatory-refactor`, then run `/review` afterwards.
+
 ### Preparatory refactor
 
 [`/preparatory-refactor`](preparatory-refactor/SKILL.md) takes a SPEC or
@@ -64,6 +73,9 @@ or human to implement and ship.
 [preparatory refactor]:
 https://martinfowler.com/articles/preparatory-refactoring-example.html
 [Pico CSS]: https://picocss.com
+[shameless green]: https://sandimetz.com/99bottles-sample-ruby
+[from the outside in]:
+https://thoughtbot.com/blog/testing-from-the-outsidein
 [smells]: https://refactoring.guru/refactoring/smells
 [command]: https://code.claude.com/docs/en/commands
 [vertical slice]:
