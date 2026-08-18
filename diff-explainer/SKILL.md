@@ -1,6 +1,7 @@
 ---
 name: diff-explainer
 description: Builds a shareable HTML walkthrough of the current changes, highlighting risks, tradeoffs, and alternatives considered.
+argument-hint: "[PR number, branch, or paths to explain]"
 disable-model-invocation: true
 ---
 
@@ -17,17 +18,30 @@ No argument means the current branch against its base, diffed from the merge bas
 so other people's commits don't leak in.
 
 ```bash
-BASE=$(git rev-parse --verify main >/dev/null 2>&1 && echo main || echo master)
-MB=$(git merge-base $BASE HEAD)
-git diff --stat $MB && git log --oneline $MB..HEAD && git diff $MB
-git status --porcelain   # untracked files the diff won't show
+BASE=$(git rev-parse --verify --quiet @{upstream} \
+    || git rev-parse --verify --quiet refs/remotes/origin/HEAD \
+    || git rev-parse --verify --quiet refs/heads/main \
+    || git rev-parse --verify --quiet refs/heads/master)
+MB=$(git merge-base "$BASE" HEAD)
+test -n "$MB" || echo "No base found — ask which branch to diff against."
+git diff --stat "$MB" && git log --oneline "$MB"..HEAD
+git status --porcelain -uall   # untracked files the diff won't show
 ```
 
-`git diff $MB` covers committed and uncommitted work both, so a branch with no
-commits of its own still works. An argument overrides: a number is a PR
-(`gh pr diff <n>`, plus `gh pr view <n>` for the body and linked issue), a branch
-name is that branch, a path limits the diff. If the change is obvious — a version
-bump, a typo — say so and skip the artifact.
+Size up the change from the stat before reading `git diff "$MB"` — a diff you pull
+into context whole is one you can no longer decide to skip. Upstream first, and
+`refs/heads/` not bare `main`, or you diff against the wrong base: a fork of
+`develop` drags in everyone's `develop` commits, a trunk named anything else finds
+no base at all, and a *tag* called `main` beats the branch of the same name. Empty
+`$MB` also means an unborn HEAD — no commits yet, nothing to explain.
+
+`git diff "$MB"` covers committed and uncommitted work both, so a branch with no
+commits of its own still works. An argument overrides. Resolve it as a rev first
+(`git rev-parse --verify --quiet <arg>`); anything else is a path, and goes after
+`--` so a `docs` branch and a `docs/` directory can't collide. A bare number is a
+PR (`gh pr diff <n>`, plus `gh pr view <n>` for the body and linked issue) unless a
+branch by that name exists; with no working `gh`, say so and take the branch. If the
+change is obvious — a version bump, a typo — say so and skip the artifact.
 
 ## 2. Rails, or not
 
@@ -54,10 +68,10 @@ tell the user directly rather than burying it in a note they may skim.
 ## 4. Choose the annotations, then write them
 
 Show the whole diff; annotate only where you have something to say — a decision, a
-risk, a tradeoff, an abandoned alternative, or a surprise: a change that looks wrong
-until you know the reason, a deletion that looks unrelated. Skip renames, formatting,
-and mechanical churn. Generated files get one line saying so and an `<em>` elision
-line instead of their diff.
+risk, a tradeoff, an abandoned alternative. A change that looks wrong until you know
+the reason, or a deletion that looks unrelated, is a decision. Skip renames,
+formatting, and mechanical churn. Generated files get one line saying so and an
+`<em>` elision line inside the `<pre><code>` instead of their diff.
 
 The pull toward over-annotating is strong, since every hunk has *something* sayable.
 Resist it: a walkthrough beats the raw diff only by being shorter than it, so a big
@@ -104,10 +118,17 @@ external stylesheets, so the vendored copy has to go into the page itself, below
 70KB:
 
 ```bash
+CSS=<absolute path to this skill>/assets/pico.classless.min.css
+test -s "$CSS" || { echo "pico missing at $CSS"; exit 1; }
 { head -1 filled.html
-  echo '<style>'; cat assets/pico.classless.min.css; echo '</style>'
+  echo '<style>'; cat "$CSS"; echo '</style>'
   tail -n +2 filled.html; } > walkthrough.html
+grep -q -- '--pico-background-color' walkthrough.html || echo "PICO NOT INLINED"
 ```
+
+Spell `$CSS` out absolutely — the shell resolves it against the project directory,
+not this skill's — and check it, because the brace group exits 0 whether or not
+`cat` found anything and publishes an unstyled page without complaining.
 
 Publish `walkthrough.html` with the Artifact tool (favicon `🔍`, a one-sentence
 description, the change's name as the title) and hand over the link. If your
