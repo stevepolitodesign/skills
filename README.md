@@ -1,8 +1,10 @@
 # Steve Polito's Agent Skills
 
+[![skills.sh](https://skills.sh/b/stevepolitodesign/skills)](https://skills.sh/stevepolitodesign/skills)
+
 This is a simple set of skills optimized for general-purpose software development across tech stacks.
 
-My preference is to rely on the [built in commands][1] as much as possible, which is why I have such a small set of skills.
+My preference is to rely on the [built-in commands][1] as much as possible, which is why I have such a small set of skills.
 
 ## Installation
 
@@ -26,6 +28,24 @@ These skills can be run independently, but are intended to be run in a series of
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
+
+> [!TIP]
+> Use a [workflow][21] to orchestrate steps 2 through 5.
+
+```
+ultracode: Implement @path-to-spec by following these steps.
+
+1. First, run /preparatory-refactor. Decide if a preparatory refactor is justified. If it is, implement it.
+2. Then, run /implement-with-tdd
+3. Then, run /review
+4. Finally, run /diff-explainer
+
+Each step depends on the previous step, so these must be run sequentially.
+
+After each step, commit your changes with a focus on the why and not the what.
+
+Run these steps using subagents, and have them report back to the main session to prevent context pollution.
+```
 
 ## Reference
 
@@ -105,3 +125,4 @@ or human to implement and ship.
 [18]: https://thoughtbot.com/blog/break-apart-your-features-into-full-stack-slices
 [19]: https://thoughtbot.com/blog/product-management-templates-job-story
 [20]: https://en.wikipedia.org/wiki/Socratic_method
+[21]: https://code.claude.com/docs/en/workflows#have-claude-write-a-workflow
