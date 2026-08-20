@@ -49,7 +49,7 @@ CSS][9] in our template.
 
 [`/implement-with-tdd`][10] drives out an implementation with TDD,
 working [from the outside in][11] and starting with [shameless
-green][12].
+green][12]. This skill is optimized to cap a feature at around 200 lines of code in an effort to keep things small.
 
 Intended to be run after `/preparatory-refactor`, but before
 `/review`.

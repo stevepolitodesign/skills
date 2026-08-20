@@ -47,6 +47,29 @@ test itself and what belongs at each layer; read it before the first one.
 
 If there's no test framework at all, stop and ask which to use.
 
+## Size the feature
+
+Roughly 200 lines of implementation is the budget for one feature. Count every
+line you typed into a file that ships — views, routes, config, locales, `end`s and
+blank lines included. Free: tests and the factories or fixtures feeding them,
+comments, and generated files you didn't edit — schema dumps, lockfiles,
+snapshots, scaffolding output. A migration you generated is free; the body you
+wrote inside it isn't. Tests stay free here even where your usual diff budget
+counts them.
+
+Count what you added, not net. Deleting doesn't buy room, and code you moved
+unchanged is free. `git diff --stat` minus your test files is close enough; don't
+script it.
+
+Estimate now, with the neighboring code read. Per criterion, name the files you'd
+touch and whether the layer already exists — several criteria each needing a new
+object is the shape that blows the budget.
+
+If the estimate is over, stop before the first test. Report the number, the
+criteria carrying the weight, and the smaller first cut you'd take instead — the
+one or two criteria that stand on their own. Then wait. What to drop is a scope
+decision, and starting is a way of making it for them.
+
 ## The loop
 
 One criterion at a time, and only one test you wrote red at once.
@@ -61,16 +84,17 @@ One criterion at a time, and only one test you wrote red at once.
    did something necessary but insufficient, or you guessed — say which, and drop
    the change if you can't name what it unblocks.
 5. **Repeat until green**, then run the tests around what you touched. A *new*
-   failure is yours; one from the inherited list isn't. Then take the next
-   criterion, and run everything once at the end.
+   failure is yours; one from the inherited list isn't. Check the count against
+   the budget, then take the next criterion, and run everything once at the end.
 
-Work through every criterion without checking in. Three things earn a stop: a
-suite you can't run, the same failure surviving two different fixes, and anything
-needing a new runtime dependency — that last is a project decision, not an
-implementation detail.
+Work through every criterion without checking in. Four things earn a stop: a
+suite you can't run, the same failure surviving two different fixes, anything
+needing a new runtime dependency, and the budget running out. The last two are
+project decisions, not implementation details.
 
-Watch the diff. Past roughly 200 lines of implementation, say so in the report and
-name the criterion that crossed it.
+When the count crosses, finish the criterion you're on and stop there rather than
+opening the next one — a half-built criterion is worse than a missing one. Report
+the count, which criterion crossed, and what's left unbuilt.
 
 ## Shameless green
 
@@ -89,12 +113,16 @@ test is fine; an accessor standing in for a column that ought to exist, or a stu
 where the real call belongs, makes the test lie about what works. If the criterion
 needs schema, add the schema.
 
+Duplication counts against the budget. If spelling the cases out is what blows it,
+keep the duplication and stop at the boundary above: that means the feature is too
+big for one slice, not that it needs an abstraction.
+
 No comments apologizing for the shortcut, no TODO promising to fix it, no
 half-built abstraction for later.
 
 ## When you're done
 
-Report the criteria you covered, the tests you added and where, the suite result
-against your inherited-failure list, and the diff size. Then name the ugliest
-thing you left standing, because that's where the refactor starts. Leave
-everything uncommitted.
+Report the criteria you covered, any you left unbuilt and why, the tests you added
+and where, the suite result against your inherited-failure list, and the lines you
+spent against the budget, including whether your estimate held. Then name the ugliest thing you left
+standing, because that's where the refactor starts. Leave everything uncommitted.
