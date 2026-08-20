@@ -23,7 +23,8 @@ These skills can be run independently, but are intended to be run in a series of
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
 2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to refactor ahead of time to make the feature easier to implement.
 3. Then, run [`/implement-with-tdd`][4] against the SPEC created from [`/slice`][2] to drive out the simplest implementation.
-4. Then, run [`/review`][5] to refactor that implementation.
+4. Then, run [`/review`][5] to find defects in that implementation, and
+   to refactor it.
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
 
 ## Reference
@@ -66,13 +67,13 @@ emerging Domains.
 
 ### Review
 
-[`/review`][15] reviews a change with three parallel
-subagents. One to ensure we adhered to the SPEC, one that focuses on
-code quality and reducing [smells][16], and another that identifies any
-emerging domains.
+[`/review`][15] reviews a change with four parallel subagents: one
+hunting defects (bugs, performance, security), one checking we adhered
+to the SPEC, one on code quality and reducing [smells][16], and one
+identifying emerging domains.
 
-It doesn't replace the built-in `/code-review` [command][1], which hunts
-for correctness bugs. None of these three reviewers do. Run both.
+The defects subagent stands in for the built-in `/code-review`
+[command][1], and covers the ground `/security-review` does too.
 
 ### Slice
 
