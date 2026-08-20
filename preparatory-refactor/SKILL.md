@@ -16,7 +16,7 @@ You identify, you don't refactor. Nothing here edits code. The report has to sur
 ## Workflow
 
 1. Get the feature.
-2. Find where it lands.
+2. Find where it lands — one angle, then two more running in the background.
 3. Sketch the naive diff — what you'd touch if you just wrote it now.
 4. Name the moves that shrink that diff.
 5. Report the ones you'd defend.
@@ -29,13 +29,20 @@ It may be a path to a SPEC, a slug matching a file in `docs/specs/` (where `/sli
 
 ### 2. Find where it lands
 
-Launch 2 to 3 subagents in parallel (`Explore`, or `general-purpose`), each on a different angle:
+Three angles, in two waves — the other two are defined in terms of the site's paths, so they can't be dispatched until the site comes back. Every one of them is a subagent: `Explore`, which is read-only, but it does have `Bash`, so tell each plainly to read and report, no command that writes, stages, or checks anything out. Tell each one to read whole files rather than sampling excerpts, ask for exact paths and line numbers over prose, and cap it at the 10 files most worth reading. "The highlighter handles ranges" isn't something you can sketch a diff against, and an agent that sampled its way past half the callers reports the ones it saw without saying it stopped.
 
-- **The site.** The function, module, or file where this behavior would go, and its callers. Exact paths.
-- **Prior art.** `git log --oneline -20 -- <the paths from the site angle>`, then read the two or three commits that added behavior rather than fixed it. Report each commit's file list. That list is your prediction for which files the naive diff touches, and where it's longer than you expected is where the code fights back.
+Wave one is **the site**: the function, module, or file where this behavior would go, and every caller. Tell the user recon is running, and that the sketch may reach them before the rest of it does.
+
+The moment it lands, dispatch wave two in one message, with the real paths substituted in, then leave both running in the background while you sketch:
+
+- **Prior art.** `git log --oneline -20 -- <the site paths>`, then read the two or three commits that added behavior rather than fixed it. Report each commit's file list.
 - **The safety net.** Which tests cover the site, and the command that runs them.
 
 Then read the site files yourself. You can't judge whether a move is behavior-preserving from a summary, and that judgment is the entire value of the report.
+
+Both of wave two have to be in hand before step 4 — wait rather than proceed. If one failed outright, say which one in the report; never fill in what you expect it would have found. If it's the safety net, say that on its own line instead of writing `Covered by: nothing`, which means something specific (see Notes).
+
+If `Explore` isn't available, use the most restricted agent type there is rather than reaching for a general-purpose one. No subagents at all? Say so, then grep and skim the three angles yourself, timeboxed. Slower, and the risk is you stop at the first plausible site instead of the right one.
 
 ### 3. Sketch the naive diff
 
@@ -45,11 +52,13 @@ Every line names a real file, a real function, and what you'd add to it — `lib
 
 Do this first because you can't recognize a preparatory refactoring without it. Without the sketch every finding collapses into "this method is long," which is true of the method whether or not the feature exists.
 
-If the sketch comes out small and lands in one place, that's the answer: no preparation, just write it. Say so and stop. The highway detour is a loss when the trip is 20 miles.
+If the sketch comes out small and lands in one place, that's the answer: no preparation, just write it. Say so and stop — but not before prior art is back. A small sketch sitting over commits that each touched five files is the case this skill exists for, and it's the one exit you can't reopen. The highway detour is a loss when the trip is 20 miles.
 
 ### 4. Name the moves
 
 Now read `references/tells.md` for the shapes worth looking for.
+
+Wave two is in hand by now. The prior-art file lists are a prediction of which files the naive diff touches: where history touched more files than your sketch does, the code fought back there before and will again, and that's where a move is hiding. The safety net decides what `Covered by:` says, and whether you can call a move behavior-preserving at all.
 
 One to three, and zero is a legitimate result. Every move is behavior-preserving: the tests passing now pass after, unchanged. The moment a move needs a new test it isn't preparation, it's the feature.
 
@@ -79,7 +88,7 @@ Close with one line on what to do with it: the refactor is behavior-preserving, 
 
 ## Notes
 
-- `Covered by: nothing` is the most useful thing in the report when it's true. It doesn't disqualify the move; it tells the next session to write the characterization tests first.
+- `Covered by: nothing` is the most useful thing in the report when it's true, and it's only true when the safety-net angle came back and found nothing. It doesn't disqualify the move; it tells the next session to write the characterization tests first. An angle that never reported isn't the same claim, and writing it in that slot ships a false instruction.
 - Match the repo's shapes, not your habits. If you're proposing a class where it uses functions, or a module where it uses a table, you've imported an idiom from somewhere else. The refactoring itself doesn't need a precedent — a no-op seam won't have one anywhere — but the thing you create has to look like something this codebase already holds.
 - A no-op seam reads as Dead Code to a linter and Speculative Generality to a reviewer, including this repo's own `/review`. Say so in the report if the repo has a coverage gate, so it isn't a surprise.
 - Cleanups you notice along the way — dead code, stale comments, a bad name three files over — are real, and they're not this. Keep them out of the numbered moves so the feature's justification stays intact.
