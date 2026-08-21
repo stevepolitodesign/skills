@@ -28,6 +28,7 @@ These skills can be run independently, but are intended to be run in a series of
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
+6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding.
 
 > [!TIP]
 > Use a [workflow][21] to orchestrate steps 2 through 5.
@@ -46,9 +47,6 @@ After each step, commit your changes with a focus on the why and not the what.
 
 Run these steps using subagents, and have them report back to the main session to prevent context pollution.
 ```
-
-
-After reviewing the artifact, use`/rubber-duck` to slow and scrutinize generated code.
 
 ## Reference
 
@@ -112,6 +110,12 @@ Uses the [Socratic method][20] to help the user cut scope when possible.
 The idea is that the smaller the slice, the easier it'll be for an LLM
 or human to implement and ship.
 
+### Understand
+
+[`/understand`][23] helps you understand something by using the Socratic method instead of explaining it to you.
+
+Pairs well with `/diff-explainer`, since it'll help reinforce your understanding.
+
 [1]: https://code.claude.com/docs/en/commands
 [2]: #slice
 [3]: #preparatory-refactor
@@ -134,3 +138,6 @@ or human to implement and ship.
 [20]: https://en.wikipedia.org/wiki/Socratic_method
 [21]: https://code.claude.com/docs/en/workflows#have-claude-write-a-workflow
 [22]: rubber-duck/SKILL.md
+[23]: understand/SKILL.md
+[24]: #rubber-duck
+[25]: #understand
