@@ -18,8 +18,10 @@ The job is finding the version that costs a fraction of the work and is still wo
 1. Capture the raw idea in the user's words.
 2. Recon the codebase with subagents. Wait for them; the interview depends on what they find.
 3. Run the Socratic interview to cut scope.
-4. Play the slice back and stop for confirmation.
-5. Write `docs/specs/<slug>.md` and tell the user the path.
+4. Fill in the SPEC template and paste the whole thing in a message for review. This is the skill's only approval gate.
+5. Write the approved draft to `docs/specs/<slug>.md` and tell the user the path.
+
+**The gate is the SPEC text, and it is the only gate.** Never end a turn with a prose recap of the slice and "confirm and I'll write the SPEC" — that asks the user to approve something they haven't read, which is the whole problem. If you're about to send that message, send the draft instead. And before writing the file, check one thing: the exact text you're about to write appeared in an earlier message and the user said yes to it. If it didn't, you're in step 4, not step 5.
 
 ### 1. Capture the raw idea
 
@@ -47,7 +49,7 @@ No repo, or no subagents available? Do a timeboxed grep and skim yourself, or sa
 
 ### 3. The Socratic interview
 
-If the idea already arrives slice-sized, say so, play it back, and stop. The rounds below are for ideas that need cutting.
+If the idea already arrives slice-sized, say so and go straight to step 4. The rounds below are for ideas that need cutting.
 
 Rounds of 2 to 4 questions. One at a time is a slog; twelve at once is a survey.
 
@@ -57,23 +59,37 @@ Rounds of 2 to 4 questions. One at a time is a slog; twelve at once is a survey.
 
 **One test for everything.** For each behavior still standing: cut it, and does the slice still deliver the job story's outcome? If yes, cut it. Nothing earns an acceptance criterion until it has survived that question out loud. Guardrails are exempt.
 
-**Stop early.** Two rounds with no new cuts means you're at the floor, where removing one more thing would break the demo or leave the user with nothing new. Past that you're negotiating trivia, and the remaining scope is the user's to defend rather than yours to keep whittling. Before you stop, say which cut you considered and rejected, and why. They can overrule you, and this is their last chance.
+**Know when you're at the floor.** Two rounds with no new cuts means you're there: removing one more thing would break the demo or leave the user with nothing new. Past that you're negotiating trivia, and the remaining scope is the user's to defend rather than yours to keep whittling. Say which cut you considered and rejected, and why. They can overrule you.
+
+There is no checkpoint at the end of the interview. The moment you're at the floor, go on to step 4 in the same turn and draft the SPEC.
 
 **Guardrails.** Four things survive however thin the slice gets: anything that risks data loss or corruption, authorization boundaries that would expose other people's data, whatever makes the slice demo-able, and tests for the acceptance criteria. Each becomes an acceptance criterion even though it would pass the cut test, which is why they're listed separately. Deferring one is a decision rather than a cut, so say it plainly and record it under `## Owed`. It isn't gone, it's owed.
 
 **If it won't cut, change the axis.** A feature that resists slicing is usually being cut in the wrong direction. Cut by workflow step, by user, or by input, not by layer and not by a "phase one" that ships nothing. The tell is a slice nobody can exercise end to end without you narrating it for them. Change the axis instead of thinning it further.
 
-### 4. Play it back
+### 4. Show the SPEC before saving it
 
-Before writing anything, give the user the job story, the slice in one sentence, and the list of what you cut. Mark which cuts they pushed back on and which passed without comment, because a silent round isn't agreement. Then stop. Don't write the file in the same turn as the playback, whatever their last message implied. If they push back, that's another round, so go back to step 3.
+Read `assets/spec-template.md` now, before you write anything else. Reading it at save time instead is how this step turns into a freehand summary.
 
-The SPEC won't carry the cut list. This message is the only place the user sees what's out while they can still object, so make it a real list rather than a summary.
+Fill it in, then paste the filled-in file into the message. Not a description of it, not the job story and a sentence about the slice: the file, every section, acceptance criteria included, worded the way it will be worded on disk. The wording of a criterion *is* the scope boundary, so the text under review has to be the real text. If your message has no acceptance criteria in it, you skipped this step.
 
-### 5. Write the SPEC
+The message looks like this, and nothing is on disk when you send it:
 
-The shape is in `assets/spec-template.md`: title, one-sentence summary, job story, acceptance criteria, and `## Owed` only if something was deferred.
+~~~
+Here's the SPEC I'd save to `docs/specs/{slug}.md`. Nothing written yet.
 
-That austerity is deliberate. This is a contract rather than a design doc. The session that implements it does its own codebase reading, and anything you write about file layout or sequencing will be staler than what it finds. Decisions are different. "Go through the existing export path rather than building a new one" doesn't go stale, it goes missing, so the summary sentence carries whatever reuse the user approved.
+```markdown
+{the filled-in template, in full}
+```
+
+**What I cut:**
+- {cut} — {they pushed back / passed without comment}
+- ...
+
+Say the word and I'll save it.
+~~~
+
+The template is thin on purpose: title, one-sentence summary, job story, acceptance criteria, and `## Owed` only if a guardrail was deferred. This is a contract rather than a design doc. The session that implements it does its own codebase reading, and anything you write about file layout or sequencing will be staler than what it finds. Decisions are different. "Go through the existing export path rather than building a new one" doesn't go stale, it goes missing, so the summary sentence carries whatever reuse the user approved.
 
 **The acceptance criteria are the scope boundary.** There's no in/out list because there doesn't need to be one: if a behavior isn't in a criterion, it isn't in the slice. That only holds if the criteria are tight, so write them as behavior someone can observe by using the thing. Given a starting state, when the user does something, then something is observably true. "A blank title is rejected by the validation layer" names an implementation the next session should get to choose; "when I submit with the title empty, then I see the form again with an error on the title field" says the same thing and decides nothing. Outside a UI the same rule holds: "when I run `report --format=csv` with no matching records, then it prints the header row and exits 0". Where recon found something specific enough to change the work, put it in the criterion itself.
 
@@ -81,7 +97,17 @@ One criterion per observable behavior, usually three to six. One means you spec'
 
 Replace every `{placeholder}`. Nothing in braces survives into the finished file.
 
+Mark which cuts they pushed back on and which passed without comment, because a silent round isn't agreement. The SPEC won't carry the cut list, so this message is the only place the user sees what's out while they can still object. Make it a real list rather than a summary.
+
+Then stop. Don't write the file in the same turn as the playback, whatever their last message implied. Scope pushback sends you back to step 3. Wording pushback is cheaper: fix the draft and show it again in full, because a diff of a file they haven't seen on disk is harder to read than the file.
+
+### 5. Write the file
+
 Write to `docs/specs/<slug>.md` at the repo root (`git rev-parse --show-toplevel`), with a short kebab-case slug (`invoice-csv-export`, not `export-invoices-as-csv-file-v1`). Create the directory if it doesn't exist. If the file already exists, read it: same feature, ask whether to replace it or revise it in place; different feature, pick a different slug. Never auto-suffix, because `/review` finds SPECs by slug and can't tell two near-identical ones apart. Then tell the user the path.
+
+Write the draft they approved, unchanged. Anything you improve between approval and write is unreviewed, and the point of step 4 was that the file matches what they signed off on. If you spot a problem, show the corrected draft and get the nod again.
+
+If you can't point to the message where you showed them this text, don't write the file. Go do step 4.
 
 ## Job story craft
 
