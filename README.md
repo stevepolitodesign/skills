@@ -47,6 +47,9 @@ After each step, commit your changes with a focus on the why and not the what.
 Run these steps using subagents, and have them report back to the main session to prevent context pollution.
 ```
 
+
+After reviewing the artifact, use`/rubber-duck` to slow and scrutinize generated code.
+
 ## Reference
 
 ### Diff explainer
@@ -95,6 +98,10 @@ identifying emerging domains.
 The defects subagent stands in for the built-in `/code-review`
 [command][1], and covers the ground `/security-review` does too.
 
+### Rubber duck
+
+[`/rubber-duck`][22] is what the name implies. Use this when you want to slow down and scrutinize generated code.
+
 ### Slice
 
 [`/slice`][17] turns a rough idea into a [vertical
@@ -126,3 +133,4 @@ or human to implement and ship.
 [19]: https://thoughtbot.com/blog/product-management-templates-job-story
 [20]: https://en.wikipedia.org/wiki/Socratic_method
 [21]: https://code.claude.com/docs/en/workflows#have-claude-write-a-workflow
+[22]: rubber-duck/SKILL.md
