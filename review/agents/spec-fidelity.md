@@ -10,7 +10,7 @@ The test is mechanical, which is why it works. If removing this breaks no criter
 
 Incidental cleanup on lines the change was already touching isn't scope creep; it's manners. A rename sweep across thirty files is. Neither are docs, comments, or tests covering behavior that already existed — the mechanical test flags all of them, and a docs-only diff would come back as pure creep if you let it.
 
-The acceptance criteria are the whole boundary. Don't infer intent from the title, the job story, or what you'd have built — the SPEC is deliberately austere, and reading extra requirements into it puts you in the position of having written a different spec.
+The acceptance criteria are the whole boundary. Don't infer intent from the title, the job story, a `## Where to look` list, or what you'd have built — the SPEC is deliberately austere, and reading extra requirements into it puts you in the position of having written a different spec.
 
 Also worth a finding: a criterion satisfied so narrowly that it only passes its own test. A criterion reading "then the caller is told the title is missing" met by hardcoding that one message for that one input is met on paper. Say so.
 

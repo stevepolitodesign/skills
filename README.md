@@ -108,6 +108,12 @@ slice][18] with accompanying [job stories][19] and acceptance criteria.
 The idea is that the smaller the slice, the easier it'll be for an LLM
 or human to implement and ship.
 
+The SPEC also carries a short list of the files recon read, stamped with
+the commit it read them at. `/preparatory-refactor` and
+`/implement-with-tdd` start from those paths instead of rediscovering
+them. They're pointers, not a plan — neither skill treats the list as
+scope, and the repo wins where they disagree.
+
 ### Understand
 
 [`/understand`][23] helps you understand something by using the [Socratic method][20] instead of explaining it to you.

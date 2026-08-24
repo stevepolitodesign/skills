@@ -13,6 +13,15 @@ So I can {outcome}
 
 - [ ] Given {starting state}, when {the user does this}, then {this is observably true}
 
+## Where to look
+
+{Only if recon actually read files worth pointing at. Delete this whole
+section otherwise.}
+
+Paths as of `{short sha}`. Where the code was, not what to build.
+
+- `{path}` — {why this file matters to this slice}
+
 ## Owed
 
 {Only if a guardrail was deferred: what was deferred and what it

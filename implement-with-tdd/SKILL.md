@@ -19,11 +19,22 @@ The thing to build: `$ARGUMENTS`
 
 If that's empty, ask. If it's a path, read it.
 
-Take the acceptance criteria and nothing else. Those are behavior, and behavior is
-what you can test. A file list, a suggested test path, an ordering: that's a guess
-from a session that never ran the suite. Yours will run it, so your evidence is
-better. Where the repo contradicts the plan the repo is right — say so rather than
-diverge quietly.
+Take the acceptance criteria as the scope. Those are behavior, and behavior is what
+you can test. A suggested design, a test path, an ordering: that's a guess from a
+session that never ran the suite. Yours will run it, so your evidence is better.
+Where the repo contradicts the plan the repo is right — say so rather than diverge
+quietly.
+
+A `## Where to look` section is the exception to that distrust, not to the scope
+rule. Those paths are where a prior session already found the relevant code, so they
+save you the search and not the judgment: open them before you go looking for
+anything else, and treat nothing on the list as work you owe. The criteria are still
+the whole scope. If a path is gone or turns out to be irrelevant, skip it and say so
+in the report — don't edit the SPEC.
+
+The list names the commit it was written at. When that isn't `HEAD`, the paths
+usually still hold and the reason beside each one may not, so read the file before
+you act on its description.
 
 ## Before the first test
 
