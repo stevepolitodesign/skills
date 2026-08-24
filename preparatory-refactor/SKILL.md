@@ -33,6 +33,8 @@ Three angles, in two waves — the other two are defined in terms of the site's 
 
 Wave one is **the site**: the function, module, or file where this behavior would go, and every caller. Tell the user recon is running, and that the sketch may reach them before the rest of it does.
 
+If the SPEC has a `## Where to look` section, hand those paths to wave one as candidates rather than making it find them cold. They're where an earlier session found the relevant code, not a verdict on the site: that list was written at a commit the section names, and it never had callers as its job. Wave one still has to confirm the site and find every caller, and it can contradict the list.
+
 The moment it lands, dispatch wave two in one message, with the real paths substituted in, then leave both running in the background while you sketch:
 
 - **Prior art.** `git log --oneline -20 -- <the site paths>`, then read the two or three commits that added behavior rather than fixed it. Report each commit's file list.

@@ -43,6 +43,8 @@ Otherwise tell the user you're reading the codebase first. Then launch subagents
 
 Ask for exact file paths rather than prose, because you need that specificity to argue for cuts the user can verify. Have each name up to 10 files worth reading, fewer if fewer are worth it, then read those files yourself.
 
+Keep the paths as you go. The SPEC carries a short list of them under `## Where to look`, because a path is cheap to check and expensive to find again. Only files you actually read qualify: a path a subagent mentioned and you never opened is a guess with a citation on it.
+
 Then give the user 3 to 5 lines on what you found: what already exists, the closest pattern, what's missing. If recon misread the codebase, this is where they catch it, and that's far cheaper than finding out once the SPEC is written.
 
 No repo, or no subagents available? Do a timeboxed grep and skim yourself, or say plainly that you're cutting scope without knowing what already exists, which is the weaker version of this.
@@ -91,13 +93,19 @@ Here's the SPEC I'd save to `docs/specs/{slug}.md`. Nothing written yet.
 Say the word and I'll save it.
 ~~~
 
-The template is thin on purpose: title, one-sentence summary, job story, acceptance criteria, and `## Owed` only if a guardrail was deferred. This is a contract rather than a design doc. The session that implements it does its own codebase reading, and anything you write about file layout or sequencing will be staler than what it finds. Decisions are different. "Go through the existing export path rather than building a new one" doesn't go stale, it goes missing, so the summary sentence carries whatever reuse the user approved.
+The template is thin on purpose: title, one-sentence summary, job story, acceptance criteria, plus `## Where to look` and `## Owed`, each only if it has something to carry. This is a contract rather than a design doc. Don't write a design, a file plan, or an ordering — that's the implementing session's to decide, and it'll have read the code more recently than you.
+
+Two things do carry over. Decisions, because they go missing rather than stale: "go through the existing export path rather than building a new one" belongs in the summary sentence if the user approved it. And the paths from step 2, because a path is cheap to check and expensive to find again.
+
+**`## Where to look` is a reading list, not a plan.** At most six paths, fewer if fewer earn it: the ones you'd open first if you were implementing this yourself. Each gets one line on why it matters to *this* slice — "the CSV rendering this can go through", not "the reports controller". A path with no reason is noise the next session has to open before it can judge it, which costs more than leaving it out. A path already named in the summary sentence or a criterion doesn't repeat here.
+
+Spend one of the six on the test nearest this slice, and name the command that runs it. Reading the local test idiom is the one piece of exploration the implementing session is *required* to do before its first test, so it's the line that saves real work. Stamp the section with `git rev-parse --short HEAD`: the paths survive a moving repo better than the reasons beside them do, and the stamp is what lets the next session tell how much to trust each one.
 
 **The acceptance criteria are the scope boundary.** There's no in/out list because there doesn't need to be one: if a behavior isn't in a criterion, it isn't in the slice. That only holds if the criteria are tight, so write them as behavior someone can observe by using the thing. Given a starting state, when the user does something, then something is observably true. "A blank title is rejected by the validation layer" names an implementation the next session should get to choose; "when I submit with the title empty, then I see the form again with an error on the title field" says the same thing and decides nothing. Outside a UI the same rule holds: "when I run `report --format=csv` with no matching records, then it prints the header row and exits 0". Where recon found something specific enough to change the work, put it in the criterion itself.
 
 One criterion per observable behavior, usually three to six. One means you spec'd a fragment; ten means you didn't cut.
 
-Replace every `{placeholder}`. Nothing in braces survives into the finished file.
+Replace every `{placeholder}`. Nothing in braces survives into the finished file, and a section with nothing to carry gets deleted rather than padded.
 
 Mark which cuts they pushed back on and which passed without comment, because a silent round isn't agreement. The SPEC won't carry the cut list, so this message is the only place the user sees what's out while they can still object. Make it a real list rather than a summary.
 
@@ -123,5 +131,5 @@ One job story per slice. If yours needs an "and", you have two slices. Spec the 
 
 ## Notes
 
-- Resist appending sections. A design note or a roadmap is defensible on its own, and together they turn the contract back into the design doc this avoids. If something must survive, it belongs in an acceptance criterion, in `## Owed`, or in conversation.
+- Resist appending sections. A design note or a roadmap is defensible on its own, and together they turn the contract back into the design doc this avoids. If something must survive, it belongs in an acceptance criterion, in `## Owed`, or in conversation. Never in `## Where to look`, which is paths and one line each, not a place to park a decision.
 - If the feature is genuinely large, you're still speccing exactly one slice. Tell the user what the remaining slices look like, in order, but keep them out of the file.
