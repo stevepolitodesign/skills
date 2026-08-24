@@ -17,7 +17,7 @@ The job is finding the version that costs a fraction of the work and is still wo
 
 1. Capture the raw idea in the user's words.
 2. Recon the codebase with subagents. Wait for them; the interview depends on what they find.
-3. Run the Socratic interview to cut scope.
+3. Run the interview to cut scope.
 4. Fill in the SPEC template and paste the whole thing in a message for review. This is the skill's only approval gate.
 5. Write the approved draft to `docs/specs/<slug>.md` and tell the user the path.
 
@@ -47,13 +47,15 @@ Then give the user 3 to 5 lines on what you found: what already exists, the clos
 
 No repo, or no subagents available? Do a timeboxed grep and skim yourself, or say plainly that you're cutting scope without knowing what already exists, which is the weaker version of this.
 
-### 3. The Socratic interview
+### 3. The interview
 
 If the idea already arrives slice-sized, say so and go straight to step 4. The rounds below are for ideas that need cutting.
 
 Rounds of 2 to 4 questions. One at a time is a slog; twelve at once is a survey.
 
 **Lead with a cut.** "Should we include search?" makes the user do the work, and they'll say yes. Instead: *"I'm cutting search. With a dozen records the user can scan the list. Push back if that's wrong."* A proposed cut is easy to accept and easy to reject, so it moves fast, and whatever they defend tells you what actually matters. Use `AskUserQuestion` when the choices are genuinely enumerable, plain questions otherwise.
+
+**Defend the cuts you propose.** If they ask why, answer it rather than restating the cut. A cut you can't answer for wasn't grounded in the recon, so withdraw it.
 
 **Spend the recon.** You did the reading so the cuts could be specific, so use it. *"I'm not building an exporter. The reports page already renders CSV at `<the file you found>`, and this can go through the same path"* is a cut the user can verify. Name the file. Vague cuts get argued about; grounded ones get accepted in one line.
 
@@ -65,7 +67,7 @@ There is no checkpoint at the end of the interview. The moment you're at the flo
 
 **Guardrails.** Four things survive however thin the slice gets: anything that risks data loss or corruption, authorization boundaries that would expose other people's data, whatever makes the slice demo-able, and tests for the acceptance criteria. Each becomes an acceptance criterion even though it would pass the cut test, which is why they're listed separately. Deferring one is a decision rather than a cut, so say it plainly and record it under `## Owed`. It isn't gone, it's owed.
 
-**If it won't cut, change the axis.** A feature that resists slicing is usually being cut in the wrong direction. Cut by workflow step, by user, or by input, not by layer and not by a "phase one" that ships nothing. The tell is a slice nobody can exercise end to end without you narrating it for them. Change the axis instead of thinning it further.
+**If it won't cut, change the axis.** A feature that resists slicing is usually being cut in the wrong direction. Cut by workflow step, by user, or by input, not by layer and not by a "phase one" that ships nothing. The tell is a slice nobody can exercise end to end without you narrating it for them. Change the axis instead of thinning it further. And if the user says the axis is wrong, that outranks every cut on the table: start the rounds over on their axis rather than defending the cuts you've already made. The recon still holds unless the new axis points somewhere it didn't reach. Second axis change, draft on the axis you have.
 
 ### 4. Show the SPEC before saving it
 

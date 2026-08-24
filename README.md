@@ -105,14 +105,12 @@ The defects subagent stands in for the built-in `/code-review`
 [`/slice`][17] turns a rough idea into a [vertical
 slice][18] with accompanying [job stories][19] and acceptance criteria.
 
-Uses the [Socratic method][20] to help the user cut scope when possible.
-
 The idea is that the smaller the slice, the easier it'll be for an LLM
 or human to implement and ship.
 
 ### Understand
 
-[`/understand`][23] helps you understand something by using the Socratic method instead of explaining it to you.
+[`/understand`][23] helps you understand something by using the [Socratic method][20] instead of explaining it to you.
 
 Pairs well with `/diff-explainer`, since it'll help reinforce your understanding.
 
