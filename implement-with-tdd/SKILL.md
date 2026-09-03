@@ -38,14 +38,7 @@ you act on its description.
 
 ## Before the first test
 
-**Run the whole suite before touching anything** and keep the list of what fails.
-Those failures are inherited: you don't fix them and they don't count against you.
-Without that list you'll adopt someone else's broken test as your problem and
-spend the session on it. If the suite can't be made to run using the repo's
-documented setup, stop and report what's missing — a missing database or service
-isn't something to work around.
-
-Then learn the suite:
+Learn the suite:
 
 - The command for one test file, and the one for everything
 - Which layers exist here (end-to-end, request or API, unit) — you can only start
@@ -56,7 +49,9 @@ Read the two or three tests nearest your area and copy their style, even where
 you'd write it differently. `references/test-style.md` covers how to write the
 test itself and what belongs at each layer; read it before the first one.
 
-If there's no test framework at all, stop and ask which to use.
+If the suite can't be made to run using the repo's documented setup, stop and
+report what's missing — a missing database or service isn't something to work
+around. If there's no test framework at all, stop and ask which to use.
 
 ## Size the feature
 
@@ -94,9 +89,11 @@ One criterion at a time, and only one test you wrote red at once.
 4. **Run it again.** A new message means you moved. An unchanged message means you
    did something necessary but insufficient, or you guessed — say which, and drop
    the change if you can't name what it unblocks.
-5. **Repeat until green**, then run the tests around what you touched. A *new*
-   failure is yours; one from the inherited list isn't. Check the count against
-   the budget, then take the next criterion, and run everything once at the end.
+5. **Repeat until green**, then run the tests around what you touched. A failure
+   in something you never touched may predate you — check it against a clean
+   checkout before you spend the session on someone else's broken test. Check the
+   count against the budget, then take the next criterion, and run everything once
+   at the end.
 
 Work through every criterion without checking in. Four things earn a stop: a
 suite you can't run, the same failure surviving two different fixes, anything
@@ -134,6 +131,6 @@ half-built abstraction for later.
 ## When you're done
 
 Report the criteria you covered, any you left unbuilt and why, the tests you added
-and where, the suite result against your inherited-failure list, and the lines you
+and where, the suite result, and the lines you
 spent against the budget, including whether your estimate held. Then name the ugliest thing you left
 standing, because that's where the refactor starts. Leave everything uncommitted.
