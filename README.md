@@ -22,6 +22,7 @@ npx skills@latest add stevepolitodesign/skills
 
 These skills can be run independently, but are intended to be run in a series of **new sessions** when building out a feature from start to finish.
 
+0. Optionally, use [`/domain-model`][26] on new projects or features to capture business logic.
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
 2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to refactor ahead of time to make the feature easier to implement.
 3. Then, run [`/implement-with-tdd`][4] against the SPEC created from [`/slice`][2] to drive out the simplest implementation.
@@ -66,6 +67,10 @@ understanding of what's going on.
 
 Finally, in order to be consistent across artifacts, we use [Pico
 CSS][9] in our template.
+
+### Domain model
+
+[`/domain-model`][27] takes a business process described in plain language and extracts the domain. Useful for new projects and features, but can be run at any time.
 
 ### Implement with TDD
 
@@ -118,7 +123,7 @@ scope, and the repo wins where they disagree.
 
 [`/understand`][23] helps you understand something by using the [Socratic method][20] instead of explaining it to you.
 
-Pairs well with `/diff-explainer`, since it'll help reinforce your understanding.
+Pairs well with `/diff-explainer` and `/domain-model`, since it'll help reinforce your understanding.
 
 [1]: https://code.claude.com/docs/en/commands
 [2]: #slice
@@ -145,3 +150,5 @@ Pairs well with `/diff-explainer`, since it'll help reinforce your understanding
 [23]: understand/SKILL.md
 [24]: #rubber-duck
 [25]: #understand
+[26]: #domain-model
+[27]: domain-model/SKILL.md
