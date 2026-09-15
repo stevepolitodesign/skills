@@ -2,7 +2,6 @@
 name: understand
 description: Use the Socratic method to understand something.
 argument-hint: "[PR, ticket, link, spec, path, or feature to understand]"
-disable-model-invocation: true
 ---
 
 # Understand it by defending it

@@ -2,7 +2,6 @@
 name: review
 description: Review a change for defects, then against its spec, its codebase's conventions, and the domains trying to emerge from it.
 argument-hint: "[PR number, branch, or paths to review]"
-disable-model-invocation: true
 ---
 
 # Code review

@@ -2,7 +2,6 @@
 name: diff-explainer
 description: Builds a shareable HTML walkthrough of the current changes, highlighting risks, tradeoffs, and alternatives considered.
 argument-hint: "[PR number, branch, or paths to explain]"
-disable-model-invocation: true
 ---
 
 # Diff explainer
