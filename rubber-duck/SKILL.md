@@ -2,7 +2,6 @@
 name: rubber-duck
 description: Start a rubber duck session.
 argument-hint: "[what's on your mind]"
-disable-model-invocation: true
 ---
 
 # Rubber duck

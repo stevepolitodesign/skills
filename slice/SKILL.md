@@ -2,7 +2,6 @@
 name: slice
 description: Cut a feature or idea down to one full-stack slice.
 argument-hint: "[feature or idea to slice]"
-disable-model-invocation: true
 ---
 
 # Full-stack slice SPEC

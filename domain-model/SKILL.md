@@ -2,7 +2,6 @@
 name: domain-model
 description: Turn a described business process into a domain model.
 argument-hint: "[business process, or a path to a description of one]"
-disable-model-invocation: true
 ---
 
 # Domain model

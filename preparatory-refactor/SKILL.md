@@ -2,7 +2,6 @@
 name: preparatory-refactor
 description: Identify opportunities to introduce a refactor that would make a feature easy to implement.
 argument-hint: "[feature description or path to a SPEC]"
-disable-model-invocation: true
 ---
 
 # Preparatory refactoring
