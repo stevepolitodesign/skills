@@ -87,6 +87,8 @@ Covered by: {the command, and what it exercises at the site — or "nothing"}
 
 The lines under *today* are the argument, so they name files and functions. If a line could describe any change — messy, clearer, easier to follow — it isn't filled in yet.
 
+They say where the feature's edits land, not how to write them. The report is the case for the move; the feature is someone else's to build, and it's going to `/implement-with-tdd` after this anyway. A helper's body, a guard clause, the expression that does the actual work — leave all of it out, however clearly you can see it. Writing it here adds length the move doesn't need and quietly turns a refactoring report into a half-finished implementation plan.
+
 Close with one line on what to do with it: the refactor is behavior-preserving, so there's no failing test to drive it and it wants a plain session with a green suite. The feature is what goes to `/implement-with-tdd`, afterward.
 
 ## Notes
