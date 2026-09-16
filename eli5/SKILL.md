@@ -51,9 +51,9 @@ the trace does come back empty, say so in the explanation — a gap you name cos
 than a plausible value you filled it with.
 
 Then open the files behind the claims you're about to assert, because a citation you
-took on trust is how you confidently explain a function that doesn't exist. No
-subagents, say you skimmed — at the end, not as your opening line. Which tools you used
-is not their problem.
+took on trust is how you confidently explain a function that doesn't exist. If you had
+to skim, name what you couldn't verify — that's theirs to know. How the answer got made
+isn't, at either end of it.
 
 ## 3. Explain it
 
@@ -83,8 +83,10 @@ you name is one they can go ask a person about.
 
 **Last pass before you send,** and it's the one that matters most: reread hunting for
 words that only land for someone who already knows this thing. Gloss each in place or
-cut it. "Basically", "simply", "just" and "under the hood" mark a sentence you didn't
-finish writing — finish it. Don't end on an offer of further services.
+cut it. Read the labels inside your drawings too — a term in the picture is the one
+they can't skip past, and it's where this pass usually misses. "Basically", "simply",
+"just" and "under the hood" mark a sentence you didn't finish writing — finish it.
+Don't end on an offer of further services.
 
 ## 4. Draw it
 
@@ -153,8 +155,9 @@ Four rules hold these up:
   their system — the same picture would be true of any app.
 - **Same values as the prose.** Numbers in the drawing and numbers in the text come
   from the one trace. Two versions of the same number is worse than neither.
-- **One idea per drawing, under about seventy characters wide.** A legend means it's
-  two drawings; a wrapped diagram in a terminal is noise.
+- **One idea per drawing.** A legend means it's two drawings. Keep anything you drew by
+  hand under about seventy characters wide, since a wrapped diagram in a terminal is
+  noise; a table wraps on its own and is measured in columns instead — three or four.
 - **One line under it naming the surprising part** — "nothing after the signature check
   runs." Never restate what the picture already said.
 
