@@ -80,7 +80,8 @@ decision, and starting is a way of making it for them.
 One criterion at a time, and only one test you wrote red at once.
 
 1. **Write the outermost test for the criterion.** Drive it the way a user reaches
-   the behavior. It should fail on the thing you haven't built, not on a typo.
+   the behavior, and assert on what that user can see. It should fail on the thing
+   you haven't built, not on a typo.
 2. **Run it and read the failure.** Literally — not the failure you expected.
 3. **Make the smallest change the failure asks for.** Not the change that finishes
    the feature. `references/failures.md` maps each kind of failure to its next
@@ -95,9 +96,15 @@ One criterion at a time, and only one test you wrote red at once.
    at the end.
 
 Work through every criterion without checking in. Four things earn a stop: a
-suite you can't run, the same failure surviving two different fixes, anything
-needing a new runtime dependency, and the budget running out. The last two are
-project decisions, not implementation details.
+suite you can't run, the same failure surviving two different fixes, work that
+reaches outside the process or handles a secret, and the budget running out. The
+last two are project decisions, not implementation details.
+
+A library you already have installed is still someone else's call. The decision
+isn't the install line, it's where the URL or credential lives, what the code
+does when the call fails, and how the suite stays runnable offline. Storing a
+password is the same shape. Lay the options out and wait — raising one and
+closing it in the same breath isn't a stop.
 
 When the count crosses, finish the criterion you're on and stop there rather than
 opening the next one — a half-built criterion is worse than a missing one. Report
@@ -130,6 +137,8 @@ half-built abstraction for later.
 ## When you're done
 
 Report the criteria you covered, any you left unbuilt and why, the tests you added
-and where, the suite result, and the lines you
-spent against the budget, including whether your estimate held. Then name the ugliest thing you left
-standing, because that's where the refactor starts. Leave everything uncommitted.
+and where, the suite result, and the lines you spent against the budget, including
+whether your estimate held. Then name the ugliest thing you left standing, because
+that's where the refactor starts. Leave everything uncommitted.
+
+Bullets, not a narration of the loop. They can read the diff.

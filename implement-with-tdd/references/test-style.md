@@ -22,6 +22,26 @@ Arrange sets up the world. Act exercises the thing under test, once. Assert
 checks the result. One act per test — with two, a failure can't tell you which
 one broke.
 
+Two blank lines, always: one before the Act, one before the Assert.
+
+Reading the result often takes a call of its own — a second request, a reload, a
+query. Keep it with the Act, and leave the blank line above the assertions:
+
+```ruby
+it "shows the flag on the list" do
+  expense = create(:expense, description: "Coffee")
+
+  post flag_expense_path(expense), params: { reason: "Duplicate" }
+  get expenses_path
+
+  expect(response.body).to include("Coffee Flagged")
+end
+```
+
+That's still one act — two calls, one behavior, and only one of them could have
+broken. Assertions running straight off the last call are how three phases turn
+into two, and it's the most common way this gets written wrong.
+
 Nothing that asserts belongs in Arrange. Stub during Arrange, then check the call
 happened during Assert.
 
@@ -55,7 +75,10 @@ trusting.
 - **Outermost** (end-to-end, system, feature, CLI invocation): one per acceptance
   criterion. Drive it the way a user reaches the behavior. Real records, no
   mocking of your own objects. Stub external HTTP only — the suite has to run
-  offline.
+  offline. Assert through the surface you acted through: a list that still
+  reads `Flagged` is the criterion failing, while `expense.flagged?` coming back
+  false is a unit test hiding in an end-to-end file. If the outcome isn't visible
+  from out there at all, it belongs in the boundary case below.
 - **Middle** (request, API, service layer): this is your outermost layer when
   there's no UI, or when driving the UI adds machinery without adding proof.
 - **Unit**: where the drop-downs land, and where the base of the pyramid comes
