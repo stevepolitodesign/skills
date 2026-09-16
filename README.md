@@ -93,10 +93,11 @@ emerging Domains.
 
 ### Review
 
-[`/review`][15] reviews a change with four parallel subagents: one
+[`/review`][15] reviews a change with five parallel subagents: one
 hunting defects (bugs, performance, security), one checking we adhered
-to the SPEC, one on code quality and reducing [smells][16], and one
-identifying emerging domains.
+to the SPEC, one on code quality and reducing [smells][16], one
+identifying emerging domains, and one asking what still depends on the
+behavior we replaced.
 
 The defects subagent stands in for the built-in `/code-review`
 [command][1], and covers the ground `/security-review` does too.

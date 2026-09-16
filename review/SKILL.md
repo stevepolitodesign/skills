@@ -1,12 +1,12 @@
 ---
 name: review
-description: Review a change for defects, then against its spec, its codebase's conventions, and the domains trying to emerge from it.
+description: Review a change for defects, then against its spec, its codebase's conventions, the domains trying to emerge from it, and whatever still depends on what it replaced.
 argument-hint: "[PR number, branch, or paths to review]"
 ---
 
 # Code review
 
-Four reviewers, dispatched in parallel, each reading the same change from a different distance:
+Five reviewers, dispatched in parallel, each reading the same change from a different distance:
 
 | Agent | Question |
 | --- | --- |
@@ -14,8 +14,9 @@ Four reviewers, dispatched in parallel, each reading the same change from a diff
 | `agents/spec-fidelity.md` | Did we build what was asked for, and only that? |
 | `agents/conventions.md` | Does this look like the rest of the codebase? |
 | `agents/domains.md` | Is a domain concept trying to emerge here? |
+| `agents/compatibility.md` | Does anything still depend on what this replaced? |
 
-They stay separate so the structural reviewer has nothing cheaper to do. One reviewer asked all four questions spends its attention on naming nits, and never reaches "those five files are one domain object in a trenchcoat."
+They stay separate so the structural reviewer has nothing cheaper to do. One reviewer asked all five questions spends its attention on naming nits, and never reaches "those five files are one domain object in a trenchcoat."
 
 ## The confidence bar
 
@@ -27,7 +28,7 @@ What's scarce in a review is the author's trust, not their reading time.
 
 1. Fix the target — one diff, captured once.
 2. Find the intent the change was supposed to satisfy.
-3. Dispatch the four agents in parallel.
+3. Dispatch the five agents in parallel.
 4. Synthesize into one report.
 5. Offer the fix.
 
@@ -72,7 +73,7 @@ The `:/` is what makes it repo-wide. `git ls-files --others` is scoped to the wo
 
 A bare `git reset` would unstage whatever the author had already staged, which isn't yours to touch. Leaving the marks in place is worse: their next `git commit -a` sweeps in every untracked file in the repo.
 
-Check the result before going further. An empty diff means stop and say so — four agents handed an empty file will find something in the neighboring code they read instead. Past roughly 1500 lines, ask for paths or a commit range; agents silently review the first part of a diff that big and report nothing to say they did.
+Check the result before going further. An empty diff means stop and say so — five agents handed an empty file will find something in the neighboring code they read instead. Past roughly 1500 lines, ask for paths or a commit range; agents silently review the first part of a diff that big and report nothing to say they did.
 
 ### 2. Find the intent
 
@@ -90,7 +91,7 @@ If they'd rather not, skip the agent and say the fidelity check didn't run. An a
 
 ### 3. Dispatch
 
-Read the four agent files and launch them as `Explore` agents in one message so they run concurrently. `Explore` has no `Edit` or `Write` — but it does have `Bash`, so tell each agent plainly: no command that writes, stages, or checks anything out. A reviewer that quietly fixes a finding instead of reporting it is one the author can't learn from.
+Read the five agent files and launch them as `Explore` agents in one message so they run concurrently. `Explore` has no `Edit` or `Write` — but it does have `Bash`, so tell each agent plainly: no command that writes, stages, or checks anything out. A reviewer that quietly fixes a finding instead of reporting it is one the author can't learn from.
 
 `agents/defects.md` states a tighter allowlist for itself, since proving a bug is the natural next step for that one. Pass it through as written rather than substituting the looser rule above.
 
@@ -108,11 +109,11 @@ evidence: {the citation this reviewer's own file demands}
 
 The locator is `{file}:{line}`, with the line off the new side of the `@@` header plus the offset inside the hunk. Three variants are equally in-format, so step 4 doesn't throw them away: `{file} (in {function or class})` when a line can't be computed — a wrong line number costs the author more than a missing one — one locator per line when a domains finding spans several files, and the same for a conventions comment finding, which `agents/conventions.md` requires to be one per file with a line for each occurrence.
 
-Otherwise, one finding, one issue, one locator. An agent that staples three unrelated sites under a single anchor has written something the author can't act on or argue with, and the anchor points at only one of them.
+Otherwise, one finding, one issue, one locator — with one exception, a compatibility finding, which carries two because its whole claim is that these two places disagree. An agent that staples three unrelated sites under a single anchor has written something the author can't act on or argue with, and the anchor points at only one of them.
 
-The evidence line is what makes the score checkable. Each agent file says what its own evidence is — a convention needs the path of the file that establishes it, or the named smell plus a line for each occurrence, or nothing at all for a comment finding, which that file exempts; a domain needs its three occurrence sites; a fidelity finding needs the criterion quoted, and quotes no path; a defect needs the trigger plus where the triggering value comes from. Read the agent's own rule before judging its evidence — holding one to another's is how a valid finding dies in synthesis after the agent was told to file it.
+The evidence line is what makes the score checkable. Each agent file says what its own evidence is — a convention needs the path of the file that establishes it, or the named smell plus a line for each occurrence, or nothing at all for a comment finding, which that file exempts; a domain needs its three occurrence sites; a fidelity finding needs the criterion quoted, and quotes no path; a defect needs the trigger plus where the triggering value comes from; a compatibility finding needs the changed line and the thing that still assumes the old behavior. Read the agent's own rule before judging its evidence — holding one to another's is how a valid finding dies in synthesis after the agent was told to file it.
 
-Defect evidence is the weak case, and worth knowing about before you trust it. Three of the four cite an artifact you can open; a trigger is prose, and its truth is the claim under review. Checking the paths around it is all step 4 can do — so a defect that survives synthesis has been checked less than the findings next to it.
+Defect evidence is the weak case, and worth knowing about before you trust it. The other four cite an artifact you can open; a trigger is prose, and its truth is the claim under review. Checking the paths around it is all step 4 can do — so a defect that survives synthesis has been checked less than the findings next to it.
 
 The confidence bar is stated in each agent file; don't restate it here.
 
@@ -124,9 +125,9 @@ Ask for findings only — no summary, no praise, no "overall this looks good." S
 
 Lead with what you reviewed: the target, the intent source and its kind, and a one-line verdict a person can act on. Say up front if a check didn't run — a review missing its fidelity pass looks identical to one that passed it, unless you name the difference.
 
-Then the findings under four headings, defects first because they're the ones with a cost attached to shipping, numbered continuously across all four so step 5 has something unambiguous to name. Sort inside each heading by highest confidence — except defects, which sort by consequence first: a confidence-95 off-by-one in a log line sits below a confidence-82 unbounded delete, and confidence alone puts them the wrong way round.
+Then the findings under five headings, numbered continuously across all five so step 5 has something unambiguous to name. Defects come first because they're the ones with a cost attached to shipping, and compatibility second for the same reason: both cost something the moment this ships, where the other three cost something later. Sort inside each heading by highest confidence — except defects, which sort by consequence first: a confidence-95 off-by-one in a log line sits below a confidence-82 unbounded delete, and confidence alone puts them the wrong way round.
 
-Discard an agent's preamble, summary, and verdict rather than editing them down. Drop a finding whose evidence line is missing, and check the paths it does cite — the locator's file, plus the occurrence sites on a domains finding. A fidelity finding cites no path at all, so there's nothing to check there and nothing to drop it for.
+Discard an agent's preamble, summary, and verdict rather than editing them down. Drop a finding whose evidence line is missing, and check the paths it does cite — the locator's file, the occurrence sites on a domains finding, and both locators on a compatibility one, unless it says outright that the surviving dependent is outside this repo and it couldn't check. A fidelity finding cites no path at all, so there's nothing to check there and nothing to drop it for.
 
 Check a path against the diff and the merge-base — `git cat-file -e "$mb:<path>"` — not against the working tree. A change that deletes a file produces legitimate findings citing a path that's no longer on disk, and an unset `$mb` turns that command into a check against the index, which quietly passes for everything the current branch tracks. If you don't have a merge-base, don't run the check.
 
@@ -137,6 +138,8 @@ A finding filed under the wrong heading moves; it doesn't get dropped. The conve
 Two agents often catch the same code from different heights — duplication as a smell and as an unnamed domain. Where one fix settles both, keep the higher-altitude version and drop the other, because the author fixes it once. Where the two fixes are different edits, keep both: a wrong return value and a long method live on the same lines and neither one resolves the other.
 
 Defects also collide the other way, with a finding that argues the opposite. The clearest case: defects reports a fallback that quietly returns a wrong answer, and fidelity reports that same error handling as scope nobody asked for. One says fix it, the other says delete it. Report both, adjacent, and name the conflict — dropping either leaves the author fixing a bug in code that shouldn't exist, or deleting a path something now depends on.
+
+Compatibility collides with defects most often, and the two findings are usually the same line seen from either side of the deploy. Defects reports a read that returns nothing; compatibility reports the column the same diff dropped out from under it. Keep compatibility's version — it names the window, which is the part that decides what order to ship in — and drop defects'. Where the defect is true even after the rollout finishes, they aren't the same finding and both stay.
 
 If every agent came back empty, say that plainly. A review with nothing in it is a real result, and padding it with observations you scored below the bar is how the bar rots.
 
@@ -154,4 +157,4 @@ Then put the branch back — `git checkout "$orig"` — unless you applied somet
 - The agents run read-only, so anything they'd change comes back as a recommendation rather than a diff. If `Explore` isn't available, say so and pick the most restricted agent type there is rather than reaching for a general-purpose one.
 - Nothing here assumes a language or a framework, and the review is worse the moment it starts to. Whatever pattern you're about to recommend, point at the place this repo already does it. If you can't find one, you're recommending a habit from somewhere else.
 - `agents/` holds prompt fragments, not registered subagents — no frontmatter, nothing validates them. What an agent can touch comes from the agent type dispatch launches, not from anything declared in those files.
-- The noise rules — lockfiles and generated files, findings a linter already gives away free, dimensions that aren't yours — are stated in each of the four agent files rather than here, because the agents never read this one. A rule an agent has to follow and can't see is a rule that doesn't exist.
+- The noise rules — lockfiles and generated files, findings a linter already gives away free, dimensions that aren't yours — are stated in each of the five agent files rather than here, because the agents never read this one. A rule an agent has to follow and can't see is a rule that doesn't exist.
