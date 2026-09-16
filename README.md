@@ -29,7 +29,7 @@ These skills can be run independently, but are intended to be run in a series of
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you're lost rather than fuzzy, start with [`/eli5`][28].
+6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
 
 > [!TIP]
 > Use a [workflow][21] to orchestrate steps 2 through 5.
@@ -74,13 +74,9 @@ CSS][9] in our template.
 
 ### ELI5
 
-[`/eli5`][29] explains code, a tool, or a domain word to someone with no
-foothold on it at all. Reads with subagents, then explains in plain
-language using real values from the codebase instead of invented ones.
+[`/eli5`][29] explains code or a concept as simply as possible. Uses real values from the codebase when possible to help create simple, concrete demonstrations.
 
-The counterpart to [`/understand`][23], which questions you about a model
-you already hold. Use `/eli5` first when you don't hold one, then
-`/understand` to make it stick.
+Use [`/understand`][23] to help you reinforce what you've learned.
 
 ### Implement with TDD
 
@@ -134,6 +130,8 @@ scope, and the repo wins where they disagree.
 [`/understand`][23] helps you understand something by using the [Socratic method][20] instead of explaining it to you.
 
 Pairs well with `/diff-explainer` and `/domain-model`, since it'll help reinforce your understanding.
+
+Use [`/eli5`][28] if you have no familiarity with the subject matter.
 
 [1]: https://code.claude.com/docs/en/commands
 [2]: #slice
