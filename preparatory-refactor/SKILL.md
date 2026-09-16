@@ -67,9 +67,11 @@ One to three, and zero is a legitimate result. Every move is behavior-preserving
 
 Judge the detour by what the sketch already tells you rather than estimating code you haven't written: how many files the feature touches, how many call sites move, whether the new behavior becomes a body for one function or edits threaded through several. "Goes from 4 files to 1, at the cost of moving 3 call sites" is checkable. Line counts for unwritten code read as measurements and aren't.
 
+File count is one reading of smaller, not the only one. A seam that never leaves the method it's in still pays when it turns edits threaded through existing lines into a body for a function that already exists — Fowler's `apply_highlights(apply_ranges(lines))` is one file, one method, zero call sites moved, and it's the case this skill is named after. Score that on the shape of the feature's diff, not its address. What disqualifies a same-file move is the feature having to change what the extracted step already does; see the first tell.
+
 ### 5. Report
 
-Per move, and nothing around it — no preamble, no summary:
+Per move, and nothing around it — no preamble, no summary. Nothing about how you got here either: no note on which angles you dispatched or what tooling you had, no path to the sketch file, no arithmetic behind the confidence number. The reader has a repo and this report, and everything in it has to be something they can act on or check.
 
 ```
 {the move, one line} · confidence {N}
@@ -84,6 +86,8 @@ Covered by: {the command, and what it exercises at the site — or "nothing"}
 ```
 
 The lines under *today* are the argument, so they name files and functions. If a line could describe any change — messy, clearer, easier to follow — it isn't filled in yet.
+
+They say where the feature's edits land, not how to write them. The report is the case for the move; the feature is someone else's to build, and it's going to `/implement-with-tdd` after this anyway. A helper's body, a guard clause, the expression that does the actual work — leave all of it out, however clearly you can see it. Writing it here adds length the move doesn't need and quietly turns a refactoring report into a half-finished implementation plan.
 
 Close with one line on what to do with it: the refactor is behavior-preserving, so there's no failing test to drive it and it wants a plain session with a green suite. The feature is what goes to `/implement-with-tdd`, afterward.
 
