@@ -1,7 +1,7 @@
 ---
 name: eli5
-description: Explain something to someone who knows nothing about it, in plain language and drawings. Use when the user is lost rather than fuzzy — an unfamiliar stack, a tool they keep seeing named, a business word off a ticket.
-argument-hint: "[code, tool, process, or word you have no foothold on]"
+description: Explain something to someone who knows nothing about it.
+argument-hint: "[code, tool, process, or concept you have no familiarity with.]"
 ---
 
 # ELI5

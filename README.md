@@ -131,7 +131,7 @@ scope, and the repo wins where they disagree.
 
 Pairs well with `/diff-explainer` and `/domain-model`, since it'll help reinforce your understanding.
 
-Use [`/eli5`][28] if you have no familiarity with the subject matter.
+Use [`/eli5`][29] if you have no familiarity with the subject matter.
 
 [1]: https://code.claude.com/docs/en/commands
 [2]: #slice
