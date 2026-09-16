@@ -23,6 +23,8 @@ Read the untouched files, recommend edits to the changed ones. You find a concep
 
 Don't lead with a bug. When the fourth copy of something has drifted from the first three, the drift is the defects reviewer's finding and the shared concept is yours. Open on the concept; mention the drift as what made it visible.
 
+Don't borrow the conventions reviewer's argument either. "The new route doesn't build its response through `reply()` the way its three siblings do" is a house rule the change ignored — and a rule with three examples is a concept that already has a home and a name, which is the opposite of what you're looking for. Yours starts with something that has no home anywhere. If your evidence is three files agreeing and one departing, you've written a conventions finding in domain vocabulary, and the author gets it twice.
+
 ## What a finding looks like
 
 Name the concept, list where it currently lives, and say what it would own. "There's a `Subscription` spread across `accounts/user.*` (lines 40-72), the billing request handler, and the status template; it owns expiry, the grace period, and the status string." That gives the author something to agree or disagree with.
