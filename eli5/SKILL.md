@@ -1,6 +1,6 @@
 ---
 name: eli5
-description: Explain something to someone who knows nothing about it. Use when the user is lost rather than fuzzy — an unfamiliar stack, a tool they keep seeing named, a business word off a ticket.
+description: Explain something to someone who knows nothing about it, in plain language and diagrams. Use when the user is lost rather than fuzzy — an unfamiliar stack, a tool they keep seeing named, a business word off a ticket.
 argument-hint: "[code, tool, process, or word you have no foothold on]"
 ---
 
@@ -53,7 +53,9 @@ Three angles, one agent each:
   left to itself hands back the README's first paragraph.
 - **One real trace.** Follow a single instance start to finish using actual values
   pulled from the repo: a real route, a real config value, a row from seeds or
-  fixtures, a real filename. Cited `file:line`.
+  fixtures, a real filename. Cited `file:line`. Ask for the steps in order and the
+  branch at each one, including what happens when it fails — that ordering is what
+  step 4 draws, and a trace that only walks the happy path can't be drawn honestly.
 - **The words.** Every term a newcomer would bounce off, and what each one means *in
   this repo*, which is usually narrower than what it means in general.
 
@@ -85,14 +87,9 @@ step too far costs more than the one you didn't draw.
 `ORDERS_PER_PAGE = 25`, so page 3 starts at order 51. This is the whole reason step 2
 went looking for actual data.
 
-**Draw it when shape is the point.** A request moving through four things is four
-boxes, not a paragraph.
-
-```
-webhook --> queue --> worker --> charge
-                        |
-                        +-- card declined --> retry in 1h
-```
+**Draw it.** Most confusion is about shape — what order, what contains what, what
+changes — and shape is the one thing prose is bad at. See step 4; the drawing usually
+carries the explanation and the words around it are captions.
 
 **Stop early.** The bar is that they could describe this to a coworker in two
 sentences, not that they could maintain it. If the explanation runs past a screen
@@ -102,7 +99,70 @@ you've started teaching the subsystem.
 name is one they can go ask a person about; a hole you smooth over is one they walk
 into believing they understood it.
 
-## 4. After
+## 4. Draw it
+
+Draw in plain text, in the chat. It renders in a terminal, in a browser, and in
+whatever they paste it into later. Build it out of the values the trace agent came back
+with — that's what step 2 collected them for.
+
+Pick the shape from whatever is actually confusing:
+
+**Order — what happens, then what.** Boxes and arrows, with the failure branches drawn,
+since a happy path alone is the version that leaves them stuck at 2am.
+
+```
+POST /webhooks/stripe
+      |
+      v
+  verify signature --- bad --> 400, nothing else runs
+      |
+     good
+      v
+  ChargeSucceeded job --> invoice #4821 marked paid
+      |
+      +-- card declined --> retry in 1h, then 6h, then give up
+```
+
+**Change — what goes in, what comes out.** Two columns of real values beats any
+sentence describing the transformation.
+
+```
+"123 Main St."      -->   "123 main st"
+"123 main street"   -->   "123 main st"
+"123 Main Street."  -->   "123 main st"
+```
+
+**Time — what happens days apart.** A timeline, because "eventually" and "later" are
+where people build the wrong model.
+
+```
+day 0        day 3        day 7          day 14
+  |------------|------------|--------------|
+charge      email 1      email 2       account
+fails                                  suspended
+```
+
+**Containment — what wraps what.** Nested boxes. This is the one that makes a stack of
+wrappers stop being magic.
+
+**Choices — how three similar things differ.** A table with the columns that actually
+matter, and nothing else.
+
+Four rules hold all of this up:
+
+- **Real labels, always.** Boxes that say "Service A" and "Service B" draw a picture of
+  the category, not of their system — the same diagram would be true of any app, which
+  means it taught nothing. Their route, their job class, their column name.
+- **One idea per drawing.** If it needs a legend it's a second drawing.
+- **Under about sixty characters wide.** Wrapped ASCII in a terminal is noise, and noise
+  they can't read is worse than the paragraph you replaced.
+- **Don't narrate the drawing afterward.** Saying it twice signals the picture didn't
+  work; if that's true, redraw it.
+
+And skip it when there's no shape to show. A box with one word in it is decoration, and
+decoration next to a real diagram teaches them not to look closely at either.
+
+## 5. After
 
 Answer follow-ups straight, and go read if you don't know. Never bluff here. Everywhere
 else a wrong answer gets caught by the user; this user has nothing to catch it with,
