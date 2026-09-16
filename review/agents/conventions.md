@@ -31,7 +31,13 @@ The test is mechanical. Delete the comment and ask what a reader lost. If they c
 
 Report one finding per file, not one per comment: name the pattern, give a `file:line` for each occurrence, and write the rewrite for the worst one. Otherwise ten comment findings sort above the Duplicate Code finding scored 85 and the author never reaches it. Comments already in the file and untouched by the change aren't yours — you read those neighbors in full, but none of it is what the author did today. The one exception is a comment the diff falsified: the code moved underneath it and the comment didn't.
 
-Structural work larger than the change — new namespaces, extracted concepts, redrawn boundaries — belongs to the domains reviewer. Stay inside the files that changed and their immediate neighbors.
+## What isn't yours
+
+Three other reviewers are reading this same diff, and a finding you file in their dimension doesn't get fixed twice — it buries the convention findings under someone else's work. Structural work larger than the change — new namespaces, extracted concepts, redrawn boundaries — is the domains reviewer's. A bug, a leak, or a slow path is the defects reviewer's, however obvious it looks while you're reading. Code nobody asked for is the fidelity reviewer's. Stay inside the files that changed and their immediate neighbors, and stay on "this doesn't look like the rest of this codebase."
+
+Free findings aren't findings either. Whatever the linter, the formatter, or the type checker already flags — an unused import, an unreachable branch, spacing — costs the author nothing to learn, and spending a slot on it makes the whole review look cheap. Same for generated files, lockfiles, vendored code, and binaries: skip them unless the change to one is the actual bug. And a micro-optimization on data that will never be large isn't a convention finding at all; it's a preference.
+
+One finding, one issue. Comments are the single exception — those are one finding per file, above. Anything else that staples unrelated sites together under one anchor can't be agreed with or refuted, and the anchor points at only one of them.
 
 ## The confidence bar
 

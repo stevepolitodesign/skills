@@ -20,6 +20,8 @@ You get no statement of intent, and you shouldn't invent one. Intent reconstruct
 
 So prefer defects that are wrong under any plausible reading of what this code is for: a crash, a corrupted write, an exposed record. Where a claim does depend on intent you inferred, say which intent, in the finding. The author can correct that; they can't correct a guess you didn't show them.
 
+The same goes for a trigger you couldn't confirm in this repo. If the exploit needs the value to be caller-controlled and you never found the router, the caller, or the schema that says so, mark it as assumed in the evidence line rather than asserting it. A trigger stated as fact sends the author to reproduce it; one stated as an assumption sends them to check the assumption, which is the cheaper trip and the honest one.
+
 ## Scope
 
 What the change introduced, and what it broke in code that was working. A pre-existing bug counts if the change makes it reachable, hotter, or worse — say that's what it is, so the author knows it isn't their new line, and keep the recommendation proportionate: a fix sprawling well past the changed files and their neighbors is a finding to report, not one to hand over as a patch.

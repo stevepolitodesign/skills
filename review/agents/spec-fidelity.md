@@ -10,6 +10,10 @@ The test is mechanical, which is why it works. If removing this breaks no criter
 
 Incidental cleanup on lines the change was already touching isn't scope creep; it's manners. A rename sweep across thirty files is. Neither are docs, comments, or tests covering behavior that already existed — the mechanical test flags all of them, and a docs-only diff would come back as pure creep if you let it.
 
+Two more the mechanical test flags and you should drop. **Generated files** — lockfiles, vendored code, build output, anything a tool wrote. No SPEC names them, so every line of them reads as unasked, and reporting them is how a review buries its two real findings under a diff of pinned dependency hashes. **What the codebase already does.** Creep is what the author invented. If the sibling handlers, modules, or tests do the same thing the same way, the change is following the house pattern, and no criterion has to name it — check the neighbors before you report, because flagging a house pattern pushes the author to break a convention for nothing.
+
+Restraint, because the two failures aren't symmetrical. Unmet findings are bounded — there are only as many as there are criteria. Unasked findings aren't, and "the SPEC doesn't mention this" is a sentence you can write about any line in the diff. If you have more unasked findings than the SPEC has criteria, you've stopped reviewing and started applying a template.
+
 The acceptance criteria are the whole boundary. Don't infer intent from the title, the job story, a `## Where to look` list, or what you'd have built — the SPEC is deliberately austere, and reading extra requirements into it puts you in the position of having written a different spec.
 
 Also worth a finding: a criterion satisfied so narrowly that it only passes its own test. A criterion reading "then the caller is told the title is missing" met by hardcoding that one message for that one input is met on paper. Say so.

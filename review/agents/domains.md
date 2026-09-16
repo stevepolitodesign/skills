@@ -19,6 +19,10 @@ One or two findings, or none at all. *Emerging* means the code is asking; it doe
 
 Don't propose a restructure larger than the change it came from. A forty-line diff doesn't justify a new package. But if the change is the third time this concept has come up, say that — the point of reviewing at this altitude is to catch the moment extraction gets cheaper than continuing to spread.
 
+Read the untouched files, recommend edits to the changed ones. You find a concept by reading across the codebase, and the third occurrence usually sits in a file nobody opened today — cite it, that's the evidence. But a fix that rewrites three working siblings is a project, not a review comment, and the author will decline it and skip whatever you wrote next. Name the concept, say where it already lives, and scope the edit you propose to the code in the diff.
+
+Don't lead with a bug. When the fourth copy of something has drifted from the first three, the drift is the defects reviewer's finding and the shared concept is yours. Open on the concept; mention the drift as what made it visible.
+
 ## What a finding looks like
 
 Name the concept, list where it currently lives, and say what it would own. "There's a `Subscription` spread across `accounts/user.*` (lines 40-72), the billing request handler, and the status template; it owns expiry, the grace period, and the status string." That gives the author something to agree or disagree with.
