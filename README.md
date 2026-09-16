@@ -29,7 +29,7 @@ These skills can be run independently, but are intended to be run in a series of
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding.
+6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you're lost rather than fuzzy, start with [`/eli5`][28].
 
 > [!TIP]
 > Use a [workflow][21] to orchestrate steps 2 through 5.
@@ -71,6 +71,16 @@ CSS][9] in our template.
 ### Domain model
 
 [`/domain-model`][27] takes a business process described in plain language and extracts the domain. Useful for new projects and features, but can be run at any time.
+
+### ELI5
+
+[`/eli5`][29] explains code, a tool, or a domain word to someone with no
+foothold on it at all. Reads with subagents, then explains in plain
+language using real values from the codebase instead of invented ones.
+
+The counterpart to [`/understand`][23], which questions you about a model
+you already hold. Use `/eli5` first when you don't hold one, then
+`/understand` to make it stick.
 
 ### Implement with TDD
 
@@ -152,3 +162,5 @@ Pairs well with `/diff-explainer` and `/domain-model`, since it'll help reinforc
 [25]: #understand
 [26]: #domain-model
 [27]: domain-model/SKILL.md
+[28]: #eli5
+[29]: eli5/SKILL.md
