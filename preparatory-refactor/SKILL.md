@@ -67,9 +67,11 @@ One to three, and zero is a legitimate result. Every move is behavior-preserving
 
 Judge the detour by what the sketch already tells you rather than estimating code you haven't written: how many files the feature touches, how many call sites move, whether the new behavior becomes a body for one function or edits threaded through several. "Goes from 4 files to 1, at the cost of moving 3 call sites" is checkable. Line counts for unwritten code read as measurements and aren't.
 
+File count is one reading of smaller, not the only one. A seam that never leaves the method it's in still pays when it turns edits threaded through existing lines into a body for a function that already exists — Fowler's `apply_highlights(apply_ranges(lines))` is one file, one method, zero call sites moved, and it's the case this skill is named after. Score that on the shape of the feature's diff, not its address. What disqualifies a same-file move is the feature having to change what the extracted step already does; see the first tell.
+
 ### 5. Report
 
-Per move, and nothing around it — no preamble, no summary:
+Per move, and nothing around it — no preamble, no summary. Nothing about how you got here either: no note on which angles you dispatched or what tooling you had, no path to the sketch file, no arithmetic behind the confidence number. The reader has a repo and this report, and everything in it has to be something they can act on or check.
 
 ```
 {the move, one line} · confidence {N}
