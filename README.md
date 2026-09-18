@@ -22,32 +22,57 @@ npx skills@latest add stevepolitodesign/skills
 
 These skills can be run independently, but are intended to be run in a series of **new sessions** when building out a feature from start to finish.
 
+### Discovery and planning
+
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture business logic.
+  - Use [`/understand`][25] and/or to [`/eli5`][28] reinforce your understanding of the business logic
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
+  - Use [`/understand`][25] and/or to [`/eli5`][28] reinforce your understanding of the generated SPEC.
+  - Use [`/rubber-duck`][24] to slow down and scrutinize the generated SPEC.
+
+### Implementation
+
 2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to refactor ahead of time to make the feature easier to implement.
 3. Then, run [`/implement-with-tdd`][4] against the SPEC created from [`/slice`][2] to drive out the simplest implementation.
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
+
+### Verification and review
+
 5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+  - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+
+### Running them as a dynamic workflow
 
 > [!TIP]
 > Use a [workflow][21] to orchestrate steps 2 through 5.
+> Add a [verification][] to confirm changes against the running app instead of just tests.
 
 ```
-ultracode: Implement @path-to-spec by following these steps.
+ultracode: Using subagents, implement the SPEC we just generated with /slice by following these steps:
 
 1. First, run /preparatory-refactor. Decide if a preparatory refactor is justified. If it is, implement it.
-2. Then, run /implement-with-tdd
-3. Then, run /review
-4. Finally, run /diff-explainer
+2. Then, run /implement-with-tdd to implement the SPEC.
+3. Then, run /review and address any high-confidence findings.
+4. Then, run /verify to confirm changes against the app. Fix anything that needs to be addressed.
+5. Finally, run /diff-explainer and open the artifact for me to review.
 
-Each step depends on the previous step, so these must be run sequentially.
+**Important**
 
-After each step, commit your changes with a focus on the why and not the what.
-
-Run these steps using subagents, and have them report back to the main session to prevent context pollution.
+- Each step depends on the previous step. These must be run sequentially.
+- Run each step in a separate session to avoid context pollution and bias.
+- After each step, commit your changes with a focus on the why and not the what.
 ```
+
+## Why these work
+
+I use these skills daily. I created them because I was staffed on a project where I had no familiarity with the tech-stack or language. I found that I could still be effective and deliver value by doubling down on Evergreen consulting skills, while offloading the implementation to the LLM.
+
+This works because the [discovery and planning][TODO] phase set the foundation for the [implementation][TODO] phase. This is still the case even in a world without LLMs. The only difference is that the LLM accelerates the discovery and planning. Because of this, I find that I need to deliberately slow down to better absurd the findings.
+
+Once I review the SPEC, I run a [dynamic workflow][link to the dynamic workflow section] and have the LLM implement, review and verify everything. I find that [constraining the implementation to 200 lines][link to https://github.com/stevepolitodesign/dotfiles/blob/main/.claude/CLAUDE.md#coding] ensures higher quality. Again, this is something that works without an LLM. People don't like big PRs.
+
+Because I'm offloading the implementation to an LLM, I miss out on all the decisions being made (e.g. risks, trade-offs and alternatives). That step now happens **afterwards** in the [verification and review][link to verification and review phase]. Again, this concept still existed before LLMs when you would review a colleague's work. Now, I'm reviewing an LLM's work.
 
 ## Reference
 
@@ -163,3 +188,4 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [27]: domain-model/SKILL.md
 [28]: #eli5
 [29]: eli5/SKILL.md
+[30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
