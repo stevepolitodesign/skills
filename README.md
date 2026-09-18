@@ -22,32 +22,59 @@ npx skills@latest add stevepolitodesign/skills
 
 These skills can be run independently, but are intended to be run in a series of **new sessions** when building out a feature from start to finish.
 
+### Discovery and planning
+
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture business logic.
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the business logic.
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the generated SPEC.
+   - Use [`/rubber-duck`][24] to slow down and scrutinize the generated SPEC.
+
+### Implementation
+
 2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to refactor ahead of time to make the feature easier to implement.
 3. Then, run [`/implement-with-tdd`][4] against the SPEC created from [`/slice`][2] to drive out the simplest implementation.
 4. Then, run [`/review`][5] to find defects in that implementation, and
    to refactor it.
-5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-6. After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+
+### Verification and review
+
+5. Then, run `/verify` to confirm the change against the running app, not just the tests. This is [built into Claude Code][30].
+6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
+   - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+
+### Running them as a dynamic workflow
 
 > [!TIP]
-> Use a [workflow][21] to orchestrate steps 2 through 5.
+> Use a [workflow][21] to orchestrate steps 2 through 6.
 
 ```
-ultracode: Implement @path-to-spec by following these steps.
+ultracode: Using subagents, implement the SPEC we just generated with /slice by following these steps:
 
 1. First, run /preparatory-refactor. Decide if a preparatory refactor is justified. If it is, implement it.
-2. Then, run /implement-with-tdd
-3. Then, run /review
-4. Finally, run /diff-explainer
+2. Then, run /implement-with-tdd to implement the SPEC.
+3. Then, run /review and address any high-confidence findings.
+4. Then, run /verify to confirm changes against the app. Fix anything that needs to be addressed.
+5. Finally, run /diff-explainer and open the artifact for me to review.
 
-Each step depends on the previous step, so these must be run sequentially.
+**Important**
 
-After each step, commit your changes with a focus on the why and not the what.
-
-Run these steps using subagents, and have them report back to the main session to prevent context pollution.
+- Each step depends on the previous step. These must be run sequentially.
+- Run each step in a separate session to avoid context pollution and bias.
+- After each step, commit your changes with a focus on the why and not the what.
 ```
+
+## Why these work
+
+I created these because I was staffed on a project where I had no familiarity with the tech-stack or language. I found I could still be effective by doubling down on evergreen consulting skills, and offloading the implementation to the LLM.
+
+This only works if I still understand what I'm building, and if I can trust the generated code.
+
+Offloading the implementation works. Offloading the understanding doesn't, because I can't offload responsibility. The LLM makes it more challenging to understand what I'm doing because it can convert a feature into a slice so quickly. So, a lot of these skills exist to slow me down enough to absorb and scrutinize its work. I use [`/understand`][25] so that I can eventually explain a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can understand the context behind the code, since I didn't write it.
+
+Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to keep the change small while still delivering value. I use [`/implement-with-tdd`][4] to drive out the implementation with tests. I use [`/review`][5] to look for defects and check the result against the SPEC. I use `/verify` to run the actual app, since passing tests doesn't mean the feature works.
+
+None of this is new. Before LLMs, you still planned before you started coding, you still used TDD to implement the feature, and you still had limited context when you reviewed your colleague's PRs. The only difference now is that an LLM can accelerate planning and do the implementation.
 
 ## Reference
 
@@ -163,3 +190,4 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [27]: domain-model/SKILL.md
 [28]: #eli5
 [29]: eli5/SKILL.md
+[30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
