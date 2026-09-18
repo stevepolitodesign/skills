@@ -39,7 +39,7 @@ These skills can be run independently, but are intended to be run in a series of
 
 ### Verification and review
 
-5. Then, run `/verify` to confirm the change against the running app, not just the tests. This one isn't mine — it's [built into Claude Code][30].
+5. Then, run `/verify` to confirm the change against the running app, not just the tests. This is [built into Claude Code][30].
 6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
    - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
 
