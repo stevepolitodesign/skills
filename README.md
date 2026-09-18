@@ -25,10 +25,10 @@ These skills can be run independently, but are intended to be run in a series of
 ### Discovery and planning
 
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture business logic.
-  - Use [`/understand`][25] and/or to [`/eli5`][28] reinforce your understanding of the business logic
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the business logic.
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
-  - Use [`/understand`][25] and/or to [`/eli5`][28] reinforce your understanding of the generated SPEC.
-  - Use [`/rubber-duck`][24] to slow down and scrutinize the generated SPEC.
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the generated SPEC.
+   - Use [`/rubber-duck`][24] to slow down and scrutinize the generated SPEC.
 
 ### Implementation
 
@@ -39,14 +39,14 @@ These skills can be run independently, but are intended to be run in a series of
 
 ### Verification and review
 
-5. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-  - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+5. Then, run `/verify` to confirm the change against the running app, not just the tests. This one isn't mine — it's [built into Claude Code][30].
+6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
+   - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
 
 ### Running them as a dynamic workflow
 
 > [!TIP]
-> Use a [workflow][21] to orchestrate steps 2 through 5.
-> Add a [verification][] to confirm changes against the running app instead of just tests.
+> Use a [workflow][21] to orchestrate steps 2 through 6.
 
 ```
 ultracode: Using subagents, implement the SPEC we just generated with /slice by following these steps:
@@ -66,13 +66,13 @@ ultracode: Using subagents, implement the SPEC we just generated with /slice by 
 
 ## Why these work
 
-I use these skills daily. I created them because I was staffed on a project where I had no familiarity with the tech-stack or language. I found that I could still be effective and deliver value by doubling down on Evergreen consulting skills, while offloading the implementation to the LLM.
+I use these skills daily. I created them because I was staffed on a project where I had no familiarity with the tech-stack or language. I found that I could still be effective and deliver value by doubling down on evergreen consulting skills, while offloading the implementation to the LLM.
 
-This works because the [discovery and planning][TODO] phase set the foundation for the [implementation][TODO] phase. This is still the case even in a world without LLMs. The only difference is that the LLM accelerates the discovery and planning. Because of this, I find that I need to deliberately slow down to better absurd the findings.
+This works because the [discovery and planning][31] phase sets the foundation for the [implementation][32] phase. This is still the case even in a world without LLMs. The only difference is that the LLM accelerates the discovery and planning. Because of this, I find that I need to deliberately slow down to better absorb the findings.
 
-Once I review the SPEC, I run a [dynamic workflow][link to the dynamic workflow section] and have the LLM implement, review and verify everything. I find that [constraining the implementation to 200 lines][link to https://github.com/stevepolitodesign/dotfiles/blob/main/.claude/CLAUDE.md#coding] ensures higher quality. Again, this is something that works without an LLM. People don't like big PRs.
+Once I review the SPEC, I run a [dynamic workflow][34] and have the LLM implement, review and verify everything. I find that [constraining the implementation to 200 lines][35] ensures higher quality. Again, this is something that works without an LLM. People don't like big PRs.
 
-Because I'm offloading the implementation to an LLM, I miss out on all the decisions being made (e.g. risks, trade-offs and alternatives). That step now happens **afterwards** in the [verification and review][link to verification and review phase]. Again, this concept still existed before LLMs when you would review a colleague's work. Now, I'm reviewing an LLM's work.
+Because I'm offloading the implementation to an LLM, I miss out on all the decisions being made (e.g. risks, trade-offs and alternatives). That step now happens **afterwards** in the [verification and review][33] phase. Again, this concept still existed before LLMs when you would review a colleague's work. Now, I'm reviewing an LLM's work.
 
 ## Reference
 
@@ -189,3 +189,8 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [28]: #eli5
 [29]: eli5/SKILL.md
 [30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
+[31]: #discovery-and-planning
+[32]: #implementation
+[33]: #verification-and-review
+[34]: #running-them-as-a-dynamic-workflow
+[35]: https://github.com/stevepolitodesign/dotfiles/blob/main/.claude/CLAUDE.md#coding
