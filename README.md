@@ -68,13 +68,13 @@ ultracode: Using subagents, implement the SPEC we just generated with /slice by 
 
 I created these because I was staffed on a project where I had no familiarity with the tech-stack or language. I found I could still be effective by doubling down on evergreen consulting skills, and offloading the implementation to the LLM.
 
-That only works if I still understand what we're building, and if I can trust what comes back.
+This only works if I still understand what I'm building, and if I can trust the generated code.
 
-Handing off the implementation is fine. Handing off the understanding isn't, because then I can't review it or maintain it. The LLM makes this harder. It'll generate a SPEC in seconds that would have taken me an afternoon, and it's easy to skim that and assume I've absorbed it. So a lot of these skills exist to slow me down. [`/understand`][25] won't explain anything to me. It asks questions until I can explain it myself. [`/eli5`][28] is there for when I have no familiarity at all. [`/rubber-duck`][24] is for when the SPEC looks right and I want to be sure. [`/diff-explainer`][6] gives me the decisions I wasn't around for.
+Offloading the implementation works. Offloading the understanding doesn't, because I can't offload responsibility. The LLM makes it more challenging to understand what I'm doing because it's so fast. It'll generate a SPEC in seconds that would have taken me an afternoon. So, a lot of these skills exist to slow me down enough to absorb and scrutinize its work. [`/understand`][25] won't explain anything to me. It asks questions until I can explain it myself. [`/eli5`][28] is there for when I have no familiarity at all and need the explanation. [`/rubber-duck`][24] is for when the SPEC looks plausible, but I want to be sure. [`/diff-explainer`][6] gives me the decisions I wasn't around for.
 
-Trust is the other half. I'm not reading every line anymore, so it has to come from somewhere else. [`/slice`][2] keeps the change small. [`/implement-with-tdd`][4] [caps it around 200 lines][35] and leaves tests behind. [`/review`][5] looks for defects and checks the result against the SPEC. `/verify` runs the actual app, since passing tests doesn't mean the feature works.
+Since I'm offloading implementation, I need to trust it. [`/slice`][2] keeps the change small while still delivering value. [`/implement-with-tdd`][4] [caps it around 200 lines][35] and drives out the implementation with tests. [`/review`][5] looks for defects and checks the result against the SPEC. `/verify` runs the actual app, since passing tests doesn't mean the feature works.
 
-Again, none of this is new. You planned before you built, and you reviewed your colleague's PRs. People don't like big PRs. The only thing that changed is who's doing the typing.
+None of this is new. Before LLMs, you still planned before you started coding, and you still had limited context when you reviewed your colleague's PRs. The only difference now is that an LLM can accelerate planning and do the implementation.
 
 ## Reference
 
