@@ -70,11 +70,11 @@ I created these because I was staffed on a project where I had no familiarity wi
 
 This only works if I still understand what I'm building, and if I can trust the generated code.
 
-Offloading the implementation works. Offloading the understanding doesn't, because I can't offload responsibility. The LLM makes it more challenging to understand what I'm doing because it's so fast. It'll generate a SPEC in seconds that would have taken me an afternoon. So, a lot of these skills exist to slow me down enough to absorb and scrutinize its work. [`/understand`][25] won't explain anything to me. It asks questions until I can explain it myself. [`/eli5`][28] is there for when I have no familiarity at all and need the explanation. [`/rubber-duck`][24] is for when the SPEC looks plausible, but I want to be sure. [`/diff-explainer`][6] gives me the decisions I wasn't around for.
+Offloading the implementation works. Offloading the understanding doesn't, because I can't offload responsibility. The LLM makes it more challenging to understand what I'm doing because it can convert a feature into a slice so quickly. So, a lot of these skills exist to slow me down enough to absorb and scrutinize its work. I use [`/understand`][25] so that I can eventually explain a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can understand the context behind the code, since I didn't write it.
 
-Since I'm offloading implementation, I need to trust it. [`/slice`][2] keeps the change small while still delivering value. [`/implement-with-tdd`][4] [caps it around 200 lines][35] and drives out the implementation with tests. [`/review`][5] looks for defects and checks the result against the SPEC. `/verify` runs the actual app, since passing tests doesn't mean the feature works.
+Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to keep the change small while still delivering value. I use [`/implement-with-tdd`][4] to drive out the implementation with tests. I use [`/review`][5] to look for defects and check the result against the SPEC. I use `/verify` to run the actual app, since passing tests doesn't mean the feature works.
 
-None of this is new. Before LLMs, you still planned before you started coding, and you still had limited context when you reviewed your colleague's PRs. The only difference now is that an LLM can accelerate planning and do the implementation.
+None of this is new. Before LLMs, you still planned before you started coding, you still used TDD to implement the feature, and you still had limited context when you reviewed your colleague's PRs. The only difference now is that an LLM can accelerate planning and do the implementation.
 
 ## Reference
 
@@ -191,4 +191,3 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [28]: #eli5
 [29]: eli5/SKILL.md
 [30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
-[35]: https://github.com/stevepolitodesign/dotfiles/blob/main/.claude/CLAUDE.md#coding
