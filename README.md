@@ -66,13 +66,15 @@ ultracode: Using subagents, implement the SPEC we just generated with /slice by 
 
 ## Why these work
 
-I use these skills daily. I created them because I was staffed on a project where I had no familiarity with the tech-stack or language. I found that I could still be effective and deliver value by doubling down on evergreen consulting skills, while offloading the implementation to the LLM.
+I created these because I was staffed on a project where I had no familiarity with the tech-stack or language. I found I could still be effective by doubling down on evergreen consulting skills, and offloading the implementation to the LLM.
 
-This works because the [discovery and planning][31] phase sets the foundation for the [implementation][32] phase. This is still the case even in a world without LLMs. The only difference is that the LLM accelerates the discovery and planning. Because of this, I find that I need to deliberately slow down to better absorb the findings.
+That only works if I still understand what we're building, and if I can trust what comes back.
 
-Once I review the SPEC, I run a [dynamic workflow][34] and have the LLM implement, review and verify everything. I find that [constraining the implementation to 200 lines][35] ensures higher quality. Again, this is something that works without an LLM. People don't like big PRs.
+Handing off the implementation is fine. Handing off the understanding isn't, because then I can't review it or maintain it. The LLM makes this harder. It'll generate a SPEC in seconds that would have taken me an afternoon, and it's easy to skim that and assume I've absorbed it. So a lot of these skills exist to slow me down. [`/understand`][25] won't explain anything to me. It asks questions until I can explain it myself. [`/eli5`][28] is there for when I have no familiarity at all. [`/rubber-duck`][24] is for when the SPEC looks right and I want to be sure. [`/diff-explainer`][6] gives me the decisions I wasn't around for.
 
-Because I'm offloading the implementation to an LLM, I miss out on all the decisions being made (e.g. risks, trade-offs and alternatives). That step now happens **afterwards** in the [verification and review][33] phase. Again, this concept still existed before LLMs when you would review a colleague's work. Now, I'm reviewing an LLM's work.
+Trust is the other half. I'm not reading every line anymore, so it has to come from somewhere else. [`/slice`][2] keeps the change small. [`/implement-with-tdd`][4] [caps it around 200 lines][35] and leaves tests behind. [`/review`][5] looks for defects and checks the result against the SPEC. `/verify` runs the actual app, since passing tests doesn't mean the feature works.
+
+Again, none of this is new. You planned before you built, and you reviewed your colleague's PRs. People don't like big PRs. The only thing that changed is who's doing the typing.
 
 ## Reference
 
@@ -189,8 +191,4 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [28]: #eli5
 [29]: eli5/SKILL.md
 [30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
-[31]: #discovery-and-planning
-[32]: #implementation
-[33]: #verification-and-review
-[34]: #running-them-as-a-dynamic-workflow
 [35]: https://github.com/stevepolitodesign/dotfiles/blob/main/.claude/CLAUDE.md#coding
