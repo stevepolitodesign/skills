@@ -2,9 +2,11 @@
 
 [![skills.sh](https://skills.sh/b/stevepolitodesign/skills)](https://skills.sh/stevepolitodesign/skills)
 
-This is a simple set of skills optimized for general-purpose software development across tech stacks.
+This is a simple set of skills optimized for general-purpose software
+development across tech stacks.
 
-My preference is to rely on the [built-in commands][1] as much as possible, which is why I have such a small set of skills.
+My preference is to rely on the [built-in commands][1] as much as possible,
+which is why I have such a small set of skills.
 
 ## Installation
 
@@ -14,144 +16,176 @@ Coming soon.
 
 ### Codex, and other agents
 
-```
-npx skills@latest add stevepolitodesign/skills
-```
+``` npx skills@latest add stevepolitodesign/skills ```
 
 ## How to use these skills
 
-These skills can be run independently, but are intended to be run in a series of **new sessions** when building out a feature from start to finish.
+These skills can be run independently, but are intended to be run in a series
+of **new sessions** when building out a feature from start to finish.
 
 ### Discovery and planning
 
-0. Optionally, use [`/domain-model`][26] on new projects or features to capture business logic.
-   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the business logic.
-1. First, use [`/slice`][2] to come up with the simplest possible thing to ship that adds value.
-   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your understanding of the generated SPEC.
+0. Optionally, use [`/domain-model`][26] on new projects or features to capture
+business logic.
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
+   understanding of the business logic.
+1. First, use [`/slice`][2] to come up with the simplest possible thing to ship
+that adds value.
+   - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
+   understanding of the generated SPEC.
    - Use [`/rubber-duck`][24] to slow down and scrutinize the generated SPEC.
 
 ### Implementation
 
-2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to refactor ahead of time to make the feature easier to implement.
-3. Then, run [`/implement-with-tdd`][4] against the SPEC created from [`/slice`][2] to drive out the simplest implementation.
-4. Then, run [`/review`][5] to find defects in that implementation, and
-   to refactor it.
+2. Then, run [`/preparatory-refactor`][3] to see if there's an opportunity to
+refactor ahead of time to make the feature easier to implement.
+3. Then, run [`/implement-with-tdd`][4] against the SPEC created from
+[`/slice`][2] to drive out the simplest implementation.
+4. Then, run [`/review`][5] to find defects in that implementation, and to
+refactor it.
 
 ### Verification and review
 
-5. Then, run `/verify` to confirm the change against the running app, not just the tests. This is [built into Claude Code][30].
-6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will help you understand the changeset.
-   - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and scrutinize generated code, or [`/understand`][25] to reinforce your understanding. If you need more help, start with [`/eli5`][28].
+5. Then, run `/verify` to confirm the change against the running app, not just
+the tests. This is [built into Claude Code][30].
+6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will
+help you understand the changeset.
+   - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and
+   scrutinize generated code, or [`/understand`][25] to reinforce your
+   understanding. If you need more help, start with [`/eli5`][28].
 
 ### Running them as a dynamic workflow
 
-Steps 2 through 6 are mechanical once the SPEC exists, so [`/ship`][31] runs them
-as a [workflow][21]:
+Steps 2 through 6 are mechanical once the SPEC exists, so [`/ship`][31] runs
+them as a [workflow][21]:
 
-```
-/ship docs/specs/the-slug.md
-```
+``` /ship docs/specs/the-slug.md ```
 
 Each step gets its own context, and each one commits before the next starts.
 
 ## Why these work
 
-I created these because I was staffed on a project where I had no familiarity with the tech-stack or language. I found I could still be effective by doubling down on evergreen consulting skills, and offloading the implementation to the LLM.
+I created these because I was staffed on a project where I had no familiarity
+with the tech-stack or language. I found I could still be effective by doubling
+down on evergreen consulting skills, and offloading the implementation to the
+LLM.
 
-This only works if I still understand what I'm building, and if I can trust the generated code.
+This only works if I still understand what I'm building, and if I can trust the
+generated code.
 
-Offloading the implementation works. Offloading the understanding doesn't, because I can't offload responsibility. The LLM makes it more challenging to understand what I'm doing because it can convert a feature into a slice so quickly. So, a lot of these skills exist to slow me down enough to absorb and scrutinize its work. I use [`/understand`][25] so that I can eventually explain a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can understand the context behind the code, since I didn't write it.
+Offloading the implementation works. Offloading the understanding doesn't,
+because I can't offload responsibility. The LLM makes it more challenging to
+understand what I'm doing because it can convert a feature into a slice so
+quickly. So, a lot of these skills exist to slow me down enough to absorb and
+scrutinize its work. I use [`/understand`][25] so that I can eventually explain
+a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and
+need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks
+plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can
+understand the context behind the code, since I didn't write it.
 
-Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to keep the change small while still delivering value. I use [`/implement-with-tdd`][4] to drive out the implementation with tests. I use [`/review`][5] to look for defects and check the result against the SPEC. I use `/verify` to run the actual app, since passing tests doesn't mean the feature works.
+Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to
+keep the change small while still delivering value. I use
+[`/implement-with-tdd`][4] to drive out the implementation with tests. I use
+[`/review`][5] to look for defects and check the result against the SPEC. I use
+`/verify` to run the actual app, since passing tests doesn't mean the feature
+works.
 
-None of this is new. Before LLMs, you still planned before you started coding, you still used TDD to implement the feature, and you still had limited context when you reviewed your colleague's PRs. The only difference now is that an LLM can accelerate planning and do the implementation.
+None of this is new. Before LLMs, you still planned before you started coding,
+you still used TDD to implement the feature, and you still had limited context
+when you reviewed your colleague's PRs. The only difference now is that an LLM
+can accelerate planning and do the implementation.
 
 ## Reference
 
 ### Diff explainer
 
-[`/diff-explainer`][8] is meant to help someone understand the why,
-risks, tradeoffs and alternatives considered when viewing a `diff`
-generated by an LLM through an [artifact][7].
+[`/diff-explainer`][8] is meant to help someone understand the why, risks,
+tradeoffs and alternatives considered when viewing a `diff` generated by an LLM
+through an [artifact][7].
 
-Because agentic coding sometimes means you're not actually authoring
-your code, you lose context into the decision-making process of each
-commit.
+Because agentic coding sometimes means you're not actually authoring your code,
+you lose context into the decision-making process of each commit.
 
-Additionally, it's geared towards Rails developers. So, if you're
-working in an unfamiliar tech-stack, you can at least get a high level
-understanding of what's going on.
+Additionally, it's geared towards Rails developers. So, if you're working in an
+unfamiliar tech-stack, you can at least get a high level understanding of
+what's going on.
 
-Finally, in order to be consistent across artifacts, we use [Pico
-CSS][9] in our template.
+Finally, in order to be consistent across artifacts, we use [Pico CSS][9] in
+our template.
 
 ### Domain model
 
-[`/domain-model`][27] takes a business process described in plain language and extracts the domain. Useful for new projects and features, but can be run at any time.
+[`/domain-model`][27] takes a business process described in plain language and
+extracts the domain. Useful for new projects and features, but can be run at
+any time.
 
 ### ELI5
 
-[`/eli5`][29] explains code or a concept as simply as possible. Uses real values from the codebase when possible to help create simple, concrete demonstrations.
+[`/eli5`][29] explains code or a concept as simply as possible. Uses real
+values from the codebase when possible to help create simple, concrete
+demonstrations.
 
 Use [`/understand`][23] to help you reinforce what you've learned.
 
 ### Implement with TDD
 
-[`/implement-with-tdd`][10] drives out an implementation with TDD,
-working [from the outside in][11] and starting with [shameless
-green][12]. This skill is optimized to cap a feature at around 200 lines of code in an effort to keep things small.
+[`/implement-with-tdd`][10] drives out an implementation with TDD, working
+[from the outside in][11] and starting with [shameless green][12]. This skill
+is optimized to cap a feature at around 200 lines of code in an effort to keep
+things small.
 
-Intended to be run after `/preparatory-refactor`, but before
-`/review`.
+Intended to be run after `/preparatory-refactor`, but before `/review`.
 
 ### Preparatory refactor
 
-[`/preparatory-refactor`][13] takes a SPEC or
-plan and identifies opportunities for a [preparatory refactor][14].
+[`/preparatory-refactor`][13] takes a SPEC or plan and identifies opportunities
+for a [preparatory refactor][14].
 
 Intended to be run after `/slice`, but before `/implement-with-tdd`.
 
-Note that `/review` contains an Agent responsible for identifying
-emerging Domains.
+Note that `/review` contains an Agent responsible for identifying emerging
+Domains.
 
 ### Review
 
-[`/review`][15] reviews a change with five parallel subagents: one
-hunting defects (bugs, performance, security), one checking we adhered
-to the SPEC, one on code quality and reducing [smells][16], one
-identifying emerging domains, and one asking what still depends on the
-behavior we replaced.
+[`/review`][15] reviews a change with five parallel subagents: one hunting
+defects (bugs, performance, security), one checking we adhered to the SPEC, one
+on code quality and reducing [smells][16], one identifying emerging domains,
+and one asking what still depends on the behavior we replaced.
 
-The defects subagent stands in for the built-in `/code-review`
-[command][1], and covers the ground `/security-review` does too.
+The defects subagent stands in for the built-in `/code-review` [command][1],
+and covers the ground `/security-review` does too.
 
 ### Rubber duck
 
-[`/rubber-duck`][22] is what the name implies. Use this when you want to slow down and scrutinize generated code or a SPEC generated by `/slice`.
+[`/rubber-duck`][22] is what the name implies. Use this when you want to slow
+down and scrutinize generated code or a SPEC generated by `/slice`.
 
 ### Ship
 
-[`/ship`][31] runs steps 2 through 6 against a SPEC as a [dynamic workflow][21].
+[`/ship`][31] runs steps 2 through 6 against a SPEC as a [dynamic
+workflow][21].
 
 ### Slice
 
-[`/slice`][17] turns a rough idea into a [vertical
-slice][18] with accompanying [job stories][19] and acceptance criteria.
+[`/slice`][17] turns a rough idea into a [vertical slice][18] with accompanying
+[job stories][19] and acceptance criteria.
 
-The idea is that the smaller the slice, the easier it'll be for an LLM
-or human to implement and ship.
+The idea is that the smaller the slice, the easier it'll be for an LLM or human
+to implement and ship.
 
-The SPEC also carries a short list of the files recon read, stamped with
-the commit it read them at. `/preparatory-refactor` and
-`/implement-with-tdd` start from those paths instead of rediscovering
-them. They're pointers, not a plan — neither skill treats the list as
-scope, and the repo wins where they disagree.
+The SPEC also carries a short list of the files recon read, stamped with the
+commit it read them at. `/preparatory-refactor` and `/implement-with-tdd` start
+from those paths instead of rediscovering them. They're pointers, not a plan —
+neither skill treats the list as scope, and the repo wins where they disagree.
 
 ### Understand
 
-[`/understand`][23] helps you understand something by using the [Socratic method][20] instead of explaining it to you.
+[`/understand`][23] helps you understand something by using the [Socratic
+method][20] instead of explaining it to you.
 
-Pairs well with `/diff-explainer`, `/domain-model`, and `/slice` since it'll help reinforce your understanding.
+Pairs well with `/diff-explainer`, `/domain-model`, and `/slice` since it'll
+help reinforce your understanding.
 
 Use [`/eli5`][29] if you have no familiarity with the subject matter.
 
