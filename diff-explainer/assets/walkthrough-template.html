@@ -20,6 +20,10 @@
     <pre><code>           the diff. <ins> a added line, <del> a removed line,
                           bare text a context line, <small> a hunk header,
                           <em> an elision ("41 lines not shown")
+    <figure>              a before/after diagram: two <div>s, each a <b> label and
+                          a <pre> of plain ASCII. <ins> marks a new part, <del> a
+                          part that's gone. One in "Start here"; more only inside
+                          an <aside> whose point is a change of shape.
     <aside data-note>     an annotation. data-note is why | risk | tradeoff |
                           alternative, and the colour follows it, so pick the one
                           that's true. The <h3> inside is its label.
@@ -54,6 +58,15 @@
 
   del { text-decoration: none; }
   pre small, pre em { color: var(--pico-muted-color); }
+
+  figure {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--pico-spacing);
+  }
+  figure pre { margin: 0; }
+  figure b { display: block; margin-bottom: 0.25rem; color: var(--pico-muted-color); font-size: 0.8rem; }
+  figcaption { grid-column: 1 / -1; color: var(--pico-muted-color); font-size: 0.875rem; }
 
   aside {
     --note: var(--pico-muted-color);
@@ -93,6 +106,27 @@
   <article>
     <header><h2>Start here</h2></header>
     <p>Every deploy logged everyone out. Sessions were held in the web process's own memory, so restarting the process threw them away &mdash; and with two processes running, a user could land on the one that had never seen them. This moves sessions into Redis so any process can read them and a restart doesn't matter.</p>
+    <figure>
+      <div>
+        <b>Before</b>
+<pre>         +-- web.1  [sessions]
+browser -+
+         +-- web.2  [different sessions]
+
+deploy: restart --&gt; <del>memory wiped</del>
+                --&gt; <del>everyone logged out</del></pre>
+      </div>
+      <div>
+        <b>After</b>
+<pre>         +-- web.1 --+
+browser -+           +--&gt; <ins>Redis [sessions]</ins>
+         +-- web.2 --+
+
+deploy: restart --&gt; Redis untouched
+                --&gt; <ins>still logged in</ins></pre>
+      </div>
+      <figcaption>Sessions move out of each process and into one shared store.</figcaption>
+    </figure>
     <p>The change is small on purpose. Nothing about how login works changed; only where the session is kept. Not in this branch: no migration of existing sessions, and no Redis in the test suite &mdash; tests still use the in-memory store.</p>
     <dl>
       <dt>Risk</dt>
@@ -159,7 +193,19 @@
 
       <aside data-note="risk">
         <h3>Risk</h3>
-        <p>This makes Redis a hard dependency for booting healthy. If Redis has a blip, every process reports unhealthy at once and the whole app goes down rather than degrading. That's deliberate &mdash; a running app that silently loses logins is worse &mdash; but it's a real change in failure mode, and worth disagreeing with if you'd rather stay up.</p>
+        <p>This makes Redis a hard dependency for booting healthy. If Redis has a blip, every process reports unhealthy at once and the whole app goes down rather than degrading. That's deliberate &mdash; a running app that silently loses logins is worse &mdash; but it's a real change in failure mode.</p>
+        <figure>
+          <div>
+            <b>Before: Redis blips</b>
+<pre>/healthz --&gt; 200
+app      --&gt; up, logins fail quietly</pre>
+          </div>
+          <div>
+            <b>After: Redis blips</b>
+<pre>/healthz --&gt; <ins>503 on every dyno</ins>
+app      --&gt; <ins>down until Redis is back</ins></pre>
+          </div>
+        </figure>
       </aside>
     </li>
 

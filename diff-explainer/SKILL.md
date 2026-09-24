@@ -88,6 +88,27 @@ author would rather not write — this is a workaround, this gets slow at 10x th
 data — and the dead ends, since "we tried X, it failed because Y" pre-empts the
 reviewer's first suggestion. Plain words: no "it's worth noting", "this ensures".
 
+**Draw the baseline.** The reviewer can't judge a change without knowing what it
+changed from, and the diff only shows the seams. So "Start here" gets one
+before/after `<figure>`: how the thing worked on the base branch, how it works now.
+Draw the mechanism, not the file list — boxes are what holds state or does work (a
+process, a table, a job, a request), arrows are what moves between them. Keep the
+same boxes in the same places on both sides so the eye lands on the difference, and
+mark only the difference: `<del>` for what's gone, `<ins>` for what's new. They mean
+removed and added, never bad and good, and anything both sides share stays bare. A
+risk or alternative gets its own small pair only when its point is a change of
+shape — a new failure path, the design you didn't build — with labels that say so
+("After: Redis blips", "Signed cookies"); there, mark what differs within that pair
+(the stale price, the lost job), not the feature "Start here" already marked, and
+never `<del>` on a design that was never built. Nesting means containment, so a
+shared store sits outside both processes and gets drawn once. One
+diagram per note at most, most notes none. A number on one side (p95 2.4s) needs its
+counterpart from the PR on the other, or neither side gets one. Plain ASCII (`-->`,
+`+`, `|`), under ten lines and 44 characters a side, since each side stacks
+full-width on a phone; break a long chain rather than widen it. Box-drawing
+characters are raw bytes and turn to mojibake like any other. A change with no shape to draw — copy, a bug fix inside one
+method — gets no figure; don't draw two identical boxes to fill the slot.
+
 ## 5. Fill in the template and publish
 
 `assets/walkthrough-template.html` is the page, and its own comment lists the
