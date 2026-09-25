@@ -173,13 +173,6 @@ what changed, suggests a title in the repo's style, and then waits for you to
 write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
 
-The feature is your responsibility, so the description should be in your
-words. Writing it also helps you retain what changed, and gives the PR more
-credibility with reviewers than a generated description would.
-
-Since the PR gets squash-merged, the title and description become the commit
-that lands on main.
-
 ### Review
 
 [`/review`][15] reviews a change with five parallel subagents: one hunting
