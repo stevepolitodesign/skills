@@ -101,11 +101,9 @@ Also:
 - **Wrap prose at 72 columns.** It becomes a commit body. Leave code blocks,
   tables, and URLs alone.
 - **Don't add sections, headers, summaries, or a closing line.**
-- Attribution: add a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer
-  at the end, after a blank line, since the commits were written by the LLM and
-  GitHub keeps co-author trailers in the squash commit. Use the model name and
-  trailer the session's attribution guidance gives, if any. Don't add a
-  "Generated with" line; the description isn't generated.
+- **Don't add attribution.** No co-author trailer, since GitHub copies the
+  branch commits' trailers into the squash commit already. No "Generated with"
+  line either; the description isn't generated.
 
 If it's already clean, say so and change nothing. Churn on good prose is the
 opposite of help.
