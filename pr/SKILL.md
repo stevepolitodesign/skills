@@ -1,6 +1,6 @@
 ---
 name: pr
-description: Open a pull request whose description the user writes themselves. Suggests a title in the repo's house style, waits for the user's own description, proofreads it lightly, and opens the PR only after sign-off. Use whenever the user wants to open, create, or submit a PR, or says "I'll write the description", even if they don't say /pr.
+description: Open a pull request whose description you write yourself, with a suggested title and a light proofread.
 argument-hint: "[base branch, optional]"
 ---
 
