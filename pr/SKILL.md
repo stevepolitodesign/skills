@@ -36,16 +36,6 @@ Read, don't ask:
   `git log <base> --oneline -20` for repos without `gh` history. Look at mood
   ("Add" vs "Added"), prefixes (`feat:`, `[JIRA-123]`), capitalization, how code
   names are marked (backticks?), length.
-- Squash settings: `gh api repos/{owner}/{repo} --jq
-  '{squash_merge_commit_title, squash_merge_commit_message}'`. The whole point
-  fails unless these are `PR_TITLE` and `PR_BODY`. If they aren't, tell the user
-  in one line and give them the command to change it (below). Don't run it; it's
-  a repo setting other people live with.
-
-```
-gh api -X PATCH repos/{owner}/{repo} \
-  -f squash_merge_commit_title=PR_TITLE -f squash_merge_commit_message=PR_BODY
-```
 
 If `gh` isn't available, say which checks you skipped and carry on with git.
 
@@ -145,5 +135,4 @@ survive the shell:
 gh pr create --base <base> --title "<title>" --body-file <tmpfile>
 ```
 
-Reply with the PR URL. If the squash settings were wrong in recon, remind them
-in one line.
+Reply with the PR URL.

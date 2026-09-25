@@ -178,8 +178,7 @@ words. Writing it also helps you retain what changed, and gives the PR more
 credibility with reviewers than a generated description would.
 
 Since the PR gets squash-merged, the title and description become the commit
-that lands on main. It checks that the repo's squash settings use them, and
-tells you if they don't.
+that lands on main.
 
 ### Review
 
