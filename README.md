@@ -61,7 +61,8 @@ them as a [workflow][21]:
 
 ``` /ship docs/specs/the-slug.md ```
 
-Each step gets its own context, and each one commits before the next starts.
+Each step gets its own context, and each one commits with [`/commit`][32] before
+the next starts.
 
 ## Why these work
 
@@ -96,6 +97,15 @@ when you reviewed your colleague's PRs. The only difference now is that an LLM
 can accelerate planning and do the implementation.
 
 ## Reference
+
+### Commit
+
+[`/commit`][33] turns your changes into atomic commits. Each message captures
+the why, risks, tradeoffs and alternatives considered, so the history serves as
+an audit log of what the LLM did.
+
+Used by `/ship` for every commit, which gives `/diff-explainer` the context it
+needs.
 
 ### Diff explainer
 
@@ -220,3 +230,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [29]: eli5/SKILL.md
 [30]: https://code.claude.com/docs/en/skills#run-and-verify-your-app
 [31]: ship/SKILL.md
+[32]: #commit
+[33]: commit/SKILL.md

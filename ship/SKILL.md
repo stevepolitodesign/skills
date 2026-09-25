@@ -76,7 +76,9 @@ Three places, each because nobody is watching the run:
 - `/preparatory-refactor` identifies and refuses to edit. Kept — a second agent
   makes the move, so the one proposing it isn't the one defending it.
 - `/implement-with-tdd` says leave everything uncommitted. Overridden; every step
-  commits, because the next one diffs against what the last one left.
+  commits through `/commit`, because the next one diffs against what the last one
+  left, and `Explain` never saw the sessions that wrote the code. The commit
+  messages are its only record of why.
 - `/review` refuses to apply findings unasked. Overridden for what it files under
   Defects and Compatibility — the two that cost something the moment this ships,
   which is why its own synthesis sorts them first. Conventions, domains and

@@ -14,8 +14,9 @@ const SPEC = args && args.spec
 if (!SPEC) throw new Error('ship: pass {spec: "<path to the SPEC>"} as args')
 
 const COMMIT =
-  'Then commit with git. The message says why the change was made, not what changed. ' +
-  'Commit only what this step produced.'
+  'Then invoke the `commit` skill. Commit only what this step produced. The explain ' +
+  'step reads these messages as its only record of why, so put what you tried, ' +
+  'rejected, and left unchecked in them.'
 
 const NO_NESTING =
   'You have no tool for spawning subagents. Where the skill says to dispatch them, ' +
@@ -304,8 +305,7 @@ const verified = await agent(
   (sofar.criteriaUnbuilt.length
     ? 'These criteria were never built, so do not go looking for them: ' +
       sofar.criteriaUnbuilt.join('; ') + '\n\n' : '') +
-  'Fix what is broken, then commit. The message says why the change was made, not ' +
-  'what changed. Report `suiteGreen` after any fix.\n\n' +
+  'Fix what is broken. ' + COMMIT + ' Report `suiteGreen` after any fix.\n\n' +
   'If the app cannot be started from the repo\'s documented setup, say that plainly ' +
   'and set `ran` false. A verification that never ran and a verification that passed ' +
   'look identical in a summary unless you name the difference.',
