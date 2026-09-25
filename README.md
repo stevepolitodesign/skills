@@ -54,7 +54,8 @@ help you understand the changeset.
    scrutinize generated code, or [`/understand`][25] to reinforce your
    understanding. If you need more help, start with [`/eli5`][28].
 7. Finally, run [`/pr`][34] to open a PR with a description you write
-yourself.
+yourself. The feature is your responsibility, and writing about it helps it
+stick.
 
 ### Running them as a dynamic workflow
 
@@ -88,7 +89,10 @@ a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and
 need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks
 plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can
 understand the context behind the code, since I didn't write it. I use
-[`/pr`][34] to write the PR description myself, since it's my name on it.
+[`/pr`][34] to write the PR description myself since the feature is my
+responsibility and I also find it helps with retention. It also helps with
+credibility, since reviewers can tell when a description wasn't written by the
+person who opened the PR.
 
 Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to
 keep the change small while still delivering value. I use
@@ -168,6 +172,10 @@ Domains.
 what changed, suggests a title in the repo's style, and then waits for you to
 write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
+
+The feature is your responsibility, so the description should be in your
+words. Writing it also helps you retain what changed, and gives the PR more
+credibility with reviewers than a generated description would.
 
 Since the PR gets squash-merged, the title and description become the commit
 that lands on main. It checks that the repo's squash settings use them, and
