@@ -48,11 +48,13 @@ refactor it.
 
 5. Then, run `/verify` to confirm the change against the running app, not just
 the tests. This is [built into Claude Code][30].
-6. Finally, run [`/diff-explainer`][6] to create an [artifact][7] that will
+6. Then, run [`/diff-explainer`][6] to create an [artifact][7] that will
 help you understand the changeset.
    - After reviewing the artifact, use [`/rubber-duck`][24] to slow down and
    scrutinize generated code, or [`/understand`][25] to reinforce your
    understanding. If you need more help, start with [`/eli5`][28].
+7. Finally, run [`/pr`][34] to open a PR with a description you write
+yourself.
 
 ### Running them as a dynamic workflow
 
@@ -63,6 +65,9 @@ them as a [workflow][21]:
 
 Each step gets its own context, and each one commits with [`/commit`][32] before
 the next starts.
+
+Once it finishes, run [`/pr`][34] to open the PR. That's not part of the
+workflow, since `/pr` waits for you to write the description.
 
 ## Why these work
 
@@ -82,7 +87,8 @@ scrutinize its work. I use [`/understand`][25] so that I can eventually explain
 a concept myself. I use [`/eli5`][28] for when I have no familiarity at all and
 need a direct explanation. I use [`/rubber-duck`][24] when the SPEC looks
 plausible, but I want to be critical. I use [`/diff-explainer`][6] so I can
-understand the context behind the code, since I didn't write it.
+understand the context behind the code, since I didn't write it. I use
+[`/pr`][34] to write the PR description myself, since it's my name on it.
 
 Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to
 keep the change small while still delivering value. I use
@@ -155,6 +161,17 @@ Intended to be run after `/slice`, but before `/implement-with-tdd`.
 
 Note that `/review` contains an Agent responsible for identifying emerging
 Domains.
+
+### PR
+
+[`/pr`][35] opens a PR, but leaves the description to you. It briefs you on
+what changed, suggests a title in the repo's style, and then waits for you to
+write the description. Once you do, it proofreads it lightly and opens the PR
+after you sign off on the exact text.
+
+Since the PR gets squash-merged, the title and description become the commit
+that lands on main. It checks that the repo's squash settings use them, and
+tells you if they don't.
 
 ### Review
 
@@ -232,3 +249,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [31]: ship/SKILL.md
 [32]: #commit
 [33]: commit/SKILL.md
+[34]: #pr
+[35]: pr/SKILL.md
