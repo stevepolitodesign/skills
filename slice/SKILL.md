@@ -112,7 +112,7 @@ Then stop. Don't write the file in the same turn as the playback, whatever their
 
 ### 5. Write the file
 
-Write to `docs/specs/<slug>.md` at the repo root (`git rev-parse --show-toplevel`), with a short kebab-case slug (`invoice-csv-export`, not `export-invoices-as-csv-file-v1`). Create the directory if it doesn't exist. If the file already exists, read it: same feature, ask whether to replace it or revise it in place; different feature, pick a different slug. Never auto-suffix, because `/review` finds SPECs by slug and can't tell two near-identical ones apart. Then tell the user the path.
+Write to `docs/specs/<slug>.md` at the repo root (`git rev-parse --show-toplevel`), with a short kebab-case slug (`invoice-csv-export`, not `export-invoices-as-csv-file-v1`). Create the directory if it doesn't exist. If the file already exists, read it: same feature, ask whether to replace it or revise it in place; different feature, pick a different slug. Never auto-suffix, because `/multi-lens-review` finds SPECs by slug and can't tell two near-identical ones apart. Then tell the user the path.
 
 Write the draft they approved, unchanged. Anything you improve between approval and write is unreviewed, and the point of step 4 was that the file matches what they signed off on. If you spot a problem, show the corrected draft and get the nod again.
 

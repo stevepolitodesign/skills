@@ -57,7 +57,7 @@ pick the work up by hand and those reports are all they get.
 A subagent has no tool for spawning subagents. Nested delegation doesn't exist,
 and `agentType: 'general-purpose'` doesn't buy it either — both were checked.
 
-That matters because `/review` is five reviewers held apart on purpose. Hand the
+That matters because `/multi-lens-review` is five reviewers held apart on purpose. Hand the
 whole skill to one agent and it plays all five, which is the failure the skill
 names in its own opening: one reviewer asked all five questions spends its
 attention on naming nits and never reaches "those five files are one domain
@@ -79,7 +79,7 @@ Three places, each because nobody is watching the run:
   commits through `/commit`, because the next one diffs against what the last one
   left, and `Explain` never saw the sessions that wrote the code. The commit
   messages are its only record of why.
-- `/review` refuses to apply findings unasked. Overridden for what it files under
+- `/multi-lens-review` refuses to apply findings unasked. Overridden for what it files under
   Defects and Compatibility — the two that cost something the moment this ships,
   which is why its own synthesis sorts them first. Conventions, domains and
   fidelity are judgment calls, so they stay in the report for you.

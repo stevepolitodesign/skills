@@ -2,7 +2,7 @@
 
 Read this only after the sketch is on disk. If you find yourself editing the sketch after reading this, you're building the case backwards.
 
-Three of these are code smells read forward — Long Method, Primitive Obsession, Feature Envy. `/review` reports the same code. The difference is the sketch: there the finding is that the code costs something today, here it's that this feature's diff gets smaller. If you can't show the second, you're doing the other job in the wrong skill, so drop it.
+Three of these are code smells read forward — Long Method, Primitive Obsession, Feature Envy. `/multi-lens-review` reports the same code. The difference is the sketch: there the finding is that the code costs something today, here it's that this feature's diff gets smaller. If you can't show the second, you're doing the other job in the wrong skill, so drop it.
 
 - **The feature has nowhere to go.** The behavior belongs in the middle of a function that runs one thing end to end. Extract that thing, then call it through a pass-through that does nothing yet. Tests stay green, and the feature arrives as a body for a function that already exists and is already wired up.
 
