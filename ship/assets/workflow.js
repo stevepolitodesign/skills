@@ -156,7 +156,7 @@ if (sofar.criteriaUnbuilt.length) {
 phase('Review')
 
 const target = await agent(
-  'Invoke the `review` skill, then carry out step 1 only — fix the target. Stop before ' +
+  'Invoke the `multi-lens-review` skill, then carry out step 1 only — fix the target. Stop before ' +
   'the intent step and before dispatch; five reviewers run after you and they need the ' +
   'diff you capture.\n\n' +
   'The target is the working tree against its base. Capture the diff to a temp file ' +
@@ -193,7 +193,7 @@ if (target.empty) {
               'the implementation produced no change, not that work is uncommitted')
 }
 if (target.lines > 1500) {
-  // review/SKILL.md's own ceiling. Past it the agents review the first part and report
+  // multi-lens-review/SKILL.md's own ceiling. Past it the agents review the first part and report
   // nothing to say they stopped, which reads exactly like a clean pass.
   return halt('Review', 'the diff is ' + target.lines + ' lines, past the 1500 the review ' +
               'skill will read. Five reviewers handed more than that silently review the ' +
@@ -253,7 +253,7 @@ if (dead.length) {
 
 const reviewed = await agent(
   'You are synthesizing a code review, then fixing what it found.\n\n' +
-  'Invoke the `review` skill and follow step 4 — synthesize — against the roster ' +
+  'Invoke the `multi-lens-review` skill and follow step 4 — synthesize — against the roster ' +
   'below. Its dropping rules are the point: check every cited path against the ' +
   'merge-base ' + target.mergeBase + ', drop a finding whose evidence line is missing, ' +
   'move a misfiled one rather than dropping it, and keep the collisions it tells you ' +

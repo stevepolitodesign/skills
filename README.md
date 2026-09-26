@@ -41,8 +41,8 @@ that adds value.
 refactor ahead of time to make the feature easier to implement.
 3. Then, run [`/implement-with-tdd`][4] against the SPEC created from
 [`/slice`][2] to drive out the simplest implementation.
-4. Then, run [`/review`][5] to find defects in that implementation, and to
-refactor it.
+4. Then, run [`/multi-lens-review`][5] to find defects in that implementation,
+and to refactor it.
 
 ### Verification and review
 
@@ -97,9 +97,9 @@ person who opened the PR.
 Since I'm offloading implementation, I need to trust it. I use [`/slice`][2] to
 keep the change small while still delivering value. I use
 [`/implement-with-tdd`][4] to drive out the implementation with tests. I use
-[`/review`][5] to look for defects and check the result against the SPEC. I use
-`/verify` to run the actual app, since passing tests doesn't mean the feature
-works.
+[`/multi-lens-review`][5] to look for defects and check the result against the
+SPEC. I use `/verify` to run the actual app, since passing tests doesn't mean
+the feature works.
 
 None of this is new. Before LLMs, you still planned before you started coding,
 you still used TDD to implement the feature, and you still had limited context
@@ -154,7 +154,19 @@ Use [`/understand`][23] to help you reinforce what you've learned.
 is optimized to cap a feature at around 200 lines of code in an effort to keep
 things small.
 
-Intended to be run after `/preparatory-refactor`, but before `/review`.
+Intended to be run after `/preparatory-refactor`, but before
+`/multi-lens-review`.
+
+### Multi-lens review
+
+[`/multi-lens-review`][15] reviews a change with five parallel subagents: one
+hunting defects (bugs, performance, security), one checking we adhered to the
+SPEC, one on code quality and reducing [smells][16], one identifying emerging
+domains, and one asking what still depends on the behavior we replaced.
+
+The defects subagent stands in for the built-in `/code-review` [command][1],
+and covers the ground `/security-review` does too. It's not named `/review`
+because Claude Code ships a built-in `/review`.
 
 ### Preparatory refactor
 
@@ -163,8 +175,8 @@ for a [preparatory refactor][14].
 
 Intended to be run after `/slice`, but before `/implement-with-tdd`.
 
-Note that `/review` contains an Agent responsible for identifying emerging
-Domains.
+Note that `/multi-lens-review` contains an Agent responsible for identifying
+emerging Domains.
 
 ### PR
 
@@ -172,16 +184,6 @@ Domains.
 what changed, suggests a title in the repo's style, and then waits for you to
 write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
-
-### Review
-
-[`/review`][15] reviews a change with five parallel subagents: one hunting
-defects (bugs, performance, security), one checking we adhered to the SPEC, one
-on code quality and reducing [smells][16], one identifying emerging domains,
-and one asking what still depends on the behavior we replaced.
-
-The defects subagent stands in for the built-in `/code-review` [command][1],
-and covers the ground `/security-review` does too.
 
 ### Rubber duck
 
@@ -220,7 +222,7 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [2]: #slice
 [3]: #preparatory-refactor
 [4]: #implement-with-tdd
-[5]: #review
+[5]: #multi-lens-review
 [6]: #diff-explainer
 [7]: https://code.claude.com/docs/en/artifacts
 [8]: diff-explainer/SKILL.md
@@ -230,7 +232,7 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [12]: https://sandimetz.com/99bottles-sample-ruby
 [13]: preparatory-refactor/SKILL.md
 [14]: https://martinfowler.com/articles/preparatory-refactoring-example.html
-[15]: review/SKILL.md
+[15]: multi-lens-review/SKILL.md
 [16]: https://refactoring.guru/refactoring/smells
 [17]: slice/SKILL.md
 [18]: https://thoughtbot.com/blog/break-apart-your-features-into-full-stack-slices

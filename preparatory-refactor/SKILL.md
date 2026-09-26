@@ -8,7 +8,7 @@ argument-hint: "[feature description or path to a SPEC]"
 
 > Make the change easy, then make the easy change. — Kent Beck
 
-You're looking for the refactorings *this* feature asks for. A preparatory refactoring earns its place by making the feature's diff smaller and more obvious, so if you can't show that, leave it out — a finding that stands on its own without the feature is a code review finding, and `/review` is where it goes.
+You're looking for the refactorings *this* feature asks for. A preparatory refactoring earns its place by making the feature's diff smaller and more obvious, so if you can't show that, leave it out — a finding that stands on its own without the feature is a code review finding, and `/multi-lens-review` is where it goes.
 
 You identify, you don't refactor. Nothing here edits code. The report has to survive being pasted into a session that has none of this conversation, which is the real constraint on how long it can be.
 
@@ -95,6 +95,6 @@ Close with one line on what to do with it: the refactor is behavior-preserving, 
 
 - `Covered by: nothing` is the most useful thing in the report when it's true, and it's only true when the safety-net angle came back and found nothing. It doesn't disqualify the move; it tells the next session to write the characterization tests first. An angle that never reported isn't the same claim, and writing it in that slot ships a false instruction.
 - Match the repo's shapes, not your habits. If you're proposing a class where it uses functions, or a module where it uses a table, you've imported an idiom from somewhere else. The refactoring itself doesn't need a precedent — a no-op seam won't have one anywhere — but the thing you create has to look like something this codebase already holds.
-- A no-op seam reads as Dead Code to a linter and Speculative Generality to a reviewer, including this repo's own `/review`. Say so in the report if the repo has a coverage gate, so it isn't a surprise.
+- A no-op seam reads as Dead Code to a linter and Speculative Generality to a reviewer, including this repo's own `/multi-lens-review`. Say so in the report if the repo has a coverage gate, so it isn't a surprise.
 - Cleanups you notice along the way — dead code, stale comments, a bad name three files over — are real, and they're not this. Keep them out of the numbered moves so the feature's justification stays intact.
 - The feature needs one seam. A framework for five more looks like foresight and is a second unreviewable diff.

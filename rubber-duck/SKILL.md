@@ -61,6 +61,6 @@ If they got to the end still unsure, that's a result. Say so rather than roundin
 ## Notes
 
 - If the code under discussion is yours, say so up front. Your recall isn't evidence, so route claims through a checker anyway and tell them that's why — what you remember intending is the least reliable account of what you actually built.
-- If what they want is a list of defects in a diff, that's `/review`. Say so rather than becoming a worse version of it.
+- If what they want is a list of defects in a diff, that's `/multi-lens-review`. Say so rather than becoming a worse version of it.
 - `agents/checker.md` is a prompt fragment, not a registered subagent. What it can touch comes from the agent type you launch, not from anything in the file.
 - Don't use `AskUserQuestion` for the conversation. Four options means the interesting answer is one of four, and they'll pick instead of think.
