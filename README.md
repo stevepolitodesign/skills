@@ -29,6 +29,8 @@ of **new sessions** when building out a feature from start to finish.
 business logic.
    - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
    understanding of the business logic.
+   - Use [`/trace`][36] to see what an existing flow actually does before you
+   change it.
 1. First, use [`/slice`][2] to come up with the simplest possible thing to ship
 that adds value.
    - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
@@ -206,6 +208,18 @@ commit it read them at. `/preparatory-refactor` and `/implement-with-tdd` start
 from those paths instead of rediscovering them. They're pointers, not a plan —
 neither skill treats the list as scope, and the repo wins where they disagree.
 
+### Trace
+
+[`/trace`][37] runs a scenario, like "user creates an account", and records
+what actually happened, in order. Every write, job, email and outside call gets
+marked as ran, read or stubbed, so you can tell what was observed from what was
+guessed.
+
+It runs in the test environment and stubs anything destructive, like killing a
+process or dropping a database. The trace is saved to `docs/traces/`.
+
+Useful during discovery and planning, and pairs well with `/eli5` and `/slice`.
+
 ### Understand
 
 [`/understand`][23] helps you understand something by using the [Socratic
@@ -251,3 +265,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [33]: commit/SKILL.md
 [34]: #pr
 [35]: pr/SKILL.md
+[36]: #trace
+[37]: trace/SKILL.md
