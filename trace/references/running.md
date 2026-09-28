@@ -26,6 +26,10 @@ Development guards can block a scripted request: a host allowlist, a CSRF
 token check, mail that opens a browser tab. Turn each off for the script only,
 and list it in the trace's Holes.
 
+An in-process request can leave per-request state behind that breaks the
+script's next query. Rails: a `NoMethodError` from query logging after a
+request; call `ActiveSupport::ExecutionContext.clear` after each one.
+
 When nothing can be driven in-process, start the dev server on a spare port,
 send a real request, and stop the server.
 
