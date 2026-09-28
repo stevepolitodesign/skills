@@ -1,7 +1,7 @@
 # Trace: {scenario, in the user's words}
 
-{One line: how it was run — which script or request, which environment,
-which database copies — and the commit (`git rev-parse --short HEAD`). If
+{One line: how it was run — which script or request, which environment —
+and the commit (`git rev-parse --short HEAD`). If
 nothing ran, say that here.}
 
 **Starting state:** {who is acting and what already exists}

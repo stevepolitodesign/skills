@@ -210,9 +210,8 @@ neither skill treats the list as scope, and the repo wins where they disagree.
 
 ### Trace
 
-[`/trace`][37] runs a scenario, like "user creates an account", against a
-throwaway copy of your development data and records what actually happened, in
-order. Anything destructive, like killing a process or dropping a database, is
+[`/trace`][37] runs a scenario, like "user creates an account", in your
+development environment and records what actually happened, in order. Anything destructive, like killing a process or dropping a database, is
 stubbed. The trace is saved to `docs/traces/`.
 
 Useful during discovery and planning, and pairs well with `/eli5` and `/slice`.

@@ -13,8 +13,7 @@ scenario did when it ran, with every step marked as seen or only read.
 
 Two ways this fails. You read the code, write it up in the past tense, and it looks
 exactly like a run — so the reader trusts a guess as much as an observation. Or you
-run it for real against something that matters: the user's own database gets new
-rows, a real card gets charged, a real inbox gets mail, a process gets killed. The
+run a step that can't be undone: a process gets killed, a database gets dropped. The
 first is worse, because nothing about it looks wrong.
 
 ## 1. Pin the scenario
@@ -35,69 +34,44 @@ Turn it into three things before running anything:
 
 Don't ask the user for these. Find them; say what you picked in one line.
 
-## 2. Set up a development run you can throw away
+## 2. Set up a development run
 
 Run it in the **development environment**: the app's real configuration, the one a
 developer sees. The test environment swaps things out — jobs run inline, mail and
 broadcasts go to fakes, outside calls are stubbed by the test setup — so a trace
-there records the test harness as much as the app.
+there records the test harness as much as the app. Development is made for this:
+its data is disposable and its outside calls go to sandbox accounts.
 
-Development is also someone's working copy, with real data and real API keys. So
-the run gets its own copies of anything it can change, and nothing it does reaches
-past them.
+Read `references/running.md` now. It has the recording taps and the setup details.
 
-Read the reference for the stack now: `references/rails.md` for Rails, otherwise
-`references/general.md`. They have the recording tap and the setup details.
-
-**Data.** Find every database development uses — some apps have separate ones for
-jobs, cache, or broadcasts — and where each lives.
-
-- On this machine: copy each one to a throwaway named
-  `<name>_trace_<slug>_<suffix>`, with the suffix from a command
-  (`openssl rand -hex 2`). Another trace may be running, and made-up "random"
-  suffixes collide. Point the run at the copies through environment variables,
-  not by editing config.
-- Anywhere else (a hosted database, a shared dev server, a host that isn't
-  localhost): don't connect to it, not even to read. Make an empty local database,
-  build the schema with the app's own migrations, and create the starting state.
-- Before the run, count the rows in the tables the scenario writes to, in the
-  originals you copied. You'll check them again at the end.
-
-**Starting state.** Build it in the copy with the app's own models, or its factories
-if development can load them. Create the actor fresh rather than borrowing a row
-that's already there, so every id in the trace is one this run made.
+**Starting state.** Build it in the development database with the app's own models,
+or its factories if development can load them. Create the actor fresh rather than
+borrowing a row that's already there, so every id in the trace is one this run made.
 
 **How to drive it.** In order of preference:
 
 1. **A script that loads the app in development** and sends the request through it
    in the same process (the stack's in-process request helper, or call the handler
-   directly). Same process means you can intercept outside calls and listen to the
+   directly). Same process means you can record outside calls and listen to the
    app's own events.
-2. **The dev server on a spare port**, pointed at the copies, with a real request
-   sent to it. Use this when the app can't be driven in-process. Stop it after.
+2. **The dev server on a spare port**, with a real request sent to it. Use this when
+   the app can't be driven in-process. Stop it after.
 
 Never production, never a staging database.
 
-**Before you run, list the dangerous side effects.** Skim the path for anything that
-reaches outside the process: HTTP calls, payment or email providers, LLM APIs,
-killing processes, shelling out, deleting or moving files outside the repo, dropping
-databases, mail that opens a browser. Development has live keys, so none of these
-are stubbed for you. For each:
+**Record every outside call.** HTTP calls, payment or email providers, LLM APIs:
+let them go out, and log the URL and request body of each. Then read every
+captured body, field by field, before writing up. What the app actually sends is
+where bugs hide that no one reading the code sees: `"description": "#<Proc:0x...>"`,
+`"name": "[object Object]"`, `undefined`, an empty prompt, a user's email in a
+field meant for an id. Anything that isn't what the code plainly meant to send goes
+in Surprises. Redact keys and tokens before writing a captured call anywhere.
 
-- Intercept it in your script before the scenario starts, and record the call it
-  *would* have made — URL, arguments — as the observation. Return a canned response
-  shaped like the real one. The attempted call is the fact worth having; the
-  response isn't. Development sends real keys, so redact secrets before writing
-  a captured call anywhere.
-- Read every captured request body, field by field, before writing up. What the
-  app actually sends is where bugs hide that no one reading the code sees:
-  `"description": "#<Proc:0x...>"`, `"name": "[object Object]"`, `undefined`,
-  an empty prompt, a user's email in a field meant for an id. Anything that
-  isn't what the code plainly meant to send goes in Surprises.
-- Files and processes: point the run at a temp directory, or intercept the call. A
-  path under the user's home directory is real in development.
-- Can't be intercepted safely? Don't run past it. Stop the run there, and trace the
-  rest by reading, marked as read.
+**Stub anything destructive.** Killing processes, dropping databases, deleting or
+moving files outside the repo. Intercept it in your script before the scenario
+starts, record the call it *would* have made, and return what the real one would.
+For files, point the run at a temp directory. Can't be intercepted safely? Don't
+run past it. Stop the run there, and trace the rest by reading, marked as read.
 
 Never run a destructive step for real to see what it does. A trace that says "would
 have run `dropdb app_42`" is complete; one that ran it isn't a trace, it's an
@@ -106,10 +80,9 @@ incident.
 **Follow the chain.** Jobs enqueued during the scenario are part of it. Run them the
 way production does: after the request returns, not inside it. Queue them during
 the request, then perform them yourself and keep recording, one level at a time,
-until nothing new is enqueued or you hit an outside call you intercepted. Don't
-start the app's real job worker: it would pick up jobs you didn't queue, and it
-isn't pointed at your copy. Say which job backend the app normally uses, and where
-you stopped and why.
+until nothing new is enqueued or you hit a step you stubbed. Don't start the app's
+real job worker: it would pick up jobs you didn't queue. Say which job backend the
+app normally uses, and where you stopped and why.
 
 ## 3. Run it and leave nothing behind
 
@@ -118,10 +91,7 @@ anyway, run, capture the output, then clean up:
 
 - Delete the throwaway files. `git status` after has to match before; if the run
   touched something you didn't write, say so.
-- Drop every database copy you made.
 - Stop any server or process you started.
-- Recount the rows in the original databases. They have to match the counts from
-  before. If they don't, stop and tell the user right away which tables changed.
 
 If it fails to run — missing database, broken setup, a migration that won't apply,
 a dependency that isn't installed — that's a result. Don't install or upgrade
