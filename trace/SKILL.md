@@ -13,9 +13,9 @@ scenario did when it ran, with every step marked as seen or only read.
 
 Two ways this fails. You read the code, write it up in the past tense, and it looks
 exactly like a run — so the reader trusts a guess as much as an observation. Or you
-run it for real against something that matters: a real card gets charged, a real
-inbox gets mail, a process gets killed. The first is worse, because nothing about it
-looks wrong.
+run it for real against something that matters: the user's own database gets new
+rows, a real card gets charged, a real inbox gets mail, a process gets killed. The
+first is worse, because nothing about it looks wrong.
 
 ## 1. Pin the scenario
 
@@ -24,67 +24,111 @@ an account"), a route, a command, a job name.
 
 Turn it into three things before running anything:
 
-- **Entry point.** The route and action, CLI command, or job that starts it — found
+- **Entry point.** The route and handler, CLI command, or job that starts it — found
   in the code, not assumed. Two plausible ones (sign up by form, sign up by invite)?
   Take the common one, say which, and name the other as its own trace.
 - **Starting state.** Who is acting and what exists already. "A signed-in user who
-  owns one project with one app" — the factory or fixture that builds it, if there is
-  one. Give every association the scenario reads or deletes at least one row. A
-  delete run against a record with no children can't show you the child table it
-  forgets to clean up.
+  owns one project with one app." Give every association the scenario reads or
+  deletes at least one row. A delete run against a record with no children can't
+  show you the child table it forgets to clean up.
 - **Input.** The real params: `email: "sam@example.com"`, not "valid params".
 
 Don't ask the user for these. Find them; say what you picked in one line.
 
-## 2. Decide how to run it, and what not to run
+## 2. Set up a development run you can throw away
 
-Safest route that still actually executes the code, in this order:
+Run it in the **development environment**: the app's real configuration, the one a
+developer sees. The test environment swaps things out — jobs run inline, mail and
+broadcasts go to fakes, outside calls are stubbed by the test setup — so a trace
+there records the test harness as much as the app.
 
-1. **An existing test** that drives this scenario end to end (request, system,
-   integration spec). It already builds the starting state, and the test database
-   rolls back.
-2. **A throwaway test** you write for this, in the test environment, deleted after.
-3. **A script** against the development environment, only if the test environment
-   can't run it. Never production, never a shared staging database.
+Development is also someone's working copy, with real data and real API keys. So
+the run gets its own copies of anything it can change, and nothing it does reaches
+past them.
 
-Read `references/recording.md` now. It has the instrumentation that captures what
-happened, for Rails and in general.
+Read the reference for the stack now: `references/rails.md` for Rails, otherwise
+`references/general.md`. They have the recording tap and the setup details.
+
+**Data.** Find every database development uses — some apps have separate ones for
+jobs, cache, or broadcasts — and where each lives.
+
+- On this machine: copy each one to a throwaway named
+  `<name>_trace_<slug>_<suffix>`, with the suffix from a command
+  (`openssl rand -hex 2`). Another trace may be running, and made-up "random"
+  suffixes collide. Point the run at the copies through environment variables,
+  not by editing config.
+- Anywhere else (a hosted database, a shared dev server, a host that isn't
+  localhost): don't connect to it, not even to read. Make an empty local database,
+  build the schema with the app's own migrations, and create the starting state.
+- Before the run, count the rows in the tables the scenario writes to, in the
+  originals you copied. You'll check them again at the end.
+
+**Starting state.** Build it in the copy with the app's own models, or its factories
+if development can load them. Create the actor fresh rather than borrowing a row
+that's already there, so every id in the trace is one this run made.
+
+**How to drive it.** In order of preference:
+
+1. **A script that loads the app in development** and sends the request through it
+   in the same process (the stack's in-process request helper, or call the handler
+   directly). Same process means you can intercept outside calls and listen to the
+   app's own events.
+2. **The dev server on a spare port**, pointed at the copies, with a real request
+   sent to it. Use this when the app can't be driven in-process. Stop it after.
+
+Never production, never a staging database.
 
 **Before you run, list the dangerous side effects.** Skim the path for anything that
 reaches outside the process: HTTP calls, payment or email providers, LLM APIs,
-`Process.kill`, shelling out, deleting or moving files, dropping databases. For each:
+killing processes, shelling out, deleting or moving files outside the repo, dropping
+databases, mail that opens a browser. Development has live keys, so none of these
+are stubbed for you. For each:
 
-- Already stubbed by the test setup (WebMock, VCR, a fake adapter)? Fine — record
-  that it was stubbed.
-- Not stubbed? Stub it in your throwaway test, and record the call it *would* have
-  made — URL, arguments — as the observation. The attempted call is the fact worth
-  having; the response isn't. Read the request body you captured, not just the URL.
-  What the app actually sends is where bugs hide that no one reading the code sees.
-- Can't be stubbed safely? Don't run past it. Stop the run there, and trace the rest
-  by reading, marked as read.
+- Intercept it in your script before the scenario starts, and record the call it
+  *would* have made — URL, arguments — as the observation. Return a canned response
+  shaped like the real one. The attempted call is the fact worth having; the
+  response isn't. Development sends real keys, so redact secrets before writing
+  a captured call anywhere.
+- Read every captured request body, field by field, before writing up. What the
+  app actually sends is where bugs hide that no one reading the code sees:
+  `"description": "#<Proc:0x...>"`, `"name": "[object Object]"`, `undefined`,
+  an empty prompt, a user's email in a field meant for an id. Anything that
+  isn't what the code plainly meant to send goes in Surprises.
+- Files and processes: point the run at a temp directory, or intercept the call. A
+  path under the user's home directory is real in development.
+- Can't be intercepted safely? Don't run past it. Stop the run there, and trace the
+  rest by reading, marked as read.
 
 Never run a destructive step for real to see what it does. A trace that says "would
-have run `rails db:drop:all` in `/apps/42`" is complete; one that ran it isn't a
-trace, it's an incident.
+have run `dropdb app_42`" is complete; one that ran it isn't a trace, it's an
+incident.
 
 **Follow the chain.** Jobs enqueued during the scenario are part of it. Run them the
-way production does: after the request returns, not inside it. Many test setups run
-jobs inline, which hides the order — a broadcast that lands before the record it
-refers to, a response that comes back before the work it promised. So queue during
-the request (Rails: the `:test` adapter for this one example), then perform them
-(`perform_enqueued_jobs`, or the stack's equivalent) and keep recording, one level at
-a time, until nothing new is enqueued or you hit an outside call you stubbed. Say
-which adapter the app normally uses, and where you stopped and why.
+way production does: after the request returns, not inside it. Queue them during
+the request, then perform them yourself and keep recording, one level at a time,
+until nothing new is enqueued or you hit an outside call you intercepted. Don't
+start the app's real job worker: it would pick up jobs you didn't queue, and it
+isn't pointed at your copy. Say which job backend the app normally uses, and where
+you stopped and why.
 
 ## 3. Run it and leave nothing behind
 
 Note `git status --porcelain` before. Put throwaway files where you'd delete them
-anyway, run, capture the output, then delete them. `git status` after has to match
-before; if the run touched something you didn't write, say so.
+anyway, run, capture the output, then clean up:
 
-If it fails to run — missing database, broken setup, a test that was already red —
-that's a result. Report it, try the next route once, and if nothing runs, fall back
-to reading the whole path and say plainly at the top that nothing was executed.
+- Delete the throwaway files. `git status` after has to match before; if the run
+  touched something you didn't write, say so.
+- Drop every database copy you made.
+- Stop any server or process you started.
+- Recount the rows in the original databases. They have to match the counts from
+  before. If they don't, stop and tell the user right away which tables changed.
+
+If it fails to run — missing database, broken setup, a migration that won't apply,
+a dependency that isn't installed — that's a result. Don't install or upgrade
+packages to get past it: they land in directories other projects share. Work
+around it inside your throwaway files if you can, and say what you did. Otherwise
+report it, try the next route once, and if nothing runs, fall back to reading the
+whole path and say plainly at the top that nothing was executed.
 
 ## 4. Write it up
 
@@ -92,11 +136,11 @@ Read `assets/trace-template.md` and fill it in. What makes a trace worth having:
 
 **Every step is marked `ran` or `read`.** `ran` means you saw it in the recorded
 output of this run. `read` means you got it from the code. `stubbed` means the code
-reached it and you stopped it. No step goes unmarked, and a step you saw only in the
-code is never written up as though you watched it happen.
+reached it and you intercepted it. No step goes unmarked, and a step you saw only in
+the code is never written up as though you watched it happen.
 
 **Real values from the run.** `INSERT INTO users (email) VALUES ('sam@example.com')`,
-`Project id=17 "Sam's project"`, `ChatResponseJob enqueued on default`. Not "a user
+`Project id=17 "Sam's project"`, `WelcomeEmailJob enqueued on default`. Not "a user
 is created". The numbers in the drawing and the ledger come from the same run.
 
 **Order is the point.** Draw it as a sequence, what happened then what, with
@@ -107,12 +151,12 @@ seventy characters wide, labels from the codebase.
 POST /users  email=sam@example.com
    |
    v
-UsersController#create (Clearance)
+UsersController#create
    |-- INSERT users id=31
-   |-- after_create User#provision_workspace
+   |-- after create: provision_workspace
    |     |-- INSERT organizations id=9
    |     `-- INSERT projects id=17
-   |-- enqueue WelcomeMailer#welcome  (deliver_later)
+   |-- enqueue WelcomeEmailJob
    v
 302 -> /projects/17
 ```

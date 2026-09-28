@@ -1,7 +1,8 @@
 # Trace: {scenario, in the user's words}
 
-{One line: how it was run — which test or script, which environment — and
-the commit (`git rev-parse --short HEAD`). If nothing ran, say that here.}
+{One line: how it was run — which script or request, which environment,
+which database copies — and the commit (`git rev-parse --short HEAD`). If
+nothing ran, say that here.}
 
 **Starting state:** {who is acting and what already exists}
 **Input:** {the real params or command}
