@@ -14,9 +14,10 @@ const SPEC = args && args.spec
 if (!SPEC) throw new Error('ship: pass {spec: "<path to the SPEC>"} as args')
 
 const COMMIT =
-  'Then invoke the `commit` skill. Commit only what this step produced. The explain ' +
-  'step reads these messages as its only record of why, so put what you tried, ' +
-  'rejected, and left unchecked in them.'
+  'Then invoke the `commit` skill. Commit only what this step produced. Later steps ' +
+  'read these messages instead of the sessions that wrote the code, so each message ' +
+  'should state what the change does, what it does not cover, and anything left ' +
+  'unverified.'
 
 const NO_NESTING =
   'You have no tool for spawning subagents. Where the skill says to dispatch them, ' +
