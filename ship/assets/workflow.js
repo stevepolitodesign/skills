@@ -14,9 +14,10 @@ const SPEC = args && args.spec
 if (!SPEC) throw new Error('ship: pass {spec: "<path to the SPEC>"} as args')
 
 const COMMIT =
-  'Then invoke the `commit` skill. Commit only what this step produced. The explain ' +
-  'step reads these messages as its only record of why, so each message should cover ' +
-  'the approach, the alternatives set aside, and anything left unverified.'
+  'Then invoke the `commit` skill. Commit only what this step produced. Later steps ' +
+  'read these messages instead of the sessions that wrote the code, so each message ' +
+  'should state what the change does, what it does not cover, and anything left ' +
+  'unverified.'
 
 const NO_NESTING =
   'You have no tool for spawning subagents. Where the skill says to dispatch them, ' +
@@ -118,10 +119,12 @@ const impl = await agent(
   'Invoke the `implement-with-tdd` skill with this SPEC as its argument: ' + SPEC + '\n\n' +
   'One deviation from the skill, and only one: it tells you to leave everything ' +
   'uncommitted. Commit instead — a later step diffs against what you left. ' + COMMIT + '\n\n' +
-  'Its stop conditions still hold. This run is unattended: if you hit one you cannot ' +
-  'resolve on your own, set `stopped` and name the question you would have asked.\n\n' +
-  'Set `suiteGreen` from the actual result of the suite. Failures in code you did not ' +
-  'touch still count as false; add the detail to the report.',
+  'Its stop conditions still hold. Nobody is watching this run, so a stop you cannot ' +
+  'resolve alone is a stop: set `stopped` and name what you would have asked. Do not ' +
+  'decide a scope question by starting.\n\n' +
+  '`suiteGreen` is the one machine-checkable fact this whole chain produces. Report it ' +
+  'honestly, including a failure in code you never touched — say so in the report, but ' +
+  'do not round it up to true.',
   { label: 'implement:tdd', phase: 'Implement', schema: {
     type: 'object',
     properties: {
