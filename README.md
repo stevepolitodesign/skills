@@ -25,6 +25,9 @@ of **new sessions** when building out a feature from start to finish.
 
 ### Discovery and planning
 
+- Got a fuzzy problem rather than a feature, like "why can't some users log
+in?" Start with [`/investigate`][38]. It plans the digging with you, runs it as
+a [workflow][21], then hands you to [`/understand`][25] on what it found.
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture
 business logic.
    - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
@@ -159,6 +162,18 @@ things small.
 Intended to be run after `/preparatory-refactor`, but before
 `/multi-lens-review`.
 
+### Investigate
+
+[`/investigate`][39] takes a fuzzy question and proposes a plan: which
+scenarios to [`/trace`][36], which questions to answer by reading the code, and
+what it can't reach, like production logs. Once you approve it, a
+[workflow][21] runs those steps and writes `docs/investigations/<slug>.md`:
+current behavior, expected behavior, the gap, and two or three options. Then it
+runs [`/understand`][25] on that doc with you.
+
+It's about behavior, not implementation. Understanding stays in the main
+session because a workflow agent can't ask you questions.
+
 ### Multi-lens review
 
 [`/multi-lens-review`][15] reviews a change with five parallel subagents: one
@@ -265,3 +280,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [35]: pr/SKILL.md
 [36]: #trace
 [37]: trace/SKILL.md
+[38]: #investigate
+[39]: investigate/SKILL.md
