@@ -25,6 +25,10 @@ of **new sessions** when building out a feature from start to finish.
 
 ### Discovery and planning
 
+> [!TIP]
+> Got a nebulous problem rather than a feature, like "why can't some users log
+> in?" Start with [`/investigate`][38].
+
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture
 business logic.
    - Use [`/understand`][25] and/or [`/eli5`][28] to reinforce your
@@ -159,6 +163,19 @@ things small.
 Intended to be run after `/preparatory-refactor`, but before
 `/multi-lens-review`.
 
+### Investigate
+
+[`/investigate`][39] is meant to help you understand the current system so
+that you can understand a nebulous problem, and then understand the solutions.
+It focuses on current and expected behavior, not implementation details.
+
+It starts by recommending an approach to prompting it, which scenarios to
+[`/trace`][36] and what to read in the code. Once you approve it, it
+orchestrates that approach as a [dynamic workflow][21] and saves what it found
+to `docs/investigations/`.
+
+Pairs well with [`/understand`][25], which it runs at the end with you.
+
 ### Multi-lens review
 
 [`/multi-lens-review`][15] reviews a change with five parallel subagents: one
@@ -265,3 +282,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [35]: pr/SKILL.md
 [36]: #trace
 [37]: trace/SKILL.md
+[38]: #investigate
+[39]: investigate/SKILL.md
