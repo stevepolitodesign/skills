@@ -87,7 +87,7 @@ if (!prep) {
   return halt('Prepare', 'the preparatory-refactor agent returned nothing — the repo was never assessed')
 }
 
-afterward('Prepare', prep)
+afterward('Prepare: identify', prep)
 sofar.preparatoryReport = prep.report
 
 const justified = (prep.moves || []).filter(m => m.confidence >= 80)
@@ -119,7 +119,7 @@ if (justified.length) {
     } }
   )
 
-  afterward('Prepare', made)
+  afterward('Prepare: refactor', made)
   if (!made) {
     return halt('Prepare', 'the refactor agent was skipped or died — the tree may hold a ' +
                 'partial refactor, so check it before rerunning')
