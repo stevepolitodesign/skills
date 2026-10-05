@@ -24,9 +24,31 @@ const NO_NESTING =
   'follow its own stated fallback and say in your report that you did, so nobody ' +
   'reads a timeboxed skim as a full sweep.'
 
+const AFTERWARD =
+  'Also fill `assumptions`, `surprises` and `unsure`, one short line each, all about ' +
+  'the change and the repo: what this step took as given that neither the SPEC nor the ' +
+  'code confirms, what in the repo turned out different from what the SPEC or code ' +
+  'suggested, and what is still unconfirmed. Empty lists are a real answer.'
+
+const AFTERWARD_FIELDS = {
+  assumptions: { type: 'array', items: { type: 'string' } },
+  surprises: { type: 'array', items: { type: 'string' } },
+  unsure: { type: 'array', items: { type: 'string' } },
+}
+
 // Everything the run has established so far. Every halt carries this out, because a
 // halt is where a human picks the work up by hand and the reports are all they get.
-const sofar = { spec: SPEC, suiteGreen: null }
+const sofar = { spec: SPEC, suiteGreen: null, afterward: [] }
+
+function afterward(step, result) {
+  if (!result) return
+  sofar.afterward.push({
+    step: step,
+    assumptions: result.assumptions || [],
+    surprises: result.surprises || [],
+    unsure: result.unsure || [],
+  })
+}
 
 function halt(phaseName, reason) {
   log('Halted at ' + phaseName + ' — ' + reason)
@@ -43,7 +65,7 @@ const prep = await agent(
   'The skill is right that you identify and do not edit. Change nothing. Nobody is ' +
   'watching this run, so there is no one to show the naive diff to — write it, use ' +
   'it, and fold what it proves into the report.\n\n' +
-  'Return the report verbatim in `report`, and the moves you would defend.',
+  'Return the report verbatim in `report`, and the moves you would defend. ' + AFTERWARD,
   { label: 'prepare:identify', phase: 'Prepare', schema: {
     type: 'object',
     properties: {
@@ -53,6 +75,7 @@ const prep = await agent(
         confidence: { type: 'number' },
       }, required: ['move', 'confidence'] } },
       testCommand: { type: 'string' },
+      ...AFTERWARD_FIELDS,
     },
     required: ['report', 'moves'],
   } }
@@ -64,6 +87,7 @@ if (!prep) {
   return halt('Prepare', 'the preparatory-refactor agent returned nothing — the repo was never assessed')
 }
 
+afterward('Prepare: identify', prep)
 sofar.preparatoryReport = prep.report
 
 const justified = (prep.moves || []).filter(m => m.confidence >= 80)
@@ -80,7 +104,7 @@ if (justified.length) {
     prep.report + '\n\n' +
     'The suite that covers the site: ' + (prep.testCommand || 'find it yourself') + '. ' +
     'It passes now and passes after, unchanged. A move that needs a new test is the ' +
-    'feature, not preparation — stop there.\n\n' + COMMIT,
+    'feature, not preparation — stop there.\n\n' + COMMIT + '\n\n' + AFTERWARD,
     { label: 'prepare:refactor', phase: 'Prepare', schema: {
       type: 'object',
       properties: {
@@ -89,11 +113,13 @@ if (justified.length) {
         movesMade: { type: 'array', items: { type: 'string' } },
         stopReason: { type: 'string' },
         suiteGreen: { type: 'boolean' },
+        ...AFTERWARD_FIELDS,
       },
       required: ['report', 'made', 'suiteGreen'],
     } }
   )
 
+  afterward('Prepare: refactor', made)
   if (!made) {
     return halt('Prepare', 'the refactor agent was skipped or died — the tree may hold a ' +
                 'partial refactor, so check it before rerunning')
@@ -119,6 +145,7 @@ const impl = await agent(
   'Invoke the `implement-with-tdd` skill with this SPEC as its argument: ' + SPEC + '\n\n' +
   'One deviation from the skill, and only one: it tells you to leave everything ' +
   'uncommitted. Commit instead — a later step diffs against what you left. ' + COMMIT + '\n\n' +
+  AFTERWARD + '\n\n' +
   'Its stop conditions still hold. Nobody is watching this run, so a stop you cannot ' +
   'resolve alone is a stop: set `stopped` and name what you would have asked. Do not ' +
   'decide a scope question by starting.\n\n' +
@@ -133,6 +160,7 @@ const impl = await agent(
       stopReason: { type: 'string' },
       criteriaUnbuilt: { type: 'array', items: { type: 'string' } },
       suiteGreen: { type: 'boolean' },
+      ...AFTERWARD_FIELDS,
     },
     required: ['report', 'stopped', 'suiteGreen'],
   } }
@@ -140,6 +168,7 @@ const impl = await agent(
 
 if (!impl) return halt('Implement', 'the implementation agent returned nothing')
 
+afterward('Implement', impl)
 sofar.implementationReport = impl.report
 sofar.criteriaUnbuilt = impl.criteriaUnbuilt || []
 sofar.suiteGreen = impl.suiteGreen
@@ -270,7 +299,7 @@ const reviewed = await agent(
   'Conventions, Domains and Fidelity for the human; those are judgment calls the ' +
   'author gets to make. Apply one at a time and stop on any fix that turns out bigger ' +
   'than its finding described. Say in `report` which you applied and which you left.\n\n' +
-  'Run the suite after and report `suiteGreen` honestly. ' + COMMIT + '\n\n' +
+  'Run the suite after and report `suiteGreen` honestly. ' + COMMIT + ' ' + AFTERWARD + '\n\n' +
   'Roster:\n' + JSON.stringify(roster, null, 2),
   { label: 'review:synthesize', phase: 'Review', schema: {
     type: 'object',
@@ -279,6 +308,7 @@ const reviewed = await agent(
       applied: { type: 'array', items: { type: 'string' } },
       left: { type: 'array', items: { type: 'string' } },
       suiteGreen: { type: 'boolean' },
+      ...AFTERWARD_FIELDS,
     },
     required: ['report', 'suiteGreen'],
   } }
@@ -286,6 +316,7 @@ const reviewed = await agent(
 
 if (!reviewed) return halt('Review', 'the synthesis agent returned nothing — five lenses ran and their findings are lost')
 
+afterward('Review', reviewed)
 sofar.reviewReport = reviewed.report
 sofar.reviewApplied = reviewed.applied || []
 sofar.reviewLeft = reviewed.left || []
@@ -309,7 +340,7 @@ const verified = await agent(
   'Fix what is broken. ' + COMMIT + ' Report `suiteGreen` after any fix.\n\n' +
   'If the app cannot be started from the repo\'s documented setup, say that plainly ' +
   'and set `ran` false. A verification that never ran and a verification that passed ' +
-  'look identical in a summary unless you name the difference.',
+  'look identical in a summary unless you name the difference.\n\n' + AFTERWARD,
   { label: 'verify:app', phase: 'Verify', schema: {
     type: 'object',
     properties: {
@@ -318,11 +349,13 @@ const verified = await agent(
       criteriaConfirmed: { type: 'array', items: { type: 'string' } },
       fixed: { type: 'array', items: { type: 'string' } },
       suiteGreen: { type: 'boolean' },
+      ...AFTERWARD_FIELDS,
     },
     required: ['ran', 'report'],
   } }
 )
 
+afterward('Verify', verified)
 if (verified) {
   sofar.verificationReport = verified.report
   sofar.verified = verified.ran
@@ -368,18 +401,20 @@ const walkthrough = await agent(
   'The skill tells you to tell the user directly if you find a real bug while writing ' +
   'up, rather than burying it in a note they may skim. Nobody is reading this as you ' +
   'work, so `bugsFound` is that channel — it is surfaced above the artifact link.\n\n' +
-  'Return the published artifact URL.',
+  'Return the published artifact URL. ' + AFTERWARD,
   { label: 'explain:walkthrough', phase: 'Explain', schema: {
     type: 'object',
     properties: {
       artifactUrl: { type: 'string' },
       name: { type: 'string' },
       bugsFound: { type: 'array', items: { type: 'string' } },
+      ...AFTERWARD_FIELDS,
     },
     required: ['artifactUrl'],
   } }
 )
 
+afterward('Explain', walkthrough)
 if (!walkthrough) return halt('Explain', 'the walkthrough agent returned nothing — the work is committed but unexplained')
 
 return Object.assign({}, sofar, {
