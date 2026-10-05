@@ -48,9 +48,15 @@ say these four things before you summarize anything:
 - `criteriaUnbuilt` and `reviewLeft` — what's still owed
 - `verified` and `lensesUnchecked` — what nobody actually checked
 
+Then close with a short section built from `afterward`: the assumptions, surprises,
+and open questions each step reported, labeled by step. Quote them; don't add your
+own. You didn't do the work, so anything you add is a guess about someone else's
+session. Leave out a step that reported nothing, and if no step reported anything,
+say that in one line.
+
 A halted run returns `haltedAt` and `reason` instead, carrying every report the
-run produced. Hand those over rather than summarizing them; someone is about to
-pick the work up by hand and those reports are all they get.
+run produced, plus `afterward`. Hand those over rather than summarizing them;
+someone is about to pick the work up by hand and those reports are all they get.
 
 ## Why the script does the fan-out
 
