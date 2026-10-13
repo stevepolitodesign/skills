@@ -26,8 +26,8 @@ of **new sessions** when building out a feature from start to finish.
 ### Discovery and planning
 
 > [!TIP]
-> Got a nebulous problem rather than a feature, like "why can't some users log
-> in?" Start with [`/investigate`][38].
+> Not sure how to ask for something, like "why can't some users log in?" Start
+> with [`/prompt`][38].
 
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture
 business logic.
@@ -163,18 +163,13 @@ things small.
 Intended to be run after `/preparatory-refactor`, but before
 `/multi-lens-review`.
 
-### Investigate
+### Prompt
 
-[`/investigate`][39] is meant to help you understand the current system so
-that you can understand a nebulous problem, and then understand the solutions.
-It focuses on current and expected behavior, not implementation details.
+[`/prompt`][39] writes the prompt you'd write if you had the time: what we know
+and from whom, where to look, what's out of scope, and a check that proves it's
+done. It reads the code first and only asks what the code can't answer.
 
-It starts by recommending an approach to prompting it, which scenarios to
-[`/trace`][36] and what to read in the code. Once you approve it, it
-orchestrates that approach as a [dynamic workflow][21] and saves what it found
-to `docs/investigations/`.
-
-Pairs well with [`/understand`][25], which it runs at the end with you.
+It shows you the prompt before running anything. Once you approve it, it runs it.
 
 ### Multi-lens review
 
@@ -282,5 +277,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [35]: pr/SKILL.md
 [36]: #trace
 [37]: trace/SKILL.md
-[38]: #investigate
-[39]: investigate/SKILL.md
+[38]: #prompt
+[39]: prompt/SKILL.md
