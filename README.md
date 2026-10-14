@@ -116,15 +116,9 @@ can accelerate planning and do the implementation.
 
 ### Ask Claude
 
-[`/ask-claude`][39] recommends how to have Claude do something, checked against
-Anthropic's current docs rather than memory. Sometimes that's a way of working
-(reproduce first, plan first). Sometimes it's a feature: a hook instead of a
-CLAUDE.md line, a skill instead of a subagent.
-
-Either way it ends with the prompt you'd write if you had the time: what we
-know and from whom, where to look, what's out of scope, and a check that proves
-it's done. It shows you the prompt before running anything. Once you approve
-it, it runs it.
+[`/ask-claude`][39] references the Claude docs to figure out the best tool for
+the job, whether that's a hook, a skill, or just a better prompt. It shows you
+the prompt before running anything.
 
 ### Commit
 
