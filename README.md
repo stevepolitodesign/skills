@@ -26,8 +26,8 @@ of **new sessions** when building out a feature from start to finish.
 ### Discovery and planning
 
 > [!TIP]
-> Not sure how to ask for something, like "why can't some users log in?" Start
-> with [`/prompt`][38].
+> Not sure how to ask for something, like "why can't some users log in?", or
+> which Claude feature fits a job? Start with [`/ask-claude`][38].
 
 0. Optionally, use [`/domain-model`][26] on new projects or features to capture
 business logic.
@@ -114,6 +114,12 @@ can accelerate planning and do the implementation.
 
 ## Reference
 
+### Ask Claude
+
+[`/ask-claude`][39] references the Claude docs to figure out the best tool for
+the job, whether that's a hook, a skill, or just a better prompt. It shows you
+the prompt before running anything.
+
 ### Commit
 
 [`/commit`][33] turns your changes into atomic commits. Each message captures
@@ -162,14 +168,6 @@ things small.
 
 Intended to be run after `/preparatory-refactor`, but before
 `/multi-lens-review`.
-
-### Prompt
-
-[`/prompt`][39] writes the prompt you'd write if you had the time: what we know
-and from whom, where to look, what's out of scope, and a check that proves it's
-done. It reads the code first and only asks what the code can't answer.
-
-It shows you the prompt before running anything. Once you approve it, it runs it.
 
 ### Multi-lens review
 
@@ -277,5 +275,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [35]: pr/SKILL.md
 [36]: #trace
 [37]: trace/SKILL.md
-[38]: #prompt
-[39]: prompt/SKILL.md
+[38]: #ask-claude
+[39]: ask-claude/SKILL.md
