@@ -112,6 +112,21 @@ you still used TDD to implement the feature, and you still had limited context
 when you reviewed your colleague's PRs. The only difference now is that an LLM
 can accelerate planning and do the implementation.
 
+## Evals
+
+[Eval cases][40] for [`/ask-claude`][39] live in `evals/`. Run them from the
+repo root:
+
+```
+claude plugin eval . --max-cost-usd 5 --allow-tools "WebFetch(domain:code.claude.com)" "WebFetch(domain:platform.claude.com)"
+```
+
+- Every run is billed to your account, about $1 per case.
+- The CLI needs its own login, even inside the desktop app: `claude auth login`.
+- Results go to `evals/results/`, which is gitignored.
+- New skill? Add it to `skills` in [`.claude-plugin/plugin.json`][41], or evals
+  won't load it.
+
 ## Reference
 
 ### Ask Claude
@@ -277,3 +292,5 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [37]: trace/SKILL.md
 [38]: #ask-claude
 [39]: ask-claude/SKILL.md
+[40]: https://code.claude.com/docs/en/plugin-evals
+[41]: https://code.claude.com/docs/en/plugins/manifest-reference
