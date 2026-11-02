@@ -114,14 +114,24 @@ can accelerate planning and do the implementation.
 
 ## Evals
 
-[Eval cases][40] for [`/ask-claude`][39] live in `evals/`. Run them from the
+Every skill has [eval cases][40] in `evals/<skill>/`. The ones for
+[`/ask-claude`][39] sit directly in `evals/`. Run one skill's cases from the
 repo root:
 
 ```
-claude plugin eval . --max-cost-usd 5 --allow-tools "WebFetch(domain:code.claude.com)" "WebFetch(domain:platform.claude.com)"
+claude plugin eval . --case 'slice-*' --scaffold --max-cost-usd 10 --allow-tools Write Bash
 ```
 
-- Every run is billed to your account, about $1 per case.
+- Case names start with the skill's name, which is what `--case` matches.
+- `--scaffold` runs each case's `scaffold.sh`, which builds the sample app it
+  runs against.
+- Most skills need `--allow-tools Write Bash`. `/ship` also needs `Edit
+  Workflow`. `/ask-claude` needs `"WebFetch(domain:code.claude.com)"
+  "WebFetch(domain:platform.claude.com)"` instead.
+- Each skill's baseline scores are in its "Add evals for" PR, listed in
+  [discussion #71][42].
+- Every run is billed to your account, from about $0.10 for a question that
+  shouldn't trigger a skill to about $2.40 for a `/ship` run.
 - The CLI needs its own login, even inside the desktop app: `claude auth login`.
 - Results go to `evals/results/`, which is gitignored.
 - New skill? Add it to `skills` in [`.claude-plugin/plugin.json`][41], or evals
@@ -235,6 +245,15 @@ commit it read them at. `/preparatory-refactor` and `/implement-with-tdd` start
 from those paths instead of rediscovering them. They're pointers, not a plan —
 neither skill treats the list as scope, and the repo wins where they disagree.
 
+Pass `--auto` to run it without a human, like from a GitHub issue:
+
+``` /slice --auto <the idea or issue body> ```
+
+It skips the interview and makes the cuts itself. A fresh subagent reviews the
+draft in place of you, and anything it had to guess goes under
+`## Assumptions`. It replies with the SPEC instead of writing a file, so the
+reply can be posted as a comment on the issue.
+
 ### Trace
 
 [`/trace`][37] runs a scenario, like "user creates an account", in your
@@ -294,3 +313,4 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [39]: ask-claude/SKILL.md
 [40]: https://code.claude.com/docs/en/plugin-evals
 [41]: https://code.claude.com/docs/en/plugins/manifest-reference
+[42]: https://github.com/stevepolitodesign/skills/discussions/71
