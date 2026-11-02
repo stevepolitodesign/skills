@@ -186,8 +186,9 @@ Keep the last line; it tells the human the words aren't theirs yet.
 
 ### Open it
 
-Push if there's no upstream, whatever the host: the branch has to be on the
-remote before anyone can open a PR from it. Then, on GitHub with `gh`:
+Push (`git push -u origin HEAD`), whatever the host: the remote needs every
+commit before anyone can open or review a PR from it. Then, on GitHub with
+`gh`:
 
 ```bash
 gh pr create --draft --base <base> --title "<title>" --body-file <tmpfile>
@@ -201,7 +202,7 @@ the body (`gh pr edit <n> --body-file`):
 blob=$(git hash-object -w shot.png)
 tree=$(printf '100644 blob %s\tshot.png\n' "$blob" | git mktree)
 sha=$(git commit-tree "$tree" -m "Screenshots for <branch>")
-git push origin "$sha:refs/heads/pr-screenshots/<branch>"
+git push origin "${sha}:refs/heads/pr-screenshots/<branch>"
 # ![Invoice list](https://github.com/<owner>/<repo>/blob/<sha>/shot.png?raw=true)
 ```
 
@@ -220,5 +221,5 @@ Not GitHub, no CLI, or a call fails: don't look for a workaround. The reply
 is the handoff.
 
 The reply: the PR URL, or why it wasn't opened plus the title and body in a
-fenced block and the notes as `path:line` bullets, ready to paste. Then what
-the check changed, one line each.
+fenced block. Any notes that didn't get posted go there too, as `path:line`
+bullets, ready to paste. Then what the check changed, one line each.
