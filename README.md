@@ -76,6 +76,9 @@ the next starts.
 Once it finishes, run [`/pr`][34] to open the PR. That's not part of the
 workflow, since `/pr` waits for you to write the description.
 
+Running unattended, like from CI? Use `/pr --auto` instead. It opens a draft
+PR with a description you rewrite before marking it ready.
+
 ## Why these work
 
 I created these because I was staffed on a project where I had no familiarity
@@ -124,6 +127,8 @@ claude plugin eval . --max-cost-usd 5 --allow-tools "WebFetch(domain:code.claude
 - Every run is billed to your account, about $1 per case.
 - The CLI needs its own login, even inside the desktop app: `claude auth login`.
 - Results go to `evals/results/`, which is gitignored.
+- Cases with a `scaffold.sh` need `--scaffold`. The `/pr` cases also need
+  `--allow-tools Bash Write Edit Agent`.
 - New skill? Add it to `skills` in [`.claude-plugin/plugin.json`][41], or evals
   won't load it.
 
@@ -217,6 +222,9 @@ why the change exists, puts risks, tradeoffs, and open questions as inline
 comments on the lines they're about, and attaches screenshots of changed
 screens. You rewrite the description before marking it ready. Off GitHub, it
 replies with the title, body, and notes instead.
+
+Screenshots live on a `pr-screenshots/<branch>` branch, not the PR branch, so
+the squash doesn't land them on main. Nothing deletes those branches yet.
 
 ### Rubber duck
 
