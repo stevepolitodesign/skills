@@ -14,6 +14,8 @@ The job is finding the version that costs a fraction of the work and is still wo
 
 ## Workflow
 
+Arguments start with `--auto`? Nobody will answer. Read [Autonomous mode](#autonomous-mode) first; it replaces the interview and both gates below.
+
 1. Capture the raw idea in the user's words.
 2. Recon the codebase with subagents. Wait for them; the interview depends on what they find.
 3. Run the interview to cut scope.
@@ -117,6 +119,33 @@ Write to `docs/specs/<slug>.md` at the repo root (`git rev-parse --show-toplevel
 Write the draft they approved, unchanged. Anything you improve between approval and write is unreviewed, and the point of step 4 was that the file matches what they signed off on. If you spot a problem, show the corrected draft and get the nod again.
 
 If you can't point to the message where you showed them this text, don't write the file. Go do step 4.
+
+## Autonomous mode
+
+Only when the arguments start with `--auto`. The rest of the arguments are the idea, often a GitHub issue body. Nobody is there to answer: your final reply gets posted as a comment, a human may edit it there, and the next step picks it up from the comment. Without `--auto`, ignore this section.
+
+What changes:
+
+- **Recon as in step 2.** Skip the 3 to 5 line summary; nobody is there to catch a misread.
+- **No interview.** Make the cuts yourself, by the same rules: the cut test, the guardrails, changing the axis. Everything you'd have proposed is now decided.
+- **Draft, then have it reviewed.** Fill in the template, then launch one fresh subagent with the draft, this skill's path, and the paths you read. It never saw your reasoning, so it can't be talked into it. Ask it to check: the template's shape kept word for word (`When` / `I want to` / `So I can`, `Given` / `when` / `then`), since the next step parses it; one job story, criteria a user could observe, cuts grounded in files that exist, guardrails kept, no horizontal slice. Tell it to report only problems that change the scope or make a criterion uncheckable, and to skip wording and style. A reviewer asked for problems always finds some.
+- **Revise once.** Fix what holds up, drop what doesn't. No second review.
+- **Guess, and say so.** Anything only a human could answer, like who receives an email or which plan a limit applies to, gets your best guess, recorded under `## Assumptions`. A guess the reader can see costs one edit; a guess buried in a criterion ships.
+- **No file.** Don't write `docs/specs/`. On a CI runner it's thrown away unless pushed, and the comment is the handoff.
+
+The final reply is the comment, so it carries nothing else:
+
+~~~
+```markdown
+{the filled-in template, in full}
+```
+
+**What I cut:**
+- {cut} — {why, with the file that grounds it}
+
+**What the review changed:**
+- {finding} — {fixed / rejected, and why}
+~~~
 
 ## Job story craft
 

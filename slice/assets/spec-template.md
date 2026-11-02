@@ -22,6 +22,13 @@ Paths as of `{short sha}`. Where the code was, not what to build.
 
 - `{path}` — {why this file matters to this slice}
 
+## Assumptions
+
+{`--auto` only: each answer you guessed because nobody was there to
+ask. Delete this section otherwise.}
+
+- {question} — {the guess}
+
 ## Owed
 
 {Only if a guardrail was deferred: what was deferred and what it
