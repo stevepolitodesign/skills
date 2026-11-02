@@ -76,6 +76,9 @@ the next starts.
 Once it finishes, run [`/pr`][34] to open the PR. That's not part of the
 workflow, since `/pr` waits for you to write the description.
 
+Running unattended, like from CI? Use `/pr --auto` instead. It opens a draft
+PR with a description you rewrite before marking it ready.
+
 ## Why these work
 
 I created these because I was staffed on a project where I had no familiarity
@@ -134,6 +137,8 @@ claude plugin eval . --case 'slice-*' --scaffold --max-cost-usd 10 --allow-tools
   shouldn't trigger a skill to about $2.40 for a `/ship` run.
 - The CLI needs its own login, even inside the desktop app: `claude auth login`.
 - Results go to `evals/results/`, which is gitignored.
+- Cases with a `scaffold.sh` need `--scaffold`. The `/pr` cases also need
+  `--allow-tools Bash Write Edit Agent`.
 - New skill? Add it to `skills` in [`.claude-plugin/plugin.json`][41], or evals
   won't load it.
 
@@ -221,6 +226,17 @@ emerging Domains.
 what changed, suggests a title in the repo's style, and then waits for you to
 write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
+
+`/pr --auto` is for when nobody's around. It opens a draft PR whose body says
+why the change exists, and puts risks, tradeoffs, and open questions as inline
+comments on the lines they're about. You rewrite the description before
+marking it ready. Off GitHub, it replies with the title, body, and notes
+instead.
+
+It doesn't take or host screenshots. Pass image URLs you've already uploaded
+with `--screenshots`, and it embeds them in the body:
+
+``` /pr --auto --screenshots https://example.com/orders-before.png https://example.com/orders-after.png ```
 
 ### Rubber duck
 
