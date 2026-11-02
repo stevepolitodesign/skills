@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Implement, veryify and review a feature based on its SPEC.
+description: Implement, verify and review a feature based on its SPEC, then open a draft PR.
 argument-hint: "[path to the SPEC /slice wrote]"
 ---
 
@@ -9,14 +9,17 @@ argument-hint: "[path to the SPEC /slice wrote]"
 `/slice` gives you a SPEC. This runs the rest of the chain against it:
 
 ```
-Prepare  --> Implement --> Review --> Verify --> Explain
-  prep        tdd          5 lenses    real app   artifact
-  refactor                 + fix
+Prepare  --> Implement --> Review --> Verify --> Open
+  prep        tdd          5 lenses    real app   draft PR
+  refactor                 + fix       + shots    + check
 ```
+
+Nobody has to be watching. A person can run it, or something in the cloud can,
+and either way the draft PR is what you come back to.
 
 Each step runs in a context that never saw the one before it. That's the whole
 point — a session that just wrote the code is the worst possible reviewer of it,
-and a session that watched the review happen writes a walkthrough that defends
+and a session that watched the review happen writes a description that defends
 the review instead of the change.
 
 ## Run it
@@ -39,20 +42,30 @@ nothing to aim at otherwise.
 
 ## When it returns
 
-The return value is the whole report — nothing reaches the user on its own. Open
-the walkthrough for them (`Artifact` with `action: "open"` on `walkthrough`), then
-say these four things before you summarize anything:
+The return value is the whole report — nothing reaches the user on its own.
+Lead with `prUrl`. No `prUrl` means the PR never opened: say
+`notOpenedReason`, then hand over `title`, `body`, `notes` (as `path:line`
+bullets) and `owed` in fenced blocks, ready to paste. Then say these before you
+summarize anything:
 
 - `suiteGreen` — false means the branch is red, whatever else the run says
-- `bugsFound` — the explainer hit something real while writing up
+- `checkChanges` — what the check agent caught in the description. `null`
+  means nobody checked it
 - `criteriaUnbuilt` and `reviewLeft` — what's still owed
 - `verified` and `lensesUnchecked` — what nobody actually checked
+- `screenshots` — local paths, not in the PR. Say so; attaching them is the
+  user's job for now
 
-Then close with a short section built from `afterward`: the assumptions, surprises,
-and open questions each step reported, labeled by step. Quote them; don't add your
-own. You didn't do the work, so anything you add is a guess about someone else's
-session. Leave out a step that reported nothing, and if no step reported anything,
-say that in one line.
+The PR gets one comment, and only when something is still owed: failing tests,
+an app nobody drove, unbuilt criteria, unreviewed lenses, or a review finding
+left for the author. The script writes it, not an agent, so "unchecked" can't
+get reworded into "checked". A clean run posts nothing.
+
+Then close with a short section built from `afterward`: the assumptions,
+surprises, and open questions each step reported, labeled by step. Quote them;
+don't add your own. You didn't do the work, so anything you add is a guess about
+someone else's session. Leave out a step that reported nothing, and if no step
+reported anything, say that in one line.
 
 A halted run returns `haltedAt` and `reason` instead, carrying every report the
 run produced, plus `afterward`. Hand those over rather than summarizing them;
@@ -83,8 +96,11 @@ Three places, each because nobody is watching the run:
   makes the move, so the one proposing it isn't the one defending it.
 - `/implement-with-tdd` says leave everything uncommitted. Overridden; every step
   commits through `/commit`, because the next one diffs against what the last one
-  left, and `Explain` never saw the sessions that wrote the code. The commit
+  left, and `Open` never saw the sessions that wrote the code. The commit
   messages are its only record of why.
+- `/pr --auto` checks its own description with a subagent. A workflow agent
+  can't spawn one, so the script runs that check as its own agent, after the PR
+  is open, and the check edits the PR in place.
 - `/multi-lens-review` refuses to apply findings unasked. Overridden for what it files under
   Defects and Compatibility — the two that cost something the moment this ships,
   which is why its own synthesis sorts them first. Conventions, domains and
@@ -119,6 +135,6 @@ Everything before the SPEC — `/domain-model`, `/slice`, and the `/understand`,
 steps where you're the one doing the thinking, and handing them to a fleet of
 agents defeats why you ran them.
 
-`Verify` is the weak link in here. An agent can boot the app and drive it, but it
-can't hand you the screen. Treat its report as "the app started and the criteria
-appear to hold," then look yourself — especially at anything the artifact flags.
+`Verify` is the weak link in here. It screenshots what it can, but nothing
+uploads them yet, since `gh` can't attach images to a PR. Treat its report as
+"the app started and the criteria appear to hold," then look yourself.

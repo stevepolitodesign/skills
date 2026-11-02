@@ -1,12 +1,12 @@
 export const meta = {
   name: 'ship',
-  description: 'Take a SPEC from prepare through TDD, review, verification, and a walkthrough',
+  description: 'Take a SPEC from prepare through TDD, review, verification, and a draft PR',
   phases: [
     { title: 'Prepare', detail: 'identify a preparatory refactor, then make it' },
     { title: 'Implement', detail: 'drive the SPEC out with TDD' },
     { title: 'Review', detail: 'five lenses in parallel, then synthesize and fix' },
     { title: 'Verify', detail: 'run the real app against the criteria' },
-    { title: 'Explain', detail: 'publish the walkthrough artifact' },
+    { title: 'Open', detail: 'open a draft PR, then have it checked' },
   ],
 }
 
@@ -38,7 +38,7 @@ const AFTERWARD_FIELDS = {
 
 // Everything the run has established so far. Every halt carries this out, because a
 // halt is where a human picks the work up by hand and the reports are all they get.
-const sofar = { spec: SPEC, suiteGreen: null, afterward: [] }
+const sofar = { spec: SPEC, suiteGreen: null, screenshots: [], afterward: [] }
 
 function afterward(step, result) {
   if (!result) return
@@ -299,6 +299,9 @@ const reviewed = await agent(
   'Conventions, Domains and Fidelity for the human; those are judgment calls the ' +
   'author gets to make. Apply one at a time and stop on any fix that turns out bigger ' +
   'than its finding described. Say in `report` which you applied and which you left.\n\n' +
+  'Each entry in `left` gets posted on the PR for whoever owns it. Write it as one ' +
+  'short plain-English sentence a non-programmer could follow: the decision, not ' +
+  'the code. No file paths, no finding numbers.\n\n' +
   'Run the suite after and report `suiteGreen` honestly. ' + COMMIT + ' ' + AFTERWARD + '\n\n' +
   'Roster:\n' + JSON.stringify(roster, null, 2),
   { label: 'review:synthesize', phase: 'Review', schema: {
@@ -338,6 +341,11 @@ const verified = await agent(
     ? 'These criteria were never built, so do not go looking for them: ' +
       sofar.criteriaUnbuilt.join('; ') + '\n\n' : '') +
   'Fix what is broken. ' + COMMIT + ' Report `suiteGreen` after any fix.\n\n' +
+  'Where a criterion shows up on a screen, screenshot it once it holds. Save the ' +
+  'images under a `ship-screenshots` directory in the system temp directory, never ' +
+  'in the repo, and return their absolute paths in `screenshots`. Nothing on a ' +
+  'screen to show, or no way to capture one: leave it empty and say why in the ' +
+  'report.\n\n' +
   'If the app cannot be started from the repo\'s documented setup, say that plainly ' +
   'and set `ran` false. A verification that never ran and a verification that passed ' +
   'look identical in a summary unless you name the difference.\n\n' + AFTERWARD,
@@ -348,6 +356,7 @@ const verified = await agent(
       report: { type: 'string' },
       criteriaConfirmed: { type: 'array', items: { type: 'string' } },
       fixed: { type: 'array', items: { type: 'string' } },
+      screenshots: { type: 'array', items: { type: 'string' } },
       suiteGreen: { type: 'boolean' },
       ...AFTERWARD_FIELDS,
     },
@@ -359,6 +368,7 @@ afterward('Verify', verified)
 if (verified) {
   sofar.verificationReport = verified.report
   sofar.verified = verified.ran
+  sofar.screenshots = verified.screenshots || []
   if (typeof verified.suiteGreen === 'boolean') sofar.suiteGreen = verified.suiteGreen
   if (!verified.ran) log('The app was never driven — the criteria are unconfirmed outside the suite')
 } else {
@@ -366,59 +376,108 @@ if (verified) {
   log('The verify agent returned nothing — the criteria are unconfirmed outside the suite')
 }
 
-if (sofar.suiteGreen === false) {
-  log('The suite is red going into the walkthrough — the artifact will say so')
+// ------------------------------------------------------------------- Open
+
+phase('Open')
+
+// Built here, not by an agent: it states what the run established, and an agent
+// rewording it is one more place for "unverified" to turn into "verified". Only
+// what's still owed goes in; a clean run posts nothing.
+function owed() {
+  const lines = []
+  if (sofar.suiteGreen === false) lines.push('- The tests are failing.')
+  if (!sofar.verified) lines.push('- Nobody tried this in the running app.')
+  sofar.criteriaUnbuilt.forEach(c => lines.push('- Not built: ' + c))
+  if (sofar.lensesUnchecked.length) lines.push('- Not reviewed for: ' + sofar.lensesUnchecked.join(', '))
+  sofar.reviewLeft.forEach(f => lines.push('- Your call: ' + f))
+  return lines.length ? ['Still to do before this merges:', ''].concat(lines).join('\n') : null
 }
 
-// ---------------------------------------------------------------- Explain
+const OWED = owed()
 
-phase('Explain')
+const NOTE = {
+  type: 'object',
+  properties: { path: { type: 'string' }, line: { type: 'number' }, body: { type: 'string' } },
+  required: ['path', 'line', 'body'],
+}
 
-const walkthrough = await agent(
-  'Invoke the `diff-explainer` skill against the current branch and publish the ' +
-  'artifact.\n\n' +
-  'You did not write this code and the session that did is gone, so its rule about ' +
-  'never inventing rationale is the one that matters most here. What you have is the ' +
-  'SPEC at ' + SPEC + ', the commits, and the reports below. Where none of them ' +
-  'records a why, leave it unannotated rather than reconstructing one — the diff will ' +
-  'always look like it justifies itself.\n\n' +
-  (sofar.suiteGreen === false
-    ? 'STATE OF THE BRANCH: the suite is RED. That is a risk the watch list has to ' +
-      'carry, whatever the diff looks like.\n\n' : '') +
-  (sofar.verified === false
-    ? 'STATE OF THE BRANCH: nobody drove the running app. The criteria are unconfirmed ' +
-      'outside the suite.\n\n' : '') +
-  (sofar.criteriaUnbuilt.length
-    ? 'DELIBERATELY NOT DONE, which the skill says belongs in "Start here": ' +
-      sofar.criteriaUnbuilt.join('; ') + '\n\n' : '') +
-  (sofar.lensesUnchecked.length
-    ? 'UNREVIEWED: these review lenses never ran — ' + sofar.lensesUnchecked.join(', ') +
-      '\n\n' : '') +
-  'Preparatory refactoring:\n' + (prep.report || 'none') + '\n\n' +
-  'Implementation:\n' + (impl.report || '') + '\n\n' +
-  'Review:\n' + (sofar.reviewReport || 'did not complete') + '\n\n' +
-  'Verification:\n' + (sofar.verificationReport || 'did not complete') + '\n\n' +
-  'The skill tells you to tell the user directly if you find a real bug while writing ' +
-  'up, rather than burying it in a note they may skim. Nobody is reading this as you ' +
-  'work, so `bugsFound` is that channel — it is surfaced above the artifact link.\n\n' +
-  'Return the published artifact URL. ' + AFTERWARD,
-  { label: 'explain:walkthrough', phase: 'Explain', schema: {
+const opened = await agent(
+  'Invoke the `pr` skill with `--auto` and follow its Autonomous mode. The SPEC this ' +
+  'branch builds is ' + SPEC + '.\n\n' +
+  'Its "Have it checked" step needs a subagent, and you have no tool for spawning ' +
+  'one. Skip that step only; a fresh agent checks your work after you.\n\n' +
+  (OWED
+    ? 'Once the PR is open, post this as one PR comment, unchanged, with ' +
+      '`gh pr comment <n> --body-file`:\n\n' + OWED + '\n\n'
+    : 'Post no comment of your own on the PR.\n\n') +
+  'Return what you sent in `title`, `body` and `notes` whether or not the PR opened, ' +
+  'and the base branch you used. ' + AFTERWARD,
+  { label: 'open:pr', phase: 'Open', schema: {
     type: 'object',
     properties: {
-      artifactUrl: { type: 'string' },
-      name: { type: 'string' },
-      bugsFound: { type: 'array', items: { type: 'string' } },
+      prUrl: { type: 'string' },
+      notOpenedReason: { type: 'string' },
+      base: { type: 'string' },
+      title: { type: 'string' },
+      body: { type: 'string' },
+      notes: { type: 'array', items: NOTE },
       ...AFTERWARD_FIELDS,
     },
-    required: ['artifactUrl'],
+    required: ['base', 'title', 'body', 'notes'],
   } }
 )
 
-afterward('Explain', walkthrough)
-if (!walkthrough) return halt('Explain', 'the walkthrough agent returned nothing — the work is committed but unexplained')
+afterward('Open', opened)
+if (!opened) return halt('Open', 'the PR agent returned nothing — the work is committed, maybe pushed, but no PR was described')
 
-return Object.assign({}, sofar, {
-  walkthrough: walkthrough.artifactUrl,
-  walkthroughName: walkthrough.name,
-  bugsFound: walkthrough.bugsFound || [],
+sofar.prUrl = opened.prUrl || null
+if (!opened.prUrl) {
+  Object.assign(sofar, {
+    notOpenedReason: opened.notOpenedReason || 'no reason given',
+    title: opened.title,
+    body: opened.body,
+    notes: opened.notes,
+    owed: OWED,
+  })
+}
+
+const checked = await agent(
+  'Someone who never saw this code written described it for a reviewer. Check that ' +
+  'description against the code. Run `git diff ' + opened.base + '...HEAD` and read ' +
+  'it yourself; the SPEC is ' + SPEC + '.\n\n' +
+  'Look for: a claim the diff does not back, a why with no source (a commit sha or ' +
+  'the SPEC), a risk it missed, and a note that would still be true with the diff ' +
+  'hidden. Skip wording.\n\n' +
+  (opened.prUrl
+    ? 'Fix each one on ' + opened.prUrl + ' itself: the body with `gh pr edit ' +
+      '--body-file`, a wrong note by editing that review comment, a missed risk as a ' +
+      'new comment on its line. One pass, no second round.\n\n'
+    : 'The PR was not opened, so return the corrected `title`, `body` and `notes`.\n\n') +
+  'List each change in `changed`, one line each.\n\n' +
+  JSON.stringify({ title: opened.title, body: opened.body, notes: opened.notes }, null, 2),
+  { label: 'open:check', phase: 'Open', schema: {
+    type: 'object',
+    properties: {
+      changed: { type: 'array', items: { type: 'string' } },
+      title: { type: 'string' },
+      body: { type: 'string' },
+      notes: { type: 'array', items: NOTE },
+    },
+    required: ['changed'],
+  } }
+)
+
+if (!checked) {
+  log('The check agent returned nothing — the PR description went out unchecked')
+  return Object.assign(sofar, { checkChanges: null })
+}
+
+sofar.checkChanges = checked.changed
+// Once the PR is open the check edits it in place, and the PR is the only true copy.
+if (opened.prUrl) return sofar
+
+return Object.assign(sofar, {
+  title: checked.title || opened.title,
+  body: checked.body || opened.body,
+  notes: checked.notes || opened.notes,
 })
