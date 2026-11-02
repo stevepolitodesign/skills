@@ -21,9 +21,12 @@ recon --> brief + title --> user writes --> proof --> sign-off --> open
                              +------ changes ---------+
 ```
 
+Arguments start with `--auto`? Nobody will write or approve the description.
+Read [Autonomous mode](#autonomous-mode) first; it replaces steps 2 through 6.
+
 ## 1. Recon
 
-Base branch is `$ARGUMENTS`, or the repo default (`gh repo view --json
+Base branch is `$ARGUMENTS` (minus `--auto`), or the repo default (`gh repo view --json
 defaultBranchRef`, falling back to `main`).
 
 Read, don't ask:
@@ -134,3 +137,88 @@ gh pr create --base <base> --title "<title>" --body-file <tmpfile>
 ```
 
 Reply with the PR URL.
+
+## Autonomous mode
+
+Only when the arguments start with `--auto`. Nobody is there: a human finds
+the draft PR later, rewrites the description, and marks it ready. Without
+`--auto`, ignore this section.
+
+You write the description, since nobody else will. It does
+`/diff-explainer`'s job as a PR: the why, not the what. Read its steps 3 and 4
+(`../diff-explainer/SKILL.md`) for what earns a note and the rule against
+inventing rationale. Short beats thorough; a reviewer skims a long PR.
+
+- **Recon as in step 1.** Uncommitted changes or on the base branch: stop, and
+  make the reply say why.
+- **Gather the why.** Commit bodies, then a SPEC the branch adds or names,
+  then the diff. A reason none of them state is "not recorded", never a guess.
+- **Body: why, and where to start.** Why the change exists, with its source
+  (commit sha or SPEC path). Which file to read first. Wrap at 72.
+- **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
+  inline comment on the line it's about, starting `**Risk:**`,
+  `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
+  branches get two to four; a typo fix gets none.
+- **Screenshots when the diff changes what a user sees.** Boot the app and
+  capture each changed screen with whatever browser tool you have. Can't boot
+  it, or no browser: say so in the body. Never mock one up.
+- **Have it checked.** One fresh subagent gets the body, the notes, and the
+  base branch, and reads the diff itself. Ask for: claims the diff doesn't
+  back, a why with no source, a risk you missed, and any note that would
+  still be true with the diff hidden. Skip wording. Fix once.
+- **Title** as in step 3.
+
+The body:
+
+~~~
+```markdown
+{why, one to three sentences} ({source})
+
+Start with `{path}`.
+
+{screenshots, or "No screenshots: {reason}". Leave out for no UI change.}
+
+_Drafted by Claude from the commits. Rewrite before marking ready._
+```
+~~~
+
+Keep the last line; it tells the human the words aren't theirs yet.
+
+### Open it
+
+Push if there's no upstream, whatever the host: the branch has to be on the
+remote before anyone can open a PR from it. Then, on GitHub with `gh`:
+
+```bash
+gh pr create --draft --base <base> --title "<title>" --body-file <tmpfile>
+```
+
+Screenshots can't go on the PR branch, or the squash lands them on main. Put
+them on their own branch without touching the working tree, then link them in
+the body (`gh pr edit <n> --body-file`):
+
+```bash
+blob=$(git hash-object -w shot.png)
+tree=$(printf '100644 blob %s\tshot.png\n' "$blob" | git mktree)
+sha=$(git commit-tree "$tree" -m "Screenshots for <branch>")
+git push origin "$sha:refs/heads/pr-screenshots/<branch>"
+# ![Invoice list](https://github.com/<owner>/<repo>/blob/<sha>/shot.png?raw=true)
+```
+
+Inline notes go up as one review, so the PR gets one notification, not ten:
+
+```bash
+gh api repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
+# {"event": "COMMENT", "commit_id": "<head sha>", "comments": [
+#   {"path": "app/models/order.rb", "line": 4, "side": "RIGHT",
+#    "body": "**Risk:** ..."}]}
+```
+
+`line` has to be a line in the diff, numbered in the new file.
+
+Not GitHub, no CLI, or a call fails: don't look for a workaround. The reply
+is the handoff.
+
+The reply: the PR URL, or why it wasn't opened plus the title and body in a
+fenced block and the notes as `path:line` bullets, ready to paste. Then what
+the check changed, one line each.
