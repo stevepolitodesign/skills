@@ -177,12 +177,8 @@ The body:
 Start with `{path}`.
 
 {screenshots, or "No screenshots: {reason}". Leave out for no UI change.}
-
-_Drafted by Claude from the commits. Rewrite before marking ready._
 ```
 ~~~
-
-Keep the last line; it tells the human the words aren't theirs yet.
 
 ### Open it
 
