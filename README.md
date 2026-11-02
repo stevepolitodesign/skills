@@ -218,13 +218,15 @@ write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
 
 `/pr --auto` is for when nobody's around. It opens a draft PR whose body says
-why the change exists, puts risks, tradeoffs, and open questions as inline
-comments on the lines they're about, and attaches screenshots of changed
-screens. You rewrite the description before marking it ready. Off GitHub, it
-replies with the title, body, and notes instead.
+why the change exists, and puts risks, tradeoffs, and open questions as inline
+comments on the lines they're about. You rewrite the description before
+marking it ready. Off GitHub, it replies with the title, body, and notes
+instead.
 
-Screenshots live on a `pr-screenshots/<branch>` branch, not the PR branch, so
-the squash doesn't land them on main. Nothing deletes those branches yet.
+It doesn't take or host screenshots. Pass image URLs you've already uploaded
+with `--screenshots`, and it embeds them in the body:
+
+``` /pr --auto --screenshots https://example.com/orders-before.png https://example.com/orders-after.png ```
 
 ### Rubber duck
 

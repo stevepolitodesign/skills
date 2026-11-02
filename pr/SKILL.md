@@ -1,7 +1,7 @@
 ---
 name: pr
 description: Open a pull request whose description you write yourself, with a suggested title and a light proofread.
-argument-hint: "[base branch, optional]"
+argument-hint: "[--auto [--screenshots <url>...]] [base branch, optional]"
 ---
 
 # PR
@@ -26,7 +26,7 @@ Read [Autonomous mode](#autonomous-mode) first; it replaces steps 2 through 6.
 
 ## 1. Recon
 
-Base branch is `$ARGUMENTS` (minus `--auto`), or the repo default (`gh repo view --json
+Base branch is `$ARGUMENTS` (minus `--auto` and `--screenshots`), or the repo default (`gh repo view --json
 defaultBranchRef`, falling back to `main`).
 
 Read, don't ask:
@@ -159,9 +159,9 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
   branches get two to four; a typo fix gets none.
-- **Screenshots when the diff changes what a user sees.** Boot the app and
-  capture each changed screen with whatever browser tool you have. Can't boot
-  it, or no browser: say so in the body. Never mock one up.
+- **Screenshots only when passed in.** `--screenshots` takes image URLs the
+  caller already hosted. Embed each one; don't take, upload, or commit any
+  yourself. None passed: no screenshots section.
 - **Have it checked.** One fresh subagent gets the body, the notes, and the
   base branch, and reads the diff itself. Ask for: claims the diff doesn't
   back, a why with no source, a risk you missed, and any note that would
@@ -176,7 +176,7 @@ The body:
 
 Start with `{path}`.
 
-{screenshots, or "No screenshots: {reason}". Leave out for no UI change.}
+{each --screenshots URL as ![](url). Leave out when none were passed.}
 ```
 ~~~
 
@@ -188,18 +188,6 @@ commit before anyone can open or review a PR from it. Then, on GitHub with
 
 ```bash
 gh pr create --draft --base <base> --title "<title>" --body-file <tmpfile>
-```
-
-Screenshots can't go on the PR branch, or the squash lands them on main. Put
-them on their own branch without touching the working tree, then link them in
-the body (`gh pr edit <n> --body-file`):
-
-```bash
-blob=$(git hash-object -w shot.png)
-tree=$(printf '100644 blob %s\tshot.png\n' "$blob" | git mktree)
-sha=$(git commit-tree "$tree" -m "Screenshots for <branch>")
-git push origin "${sha}:refs/heads/pr-screenshots/<branch>"
-# ![Invoice list](https://github.com/<owner>/<repo>/blob/<sha>/shot.png?raw=true)
 ```
 
 Inline notes go up as one review, so the PR gets one notification, not ten:
