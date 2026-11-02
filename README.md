@@ -235,6 +235,15 @@ commit it read them at. `/preparatory-refactor` and `/implement-with-tdd` start
 from those paths instead of rediscovering them. They're pointers, not a plan —
 neither skill treats the list as scope, and the repo wins where they disagree.
 
+Pass `--auto` to run it without a human, like from a GitHub issue:
+
+``` /slice --auto <the idea or issue body> ```
+
+It skips the interview and makes the cuts itself. A fresh subagent reviews the
+draft in place of you, and anything it had to guess goes under
+`## Assumptions`. It replies with the SPEC instead of writing a file, so the
+reply can be posted as a comment on the issue.
+
 ### Trace
 
 [`/trace`][37] runs a scenario, like "user creates an account", in your
