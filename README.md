@@ -226,8 +226,9 @@ what changed, suggests a title in the repo's style, and then waits for you to
 write the description. Once you do, it proofreads it lightly and opens the PR
 after you sign off on the exact text.
 
-`/pr --auto` is for when nobody's around. It opens a draft PR whose body says
-why the change exists, and puts risks, tradeoffs, and open questions as inline
+`/pr --auto` is for when nobody's around. It opens a draft PR whose body says,
+in plain English, what changed for the people using the product and why. No
+file paths or commit SHAs. Risks, tradeoffs, and open questions go up as inline
 comments on the lines they're about. You rewrite the description before
 marking it ready. Off GitHub, it replies with the title, body, and notes
 instead.

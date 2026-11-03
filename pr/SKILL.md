@@ -153,8 +153,13 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   make the reply say why.
 - **Gather the why.** Commit bodies, then a SPEC the branch adds or names,
   then the diff. A reason none of them state is "not recorded", never a guess.
-- **Body: why, and where to start.** Why the change exists, with its source
-  (commit sha or SPEC path). Which file to read first. Wrap at 72.
+- **Body: plain English.** Write it for someone who uses the product but
+  never reads the code, like the support lead. What changed for the people
+  using it, and why. No file paths, commit SHAs, code names, or jargon;
+  those belong in the notes. Wrap at 72.
+  - Bad: "Adds a PDF format to `InvoicesController#show` (a3e96d0)."
+  - Good: "Customers can download past invoices as PDFs. Support gets a
+    few requests a week to resend old ones."
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
@@ -163,18 +168,18 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   caller already hosted. Embed each one; don't take, upload, or commit any
   yourself. None passed: no screenshots section.
 - **Have it checked.** One fresh subagent gets the body, the notes, and the
-  base branch, and reads the diff itself. Ask for: claims the diff doesn't
-  back, a why with no source, a risk you missed, and any note that would
-  still be true with the diff hidden. Skip wording. Fix once.
+  base branch, and reads the commits and diff itself. Ask for: claims the
+  diff doesn't back, a reason the commits, SPEC, and diff never give, a
+  risk you missed, any note that would still be true with the diff hidden,
+  and anything in the body a non-technical reader would trip on. Skip
+  wording. Fix once.
 - **Title** as in step 3.
 
 The body:
 
 ~~~
 ```markdown
-{why, one to three sentences} ({source})
-
-Start with `{path}`.
+{what changed for the people using it, and why, one to three sentences}
 
 {each --screenshots URL as ![](url). Leave out when none were passed.}
 ```
