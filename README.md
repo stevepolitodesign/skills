@@ -233,6 +233,8 @@ comments on the lines they're about. You rewrite the description before
 marking it ready. Off GitHub, it replies with the title, body, and notes
 instead.
 
+It fills in the repo's PR template when there is one.
+
 It doesn't take or host screenshots. Pass image URLs you've already uploaded
 with `--screenshots`, and it embeds them in the body:
 

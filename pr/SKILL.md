@@ -35,10 +35,13 @@ Read, don't ask:
   so. Committing and branching are other jobs.
 - `git log <base>..HEAD` and `git diff <base>...HEAD --stat`. What the branch
   does, so you can title it and later check their description against it.
-- House style: `gh pr list --state merged --limit 15 --json title`, plus
+- House style: `gh pr list --state merged --limit 15 --json title,body`, plus
   `git log <base> --oneline -20` for repos without `gh` history. Look at mood
   ("Add" vs "Added"), prefixes (`feat:`, `[JIRA-123]`), capitalization, how code
   names are marked (backticks?), length.
+- PR template: `pull_request_template.md`, any case, in `.github/`, the repo
+  root, or `docs/`. A `.github/PULL_REQUEST_TEMPLATE/` folder holds several;
+  pick the one that fits the branch.
 
 If `gh` isn't available, say which checks you skipped and carry on with git.
 
@@ -81,6 +84,7 @@ Same message as the brief:
 - Ask them to write the description. Mention the useful questions a squash
   commit should answer, briefly: why this change, why this way, anything a
   future reader would trip on.
+- A PR template? Name its headings, so they write into it.
 
 Then stop and wait. Don't draft a description, a template, or an example.
 
@@ -164,6 +168,12 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
   branches get two to four; a typo fix gets none.
+- **House style sets the shape.** A PR template replaces the default body
+  below: keep its headings in order, fill each under these rules, and
+  delete its instruction comments (`<!-- -->`). Tick a box only when the
+  branch backs it. A section nothing on the branch speaks to gets "Not
+  recorded." No template: lay it out like recent merged PRs. Neither: use
+  the default.
 - **Screenshots only when passed in.** `--screenshots` takes image URLs the
   caller already hosted. Embed each one; don't take, upload, or commit any
   yourself. None passed: no screenshots section.
@@ -175,7 +185,7 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   wording. Fix once.
 - **Title** as in step 3.
 
-The body:
+The default body:
 
 ~~~
 ```markdown
