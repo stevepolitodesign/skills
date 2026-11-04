@@ -60,11 +60,19 @@ isn't, at either end of it.
 **Lead with the job.** "This decides who gets charged and when," before any mechanism.
 Mechanism has nowhere to attach yet.
 
-**Anchor to something they already have,** in this order: elsewhere in this same repo,
-then the stack they already work in (`CLAUDE.md` and the rest of the repo say which),
-then something outside software. The middle rung does the most work and is the one that
-gets skipped — "this file is that stack's router" lands where first principles don't.
-Say where the anchor breaks if the gap will bite them.
+**Then a simple analogy,** right after the job: one comparison from everyday life that
+a kid would follow. Keep both free of file, class and code names — even the file they
+asked about — since a path is jargon to this reader until the analogy has given it
+somewhere to land. A job queue is the ticket rail in a restaurant kitchen — the waiter
+clips the order up and walks away, and a cook pulls it down when free. Map its pieces
+onto the real ones and carry it through the drawing's values, then say where it breaks
+if the gap will bite them. One analogy, not a string of them. If they ask for no
+analogies, or for a different framing, do what they asked.
+
+**Anchor the mechanism to something they already have:** elsewhere in this same repo,
+then the stack they already work in (`CLAUDE.md` and the rest of the repo say which).
+The second rung is the one that gets skipped — "this file is that stack's router" lands
+where first principles don't.
 
 **Say the plain version first and the real name once, after,** so they can go search
 for it: "the server kills the process when the machine runs low on memory; the logs

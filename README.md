@@ -182,9 +182,9 @@ any time.
 
 ### ELI5
 
-[`/eli5`][29] explains code or a concept as simply as possible. Uses real
-values from the codebase when possible to help create simple, concrete
-demonstrations.
+[`/eli5`][29] explains code or a concept as simply as possible. Opens with a
+simple everyday analogy unless you ask it not to, then uses real values from
+the codebase when possible to help create simple, concrete demonstrations.
 
 Use [`/understand`][23] to help you reinforce what you've learned.
 
