@@ -167,9 +167,13 @@ through an [artifact][7].
 Because agentic coding sometimes means you're not actually authoring your code,
 you lose context into the decision-making process of each commit.
 
-Additionally, it's geared towards Rails developers. So, if you're working in an
-unfamiliar tech-stack, you can at least get a high level understanding of
-what's going on.
+If you're working in an unfamiliar tech-stack, name the one you know and it'll
+explain the change in those terms:
+
+``` /diff-explainer from the perspective of a WordPress developer ```
+
+Otherwise it uses the background in your `CLAUDE.md`, if there is one, and
+explains the change in the stack's own terms if not.
 
 Finally, in order to be consistent across artifacts, we use [Pico CSS][9] in
 our template.
