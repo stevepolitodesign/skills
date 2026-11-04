@@ -1,6 +1,6 @@
 ---
 type: llm
-focus: { source: file, path: scratchpad/filled.html }
+focus: { source: file, path: scratchpad/walkthrough.html }
 ---
 
 This is an HTML walkthrough of a Node/Express branch. Nobody told the writer what framework the reader knows.
