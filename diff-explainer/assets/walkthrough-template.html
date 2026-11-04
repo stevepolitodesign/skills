@@ -16,7 +16,8 @@
 
   The elements and what they mean here:
     <header> + <hgroup>   title and one-line thesis; the <dl> under it is branch/churn
-    <article>             "Start here" - the summary card and the watch list
+    <article>             "Start here" - the problem and its everyday analogy,
+                          then the summary card and the watch list
     <ol> / <li>           the walkthrough, one item per file or tight group of files
     <pre><code>           the diff. <ins> a added line, <del> a removed line,
                           bare text a context line, <small> a hunk header,
@@ -147,7 +148,8 @@
 
   <article>
     <header><h2>Start here</h2></header>
-    <p>Every deploy logged everyone out. Sessions were held in the web process's own memory, so restarting the process threw them away &mdash; and with two processes running, a user could land on the one that had never seen them. This moves sessions into Redis so any process can read them and a restart doesn't matter.</p>
+    <p>Every deploy logged everyone out. Picture a coat check where each attendant keeps the claim tickets in their own pocket: when one goes home at shift change, every coat they took in is stranded, and a guest who walks up to the other attendant isn't recognized at all. This branch moves the tickets to one board behind the counter that every attendant reads, so a shift change doesn't matter.</p>
+    <p>In the code: sessions were held in the web process's own memory, so restarting the process threw them away &mdash; and with two processes running, a user could land on the one that had never seen them. This moves sessions into Redis so any process can read them and a restart doesn't matter.</p>
     <figure>
       <div>
         <b>Before</b>

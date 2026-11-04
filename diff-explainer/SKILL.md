@@ -47,10 +47,11 @@ change is obvious — a version bump, a typo — say so and skip the artifact.
 Explain the change in this stack's own terms unless you know the reader's
 background: the user named it ("for a WordPress developer"), or their instructions
 say what they know. Don't guess one, and don't default to a popular framework. If
-the project is already in their stack, write plainly, no analogies. If it isn't,
-translate each unfamiliar concept into their terms inline, in the annotation where
-the reviewer meets it. Never build a glossary or translation table: that makes them
-hold a mapping and look things up, where an analogy in the sentence costs nothing.
+the project is already in their stack, write plainly, no framework comparisons.
+If it isn't, translate each unfamiliar concept into their terms inline, in the
+annotation where the reviewer meets it. Never build a glossary or translation
+table: that makes them hold a mapping and look things up, where an analogy in the
+sentence costs nothing.
 Read `references/translation.md` first: it covers how to use an analogy without it
 becoming noise.
 
@@ -89,6 +90,18 @@ hidden, it's a *what* and can go. The ones that earn their place are the ones an
 author would rather not write — this is a workaround, this gets slow at 10x the
 data — and the dead ends, since "we tried X, it failed because Y" pre-empts the
 reviewer's first suggestion. Plain words: no "it's worth noting", "this ensures".
+
+**Open with the problem and one analogy.** The reviewer may have no context on the
+problem this branch solves, and a mechanism means nothing until they know what
+went wrong. So "Start here" leads with the problem in plain words (what a user
+saw, what someone needed), then one comparison from everyday life a kid would
+follow, both before any file, class or code name. Sessions held in each server's
+memory are a coat check where each attendant keeps the tickets in their own
+pocket: one goes home at shift change, and every coat they took in is stranded.
+Map its pieces onto the real ones, then say where it breaks if the gap will bite.
+One analogy, in "Start here" only; the annotations stay in the code's terms. This
+isn't step 2's framework translation: it explains the problem, not the stack, so
+it's there whoever the reader is. If the user asks for no analogies, skip it.
 
 **Draw the baseline.** The reviewer can't judge a change without knowing what it
 changed from, and the diff only shows the seams. So "Start here" gets one
