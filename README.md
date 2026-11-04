@@ -233,12 +233,6 @@ comments on the lines they're about. You rewrite the description before
 marking it ready. Off GitHub, it replies with the title, body, and notes
 instead.
 
-It fills in the repo's PR template when there is one. When the branch name,
-commits, or SPEC name an issue, the body ends with `Closes #42`.
-
-It writes in my voice, taken from my PRs on thoughtbot/top_secret: it
-opens with what prompted the change, says "we", and keeps it short.
-
 It doesn't take or host screenshots. Pass image URLs you've already uploaded
 with `--screenshots`, and it embeds them in the body:
 
