@@ -12,7 +12,7 @@ which is why I have such a small set of skills.
 
 ### Claude Code
 
-Coming soon.
+``` npx skills@latest add https://github.com/stevepolitodesign/skills --agent claude-code ```
 
 ### Codex, and other agents
 
