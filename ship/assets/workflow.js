@@ -380,21 +380,6 @@ if (verified) {
 
 phase('Open')
 
-// Built here, not by an agent: it states what the run established, and an agent
-// rewording it is one more place for "unverified" to turn into "verified". Only
-// what's still owed goes in; a clean run posts nothing.
-function owed() {
-  const lines = []
-  if (sofar.suiteGreen === false) lines.push('- The tests are failing.')
-  if (!sofar.verified) lines.push('- Nobody tried this in the running app.')
-  sofar.criteriaUnbuilt.forEach(c => lines.push('- Not built: ' + c))
-  if (sofar.lensesUnchecked.length) lines.push('- Not reviewed for: ' + sofar.lensesUnchecked.join(', '))
-  sofar.reviewLeft.forEach(f => lines.push('- Your call: ' + f))
-  return lines.length ? ['Still to do before this merges:', ''].concat(lines).join('\n') : null
-}
-
-const OWED = owed()
-
 const NOTE = {
   type: 'object',
   properties: { path: { type: 'string' }, line: { type: 'number' }, body: { type: 'string' } },
@@ -406,10 +391,7 @@ const opened = await agent(
   'branch builds is ' + SPEC + '.\n\n' +
   'Its "Have it checked" step needs a subagent, and you have no tool for spawning ' +
   'one. Skip that step only; a fresh agent checks your work after you.\n\n' +
-  (OWED
-    ? 'Once the PR is open, post this as one PR comment, unchanged, with ' +
-      '`gh pr comment <n> --body-file`:\n\n' + OWED + '\n\n'
-    : 'Post no comment of your own on the PR.\n\n') +
+  'Post no comment of your own on the PR.\n\n' +
   'Return what you sent in `title`, `body` and `notes` whether or not the PR opened, ' +
   'and the base branch you used. ' + AFTERWARD,
   { label: 'open:pr', phase: 'Open', schema: {
@@ -437,7 +419,6 @@ if (!opened.prUrl) {
     title: opened.title,
     body: opened.body,
     notes: opened.notes,
-    owed: OWED,
   })
 }
 
