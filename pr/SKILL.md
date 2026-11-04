@@ -38,10 +38,13 @@ Read, don't ask:
 - House style: `gh pr list --state merged --limit 15 --json title,body`, plus
   `git log <base> --oneline -20` for repos without `gh` history. Look at mood
   ("Add" vs "Added"), prefixes (`feat:`, `[JIRA-123]`), capitalization, how code
-  names are marked (backticks?), length.
+  names are marked (backticks?), length, and where bodies put issue links.
 - PR template: `pull_request_template.md`, any case, in `.github/`, the repo
   root, or `docs/`. A `.github/PULL_REQUEST_TEMPLATE/` folder holds several;
   pick the one that fits the branch.
+- The issue the branch works on: a number or issue URL in the branch name
+  (`42-shipping-emails`, `issue-42`), the commits, or a SPEC the branch adds
+  or names. Only what those say; don't search the tracker for a match.
 
 If `gh` isn't available, say which checks you skipped and carry on with git.
 
@@ -85,6 +88,7 @@ Same message as the brief:
   commit should answer, briefly: why this change, why this way, anything a
   future reader would trip on.
 - A PR template? Name its headings, so they write into it.
+- An issue? Remind them to link it (`Closes #42`) so it closes on merge.
 
 Then stop and wait. Don't draft a description, a template, or an example.
 
@@ -174,6 +178,10 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   branch backs it. A section nothing on the branch speaks to gets "Not
   recorded." No template: lay it out like recent merged PRs. Neither: use
   the default.
+- **Link the issue** recon found, on its own line: `Closes #42`
+  (`owner/repo#42` for another repo), where the template or recent PRs put
+  it, else last. `Refs #42` instead when the commits or SPEC say the branch
+  does only part of it. None found: no line.
 - **Screenshots only when passed in.** `--screenshots` takes image URLs the
   caller already hosted. Embed each one; don't take, upload, or commit any
   yourself. None passed: no screenshots section.
@@ -192,6 +200,8 @@ The default body:
 {what changed for the people using it, and why, one to three sentences}
 
 {each --screenshots URL as ![](url). Leave out when none were passed.}
+
+{Closes #N. Leave out when recon found no issue.}
 ```
 ~~~
 
