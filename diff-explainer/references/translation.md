@@ -10,19 +10,19 @@ versus what's a workaround. Their own stack gives them exactly that at home, so
 the analogy does real work: it hands them the conventions they'd otherwise have
 to infer from the diff.
 
-Which means: translate concepts and conventions, not syntax. "It's their middleware,
-running before every view" is useful. "`const` is like `$`" is noise.
+Which means: translate concepts and conventions, not syntax. "It's their service
+provider, wiring things up once at boot" is useful. "`:=` is like `=`" is noise.
 
 ## How to use one
 
 **Say the analogy, then the difference that matters.** An analogy without its
-limit sets the reviewer up to be wrong later. "This is this stack's background
-job queue, except there's no retry; a failed job is just gone" tells them where
-their instincts stop applying, which is the part they can't get from the diff.
+limit sets the reviewer up to be wrong later. "This struct is their model,
+except nothing saves it; it's just data in memory" tells them where their
+instincts stop applying, which is the part they can't get from the diff.
 
-**One per idea, then move on.** Analogies stack badly. Once you've said an
-Express route handler is their controller action, keep calling it that; don't
-reach for a second metaphor two paragraphs later.
+**One per idea, then move on.** Analogies stack badly. Once you've said a
+Go handler is their controller action, keep calling it that; don't reach for a
+second metaphor two paragraphs later.
 
 **Skip it when the thing is already universal.** A typo fix, a renamed variable,
 a null check: nobody needs a translation for that. Forcing an analogy onto
@@ -38,20 +38,22 @@ Describe the actual thing plainly instead of stretching a comparison.
 
 ## Worked examples
 
-For a Django developer reading an Express branch.
+For a Laravel developer reading a Go branch.
 
 **Weak, syntax with no why:**
-> This adds a middleware function to the Express app.
+> This adds a `sync.Once` around the config loader.
 
 **Better, convention plus the reason:**
-> Same slot as a Django middleware: it runs on every request before any view
-> sees it. It's here rather than in each handler because the auth check was
-> already drifting between three of them.
+> Does what binding a singleton in a service provider does: the config is read
+> once, the first time anything asks, and shared after that. It moved here
+> because two packages were each reading the file on their own and disagreed
+> after a deploy.
 
 **Weak, the analogy is the whole annotation:**
-> BullMQ is basically Celery.
+> A goroutine is basically a queued job.
 
 **Better, analogy sets up the actual point:**
-> BullMQ is this stack's Celery. Like an undecorated Celery task, a job that
-> throws isn't retried, so it's gone on the first failure. That's why this one
-> catches and re-enqueues by hand.
+> Starting a goroutine here is like dispatching a Laravel job, minus the queue:
+> it runs in the same process, so a restart mid-resize loses the thumbnail,
+> with no `failed_jobs` row to pick it back up. That's why the upload is marked
+> pending first and a sweep finishes any left behind.
