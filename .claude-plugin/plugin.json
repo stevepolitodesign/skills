@@ -13,6 +13,7 @@
     "./multi-lens-review",
     "./pr",
     "./preparatory-refactor",
+    "./risk-score",
     "./rubber-duck",
     "./ship",
     "./slice",
