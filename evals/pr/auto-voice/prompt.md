@@ -1,5 +1,5 @@
 ---
-description: The user's CLAUDE.md points at PRs they wrote. Run unattended, the skill writes the body in that voice without borrowing claims from the samples.
+description: Run unattended, the skill writes the body in Steve's voice from the guide built into it, without borrowing the guide's example.
 max_turns: 60
 timeout_seconds: 1200
 allowed_tools: [Read, Glob, Grep, Bash, Skill, Agent, Write, AskUserQuestion]

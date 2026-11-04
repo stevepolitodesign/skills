@@ -166,14 +166,9 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   using it, and why. No file paths, commit SHAs, code names, or jargon;
   those belong in the notes. Wrap at 72.
   - Bad: "Adds a PDF format to `InvoicesController#show` (a3e96d0)."
-  - Good: "Customers can download past invoices as PDFs. Support gets a
-    few requests a week to resend old ones."
-- **Write in the user's voice** when their instructions (CLAUDE.md,
-  memory) point at PRs they wrote. Read five or so first. Open the way
-  they open, even when the default body below leads with what changed.
-  Match "I" or "we", sentence length, and how they link. Take the voice, not the content: no claim,
-  reason, or phrase that isn't true of this branch. Audience still wins.
-  No pointer: skip it.
+  - Good: "Support resends old invoices by hand a few times a week. Now
+    customers can download them as PDFs."
+- **Write in Steve's voice.** See [Voice](#voice).
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
@@ -210,6 +205,35 @@ The default body:
 {Closes #N. Leave out when recon found no issue.}
 ```
 ~~~
+
+### Voice
+
+The body should read like Steve wrote it. This comes from Steve's PRs on
+thoughtbot/top_secret.
+
+- **Open with what prompted the change**, not what changed: "Now that
+  ...", "Prior to this, ...", "In an effort to ...", "Follow-up to
+  #77.", or the problem in one sentence. Pick what fits.
+- **Then what changed**, a sentence or two.
+- **"We" for the team.** Never "I"; you aren't Steve.
+- **Caveats get their own short paragraph**: "For the time being, ...",
+  "Note that ...".
+- **Short paragraphs.** No headings or bold. Bullets only for a list of
+  rules.
+- **Links go at the bottom**, reference-style: `this [discussion][1]`,
+  then `[1]: https://...`.
+- **Plain and a little casual**: "it feels like a good time to ...".
+  No sales words.
+
+```markdown
+Prior to this, support resent old invoices by hand a few times a week.
+
+Now customers can download any past invoice as a PDF.
+
+For the time being, invoices from before 2020 aren't included.
+```
+
+Only the voice. Every claim still comes from the branch.
 
 ### Open it
 

@@ -1,6 +1,6 @@
 ---
 type: regex
-pattern: 'production-like|drive this out|helped drive|benchmark|Mutex|thread-safe|tested in'
+pattern: 'invoice|PDF|2020'
 flags: i
 match: not_contains
 ---
