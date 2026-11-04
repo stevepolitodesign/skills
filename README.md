@@ -167,6 +167,9 @@ through an [artifact][7].
 Because agentic coding sometimes means you're not actually authoring your code,
 you lose context into the decision-making process of each commit.
 
+The reviewer may not know the problem either, so the page opens with a simple
+everyday analogy for it unless you ask it not to.
+
 If you're working in an unfamiliar tech-stack, name the one you know and it'll
 explain the change in those terms:
 
