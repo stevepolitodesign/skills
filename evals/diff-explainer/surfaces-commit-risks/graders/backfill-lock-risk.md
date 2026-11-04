@@ -1,6 +1,6 @@
 ---
 type: llm
-focus: { source: file, path: scratchpad/filled.html }
+focus: { source: file, path: scratchpad/walkthrough.html }
 ---
 
 This is an HTML walkthrough of a branch that backfills `orders.total_cents` with one `UPDATE` inside a migration.

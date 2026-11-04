@@ -1,5 +1,5 @@
 ---
 type: regex
 target: { source: file, path: scratchpad/walkthrough.html }
-pattern: '--pico-background-color'
+pattern: 'aside\[data-note="risk"\]'
 ---

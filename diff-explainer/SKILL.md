@@ -114,8 +114,8 @@ method — gets no figure; don't draw two identical boxes to fill the slot.
 ## 5. Fill in the template and publish
 
 `assets/walkthrough-template.html` is the page, and its own comment lists the
-elements. Pico CSS does the design, so there are no layout classes to choose: pick the
-element that describes the content — `<ins>` and `<del>` for diff lines,
+elements. Its `<style>` block is the whole design, so there are no layout classes to
+choose: pick the element that describes the content — `<ins>` and `<del>` for diff lines,
 `<aside data-note>` for an annotation — and leave the `<style>` block alone, so every
 walkthrough reads the same way. Everything inside `<main>` is a worked example —
 replace it. Three calls the comment doesn't make: the `<hgroup>` carries the change's
@@ -134,24 +134,8 @@ whole app down" is a fact they'd have to dig for; "that's the call I'd like you 
 sign off on" steers. What the branch deliberately doesn't do is a fact too: put it
 in "Start here", without "easy to add if you'd rather".
 
-Write the filled file to your scratchpad, then inline Pico. An artifact's CSP blocks
-external stylesheets, so the vendored copy has to go into the page itself, below the
-`<title>` on line 1 — only the first 8KB gets scanned for it, and the stylesheet is
-70KB:
-
-```bash
-CSS=<absolute path to this skill>/assets/pico.classless.min.css
-test -s "$CSS" || { echo "pico missing at $CSS"; exit 1; }
-{ head -1 filled.html
-  echo '<style>'; cat "$CSS"; echo '</style>'
-  tail -n +2 filled.html; } > walkthrough.html
-grep -q -- '--pico-background-color' walkthrough.html || echo "PICO NOT INLINED"
-```
-
-Spell `$CSS` out absolutely — the shell resolves it against the project directory,
-not this skill's — and check it, because the brace group exits 0 whether or not
-`cat` found anything and publishes an unstyled page without complaining.
-
-Publish `walkthrough.html` with the Artifact tool (favicon `🔍`, a one-sentence
-description, the change's name as the title) and hand over the link. If your
-environment wants `artifact-design` loaded first, load it, don't redesign.
+Write the filled page to your scratchpad as `walkthrough.html` and publish it with
+the Artifact tool (favicon `🔍`, a one-sentence description, the change's name as
+the title) and hand over the link. If your environment wants `artifact-design`
+loaded first, load it, but keep the template's `<style>` block: it is this page's
+design system.
