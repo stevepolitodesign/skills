@@ -168,6 +168,12 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   - Bad: "Adds a PDF format to `InvoicesController#show` (a3e96d0)."
   - Good: "Customers can download past invoices as PDFs. Support gets a
     few requests a week to resend old ones."
+- **Write in the user's voice** when their instructions (CLAUDE.md,
+  memory) point at PRs they wrote. Read five or so first. Open the way
+  they open, even when the default body below leads with what changed.
+  Match "I" or "we", sentence length, and how they link. Take the voice, not the content: no claim,
+  reason, or phrase that isn't true of this branch. Audience still wins.
+  No pointer: skip it.
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
