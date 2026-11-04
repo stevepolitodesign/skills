@@ -41,6 +41,14 @@ DESTRUCTIVE = re.compile(
     r"|\balter\s+table\b.*\b(drop|rename)\b|\bSchema::drop|\bremove\s+:\w",
     re.I,
 )
+ROLLBACK_START = re.compile(
+    r"\bdef\s+(down|downgrade)\b|\bexports\.down\b|\bfunction\s+down\s*\(|\bvoid\s+Down\s*\("
+    r"|\basync\s+down\s*\(|\bdown\s*:\s*(async\b|function\b|\()|\+goose\s+Down\b|^\s*-?\s*rollback\s*:"
+)
+ROLLBACK_END = re.compile(
+    r"\bdef\s+(up|upgrade|change)\b|\bexports\.up\b|\bfunction\s+up\s*\(|\bvoid\s+Up\s*\("
+    r"|\basync\s+up\s*\(|\bup\s*:\s*(async\b|function\b|\()|\+goose\s+Up\b|^\s*-\s*changeSet\s*:"
+)
 INFRA = re.compile(
     r"^(\.github|\.circleci|\.buildkite|k8s|kubernetes|helm|charts|terraform|ansible|deploy)/"
     r"|(^|/)config/(?!locales/)|(^|/)settings(/\w+)?\.py$"
@@ -60,22 +68,28 @@ CODE = re.compile(
     r"|vue|svelte)$"
 )
 
+
 def parse(diff):
-    files, current, in_hunk = [], None, False
+    files, current, in_hunk, rollback = [], None, False, False
     for line in diff.splitlines():
         if line.startswith("diff --git "):
             m = re.match(r'diff --git "?a/(.*?)"? "?b/(.*?)"?$', line)
-            current = {"path": m.group(2) if m else line[11:], "status": "modified", "added": [], "removed": 0}
+            current = {"path": m.group(2) if m else line[11:], "status": "modified", "added": [], "forward": [], "removed": 0}
             files.append(current)
-            in_hunk = False
+            in_hunk = rollback = False
         elif current is None:
             continue
-        elif in_hunk and line[:1] == "+":
-            current["added"].append(line[1:])
+        elif in_hunk and line[:1] in ("+", " "):
+            rollback = in_rollback(line[1:], rollback)
+            if line[:1] == "+":
+                current["added"].append(line[1:])
+                if not rollback:
+                    current["forward"].append(line[1:])
         elif in_hunk and line[:1] == "-":
             current["removed"] += 1
         elif line.startswith("@@"):
             in_hunk = True
+            rollback = in_rollback(line.split("@@")[-1], False)
         elif line.startswith("new file mode"):
             current["status"] = "added"
         elif line.startswith("deleted file mode"):
@@ -85,6 +99,14 @@ def parse(diff):
         elif line.startswith("+++ b/"):
             current["path"] = line[len("+++ b/"):]
     return files
+
+
+def in_rollback(line, rollback):
+    if ROLLBACK_START.search(line):
+        return True
+    if ROLLBACK_END.search(line):
+        return False
+    return rollback
 
 
 def words(path):
@@ -122,7 +144,8 @@ def score(files):
         ("migration", 2, "Changes the database schema",
          [f for f in other if MIGRATION.search(f["path"])]),
         ("destructive_migration", 3, "Drops, renames, or rewrites existing columns, tables, or rows",
-         [f for f in other if MIGRATION.search(f["path"]) and any(DESTRUCTIVE.search(l) for l in f["added"])]),
+         [f for f in other if MIGRATION.search(f["path"]) and not f["path"].endswith(".down.sql")
+          and any(DESTRUCTIVE.search(l) for l in f["forward"])]),
         ("sensitive_path", 3, "Touches authentication, authorization, payments, or secrets",
          [f for f in other if CODE.search(f["path"]) and words(f["path"]) & SENSITIVE]),
         ("dependencies", 2, "Adds, removes, or upgrades dependencies",
