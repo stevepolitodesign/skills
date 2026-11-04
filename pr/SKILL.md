@@ -35,10 +35,16 @@ Read, don't ask:
   so. Committing and branching are other jobs.
 - `git log <base>..HEAD` and `git diff <base>...HEAD --stat`. What the branch
   does, so you can title it and later check their description against it.
-- House style: `gh pr list --state merged --limit 15 --json title`, plus
+- House style: `gh pr list --state merged --limit 15 --json title,body`, plus
   `git log <base> --oneline -20` for repos without `gh` history. Look at mood
   ("Add" vs "Added"), prefixes (`feat:`, `[JIRA-123]`), capitalization, how code
-  names are marked (backticks?), length.
+  names are marked (backticks?), length, and where bodies put issue links.
+- PR template: `pull_request_template.md`, any case, in `.github/`, the repo
+  root, or `docs/`. A `.github/PULL_REQUEST_TEMPLATE/` folder holds several;
+  pick the one that fits the branch.
+- The issue the branch works on: a number or issue URL in the branch name
+  (`42-shipping-emails`, `issue-42`), the commits, or a SPEC the branch adds
+  or names. Only what those say; don't search the tracker for a match.
 
 If `gh` isn't available, say which checks you skipped and carry on with git.
 
@@ -81,6 +87,8 @@ Same message as the brief:
 - Ask them to write the description. Mention the useful questions a squash
   commit should answer, briefly: why this change, why this way, anything a
   future reader would trip on.
+- A PR template? Name its headings, so they write into it.
+- An issue? Remind them to link it (`Closes #42`) so it closes on merge.
 
 Then stop and wait. Don't draft a description, a template, or an example.
 
@@ -158,12 +166,23 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   using it, and why. No file paths, commit SHAs, code names, or jargon;
   those belong in the notes. Wrap at 72.
   - Bad: "Adds a PDF format to `InvoicesController#show` (a3e96d0)."
-  - Good: "Customers can download past invoices as PDFs. Support gets a
-    few requests a week to resend old ones."
+  - Good: "Support resends old invoices by hand a few times a week. Now
+    customers can download them as PDFs."
+- **Write in Steve's voice.** See [Voice](#voice).
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
   branches get two to four; a typo fix gets none.
+- **House style sets the shape.** A PR template replaces the default body
+  below: keep its headings in order, fill each under these rules, and
+  delete its instruction comments (`<!-- -->`). Tick a box only when the
+  branch backs it. A section nothing on the branch speaks to gets "Not
+  recorded." No template: lay it out like recent merged PRs. Neither: use
+  the default.
+- **Link the issue** recon found, on its own line: `Closes #42`
+  (`owner/repo#42` for another repo), where the template or recent PRs put
+  it, else last. `Refs #42` instead when the commits or SPEC say the branch
+  does only part of it. None found: no line.
 - **Screenshots only when passed in.** `--screenshots` takes image URLs the
   caller already hosted. Embed each one; don't take, upload, or commit any
   yourself. None passed: no screenshots section.
@@ -175,15 +194,46 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   wording. Fix once.
 - **Title** as in step 3.
 
-The body:
+The default body:
 
 ~~~
 ```markdown
 {what changed for the people using it, and why, one to three sentences}
 
 {each --screenshots URL as ![](url). Leave out when none were passed.}
+
+{Closes #N. Leave out when recon found no issue.}
 ```
 ~~~
+
+### Voice
+
+The body should read like Steve wrote it. This comes from Steve's PRs on
+thoughtbot/top_secret.
+
+- **Open with what prompted the change**, not what changed: "Now that
+  ...", "Prior to this, ...", "In an effort to ...", "Follow-up to
+  #77.", or the problem in one sentence. Pick what fits.
+- **Then what changed**, a sentence or two.
+- **"We" for the team.** Never "I"; you aren't Steve.
+- **Caveats get their own short paragraph**: "For the time being, ...",
+  "Note that ...".
+- **Short paragraphs.** No headings or bold. Bullets only for a list of
+  rules.
+- **Links go at the bottom**, reference-style: `this [discussion][1]`,
+  then `[1]: https://...`.
+- **Plain and a little casual**: "it feels like a good time to ...".
+  No sales words.
+
+```markdown
+Prior to this, support resent old invoices by hand a few times a week.
+
+Now customers can download any past invoice as a PDF.
+
+For the time being, invoices from before 2020 aren't included.
+```
+
+Only the voice. Every claim still comes from the branch.
 
 ### Open it
 
