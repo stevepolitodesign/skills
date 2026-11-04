@@ -8,8 +8,8 @@ argument-hint: "[PR number, branch, or paths to explain]"
 
 The diff already shows what changed. What it can't show is why — why this approach
 and not the obvious one, what broke when you tried that, what you're nervous about,
-what you decided not to do. Supply that. Your reader is a sharp, time-poor Rails
-developer who knows Rails and Heroku well and this stack barely.
+what you decided not to do. Supply that. Your reader is a sharp, time-poor developer
+who may not know this stack.
 
 ## 1. Work out what you're explaining
 
@@ -42,15 +42,17 @@ PR (`gh pr diff <n>`, plus `gh pr view <n>` for the body and linked issue) unles
 branch by that name exists; with no working `gh`, say so and take the branch. If the
 change is obvious — a version bump, a typo — say so and skip the artifact.
 
-## 2. Rails, or not
+## 2. Who's reading
 
-Rails means a `Gemfile` listing `rails`, `bin/rails`, or `config/application.rb`.
-If it is, the reviewer already speaks the language: write plainly, no analogies. If
-it isn't, translate each unfamiliar concept into Rails and Heroku terms inline, in
-the annotation where the reviewer meets it. Never build a glossary or translation
-table — that makes them hold a mapping and look things up, where an analogy in the
-sentence costs nothing. Read `references/rails-heroku-translation.md` first: it has
-the mappings and how to use one without it becoming noise.
+Explain the change in this stack's own terms unless you know the reader's
+background: the user named it ("for a WordPress developer"), or their instructions
+say what they know. Don't guess one, and don't default to a popular framework. If
+the project is already in their stack, write plainly, no analogies. If it isn't,
+translate each unfamiliar concept into their terms inline, in the annotation where
+the reviewer meets it. Never build a glossary or translation table: that makes them
+hold a mapping and look things up, where an analogy in the sentence costs nothing.
+Read `references/translation.md` first: it covers how to use an analogy without it
+becoming noise.
 
 ## 3. Gather the why
 
