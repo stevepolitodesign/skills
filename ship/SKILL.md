@@ -43,33 +43,55 @@ nothing to aim at otherwise.
 ## When it returns
 
 The return value is the whole report — nothing reaches the user on its own.
-Lead with `prUrl`. No `prUrl` means the PR never opened: say
-`notOpenedReason`, then hand over `title`, `body`, `notes` (as `path:line`
-bullets) and `owed` in fenced blocks, ready to paste. Then say these before you
-summarize anything:
+Give them a tl;dr: what happened and what needs them. The PR holds the rest.
 
-- `suiteGreen` — false means the branch is red, whatever else the run says
-- `checkChanges` — what the check agent caught in the description. `null`
-  means nobody checked it
-- `criteriaUnbuilt` and `reviewLeft` — what's still owed
-- `verified` and `lensesUnchecked` — what nobody actually checked
-- `screenshots` — local paths, not in the PR. Say so; attaching them is the
-  user's job for now
+Four lines, in this order, in plain words. One sentence each, under 25 words;
+detail belongs in the PR. Never print the return value's field names.
 
-The PR gets one comment, and only when something is still owed: failing tests,
-an app nobody drove, unbuilt criteria, unreviewed lenses, or a review finding
-left for the author. The script writes it, not an agent, so "unchecked" can't
-get reworded into "checked". A clean run posts nothing.
+```
+Draft PR: https://github.com/acme/billing/pull/42
+Built: invoices are due 30 days after issue, overdue the day after.
+Checked: tests green. Called Invoice#overdue? on a sample invoice; got true.
+Needs you: nobody ran the app. 2 screenshots in tmp/ship/, not on the PR.
+```
 
-Then close with a short section built from `afterward`: the assumptions,
-surprises, and open questions each step reported, labeled by step. Quote them;
-don't add your own. You didn't do the work, so anything you add is a guess about
-someone else's session. Leave out a step that reported nothing, and if no step
-reported anything, say that in one line.
+- **Draft PR** — `prUrl`. None means it never opened: say so with
+  `notOpenedReason`.
+- **Built** — the SPEC's criteria that got built, one line. Add any in
+  `criteriaUnbuilt` as "not built: …".
+- **Checked** — `suiteGreen` first; false means the branch is red, whatever
+  else the run says. Then how `verified` checked the criteria outside the
+  tests, or that nobody did.
+- **Needs you** — only what applies, comma-separated: a red suite, unbuilt
+  criteria, `reviewLeft` findings, `lensesUnchecked`, an app nobody drove,
+  `screenshots` to attach (local paths; nothing uploads them yet), and a
+  description nobody checked (`checkChanges` is null). Nothing applies? "Needs
+  you: nothing."
 
-A halted run returns `haltedAt` and `reason` instead, carrying every report the
-run produced, plus `afterward`. Hand those over rather than summarizing them;
-someone is about to pick the work up by hand and those reports are all they get.
+PR not opened? After the four lines, hand over `title`, `body`, `notes` (as
+`path:line` bullets) and `owed`, each in its own fenced block under a bold
+label (**Title**, **Body**, …), ready to paste.
+
+Then at most three items from `afterward` a reviewer should know before
+merging: open questions first, then assumptions. Quote them, label each by
+step. Don't add your own; you didn't do the work. If you dropped any, say how
+many, so the user can ask. Nothing reported? Leave it out.
+
+The PR gets one comment, and only when something is still owed. The script
+writes it, not an agent, so "unchecked" can't get reworded into "checked". A
+clean run posts nothing.
+
+A halted run returns `haltedAt` and `reason` instead. Lead with those and the
+decision the user has to make to unblock it:
+
+```
+Stopped at Implement: criterion 2 calls Ledgerly's API with a key.
+You decide: where the key lives, what happens when the call fails.
+Committed so far: due dates (criterion 1), suite green.
+```
+
+Decisions can be a short bullet list. Skip a line per step; the step reports
+stay with you, so hand them over when asked.
 
 ## Why the script does the fan-out
 
