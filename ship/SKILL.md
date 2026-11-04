@@ -77,8 +77,8 @@ merging: open questions first, then assumptions. Quote them, label each by
 step. Don't add your own; you didn't do the work. If you dropped any, say how
 many, so the user can ask. Nothing reported? Leave it out.
 
-Nothing posts a comment on the PR. What's still owed goes in "Needs you",
-to the user, not to reviewers.
+The PR gets line notes, never a summary comment. What's still owed goes in
+"Needs you", to the user, not to reviewers.
 
 A halted run returns `haltedAt` and `reason` instead. Lead with those and the
 decision the user has to make to unblock it:
