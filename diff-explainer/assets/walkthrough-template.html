@@ -1,14 +1,15 @@
 <title>Session Store Swap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
 
 <!--
   DIFF WALKTHROUGH TEMPLATE
   =========================
-  Pico CSS does the design (assets/pico.classless.min.css, the classless build).
-  There are no layout classes here on purpose: pick the element that describes the
-  content and Pico styles it. The <style> block below is only the handful of things
-  Pico has no opinion about, and every colour in it comes from a Pico token, so the
-  page follows the reader's light or dark theme on its own. Don't rewrite it - every
-  walkthrough is supposed to look the same so a reviewer learns the page once.
+  The <style> block below is the whole design. There are no layout classes on
+  purpose: pick the element that describes the content and the stylesheet styles
+  it. Every colour is a token on :root with a dark-mode copy, so the page follows
+  the reader's theme. Don't rewrite it - every walkthrough is supposed to look the
+  same so a reviewer learns the page once.
 
   Everything inside <main> is a WORKED EXAMPLE (an Express app moving sessions to
   Redis, explained for a Rails reviewer). Replace it with the real change.
@@ -41,53 +42,94 @@
 -->
 
 <style>
-  /* Pico paints the page with :where(:root), which is specificity zero, so any
-     background the artifact wrapper puts on <body> covers it. Repaint both, from
-     Pico's tokens, so the page keeps whichever theme Pico resolved. */
-  :root, body { background: var(--pico-background-color); color: var(--pico-color); }
+  /* One reading column; diffs scroll sideways inside their own box. */
+  :root {
+    --bg: #f7f8fa; --surface: #eceff4; --fg: #1c2230; --muted: #5a6376; --line: #d3d9e3;
+    --why: #2a5bd7; --risk: #c0362c; --ins: #1d7a3c; --tradeoff: #8a5800; --alternative: #6a4cbb;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    --space: 1rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151b; --surface: #1b2029; --fg: #e3e7ee; --muted: #98a1b3; --line: #2c3341;
+      --why: #7ea4ff; --risk: #ff7b72; --ins: #5ad06e; --tradeoff: #e3b341; --alternative: #b69af2;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151b; --surface: #1b2029; --fg: #e3e7ee; --muted: #98a1b3; --line: #2c3341;
+    --why: #7ea4ff; --risk: #ff7b72; --ins: #5ad06e; --tradeoff: #e3b341; --alternative: #b69af2;
+    color-scheme: dark;
+  }
 
-  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; }
-  dt { color: var(--pico-muted-color); font-weight: 600; }
-  dd { margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 1rem/1.6 var(--sans); }
+  main {
+    max-width: 52rem; margin: 0 auto;
+    padding-block: calc(var(--space) * 2.5);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  main > * + * { margin-top: calc(var(--space) * 2.5); }
 
-  ol > li + li { margin-top: calc(var(--pico-block-spacing-vertical) * 1.5); }
+  h1, h2, h3 { margin: 0; line-height: 1.25; font-weight: 600; text-wrap: balance; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.3rem; }
+  p { margin: 0 0 var(--space); max-width: 65ch; }
+  hgroup { margin-bottom: var(--space); }
+  hgroup > p { margin: 0.25rem 0 0; color: var(--muted); }
+  header > hgroup > p { font-size: 1.15rem; }
 
-  code { padding: 0.1em 0.3em; }
-  h2 > code, h3 > code { padding: 0; background: none; font-size: inherit; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.5rem; margin: var(--space) 0 0; }
+  dt { color: var(--muted); font-weight: 600; }
+  dd { margin: 0; min-width: 0; }
+
+  article { padding: calc(var(--space) * 1.5); border: 1px solid var(--line); border-radius: 6px; }
+  article > header { margin-bottom: var(--space); }
+
+  ol { margin: 0; padding: 0; list-style: none; }
+  ol > li + li { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 3); border-top: 1px solid var(--line); }
   li h2 { font-size: 1.15rem; overflow-wrap: anywhere; }
 
-  del { text-decoration: none; }
-  pre small, pre em { color: var(--pico-muted-color); }
+  code, pre { font-family: var(--mono); font-size: 0.875rem; }
+  code { padding: 0.1em 0.3em; border-radius: 3px; background: var(--surface); }
+  h2 > code, h3 > code, pre code { padding: 0; background: none; font-size: inherit; }
+  pre { margin: 0 0 var(--space); padding: var(--space); overflow-x: auto; line-height: 1.5; border-radius: 6px; background: var(--surface); }
+  ins, del { text-decoration: none; }
+  ins { color: var(--ins); background: color-mix(in srgb, var(--ins) 12%, transparent); }
+  del { color: var(--risk); background: color-mix(in srgb, var(--risk) 12%, transparent); }
+  pre small, pre em { color: var(--muted); font-size: inherit; }
 
   figure {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: var(--pico-spacing);
+    gap: var(--space); margin: var(--space) 0;
   }
+  figure > div { min-width: 0; }
   figure pre { margin: 0; }
-  figure b { display: block; margin-bottom: 0.25rem; color: var(--pico-muted-color); font-size: 0.8rem; }
-  figcaption { grid-column: 1 / -1; color: var(--pico-muted-color); font-size: 0.875rem; }
+  figure b { display: block; margin-bottom: 0.25rem; color: var(--muted); font-size: 0.8rem; }
+  figcaption { grid-column: 1 / -1; color: var(--muted); font-size: 0.875rem; }
 
   aside {
-    --note: var(--pico-muted-color);
-    margin: var(--pico-spacing) 0;
-    padding: calc(var(--pico-spacing) * 0.5) var(--pico-spacing);
+    --note: var(--muted);
+    margin: var(--space) 0;
+    padding: calc(var(--space) * 0.75) var(--space);
     border-left: 0.25rem solid var(--note);
-    background: var(--pico-card-sectioning-background-color);
+    background: var(--surface);
   }
   aside > :last-child { margin-bottom: 0; }
+  aside pre { background: var(--bg); }
   aside h3 {
     margin-bottom: 0.35rem;
     color: var(--note);
     font-size: 0.7rem;
-    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  aside[data-note="why"] { --note: var(--pico-primary); }
-  aside[data-note="risk"] { --note: var(--pico-del-color); }
-  aside[data-note="tradeoff"] { --note: var(--pico-contrast); }
-  aside[data-note="alternative"] { --note: var(--pico-secondary); }
+  aside[data-note="why"] { --note: var(--why); }
+  aside[data-note="risk"] { --note: var(--risk); }
+  aside[data-note="tradeoff"] { --note: var(--tradeoff); }
+  aside[data-note="alternative"] { --note: var(--alternative); }
 </style>
 
 <main>

@@ -1,6 +1,6 @@
 ---
 type: llm
-focus: { source: file, path: scratchpad/filled.html }
+focus: { source: file, path: scratchpad/walkthrough.html }
 ---
 
 This is an HTML walkthrough of a branch that stores order totals in a new `orders.total_cents` column, kept current by `LineItem` callbacks.

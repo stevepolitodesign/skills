@@ -171,8 +171,8 @@ Additionally, it's geared towards Rails developers. So, if you're working in an
 unfamiliar tech-stack, you can at least get a high level understanding of
 what's going on.
 
-Finally, in order to be consistent across artifacts, we use [Pico CSS][9] in
-our template.
+Finally, in order to be consistent across artifacts, the template ships its own
+small stylesheet, so every walkthrough looks the same.
 
 ### Domain model
 
@@ -296,7 +296,6 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [6]: #diff-explainer
 [7]: https://code.claude.com/docs/en/artifacts
 [8]: diff-explainer/SKILL.md
-[9]: https://picocss.com
 [10]: implement-with-tdd/SKILL.md
 [11]: https://thoughtbot.com/blog/testing-from-the-outsidein
 [12]: https://sandimetz.com/99bottles-sample-ruby
