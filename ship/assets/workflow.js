@@ -130,14 +130,14 @@ if (justified.length) {
     return halt('Prepare', 'the refactor agent was skipped or died — the tree may hold a ' +
                 'partial refactor, so check it before rerunning')
   }
-  if (made.nothingProposed && !made.made) {
+  if (made.suiteGreen === false) {
+    return halt('Prepare', 'the suite is red after a refactor that was supposed to be ' +
+                'behavior-preserving — that is the one thing it promised')
+  } else if (made.nothingProposed && !made.made && !(made.movesMade || []).length) {
     log('The preparatory report proposed no refactor — going straight to the feature')
     sofar.preparatoryMoves = []
   } else if (!made.made) {
     return halt('Prepare', 'the refactor was not made: ' + (made.stopReason || 'no reason given'))
-  } else if (made.suiteGreen === false) {
-    return halt('Prepare', 'the suite is red after a refactor that was supposed to be ' +
-                'behavior-preserving — that is the one thing it promised')
   } else {
     sofar.preparatoryMoves = made.movesMade || justified.map(m => m.move)
   }
