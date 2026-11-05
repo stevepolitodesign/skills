@@ -184,8 +184,8 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   the default.
 - **Link the issue** recon found, on its own line: `Closes #42`
   (`owner/repo#42` for another repo), where the template or recent PRs put
-  it, else last. `Refs #42` instead when the commits or SPEC say the branch
-  does only part of it. None found: no line.
+  it, else last before the attribution line. `Refs #42` instead when the
+  commits or SPEC say the branch does only part of it. None found: no line.
 - **Screenshots only when passed in.** `--screenshots` takes image URLs the
   caller already hosted. Embed each one; don't take, upload, or commit any
   yourself. None passed: no screenshots section.
