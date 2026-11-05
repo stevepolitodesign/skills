@@ -69,7 +69,7 @@ Needs you: nobody ran the app. 2 screenshots in tmp/ship/, not on the PR.
   you: nothing."
 
 PR not opened? After the four lines, hand over `title`, `body`, `notes` (as
-`path:line` bullets) and `owed`, each in its own fenced block under a bold
+`path:line` bullets), each in its own fenced block under a bold
 label (**Title**, **Body**, …), ready to paste.
 
 Then at most three items from `afterward` a reviewer should know before
@@ -77,9 +77,8 @@ merging: open questions first, then assumptions. Quote them, label each by
 step. Don't add your own; you didn't do the work. If you dropped any, say how
 many, so the user can ask. Nothing reported? Leave it out.
 
-The PR gets one comment, and only when something is still owed. The script
-writes it, not an agent, so "unchecked" can't get reworded into "checked". A
-clean run posts nothing.
+The PR gets line notes, never a summary comment. What's still owed goes in
+"Needs you", to the user, not to reviewers.
 
 A halted run returns `haltedAt` and `reason` instead. Lead with those and the
 decision the user has to make to unblock it:

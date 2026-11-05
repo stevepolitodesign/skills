@@ -74,9 +74,10 @@ Each step gets its own context, and each one commits with [`/commit`][32] before
 the next starts.
 
 The draft PR stands in for step 6. Its description and line notes cover the
-why and the risks, and a comment lists anything still owed. You
-rewrite the description before marking it ready. Screenshots from verification
-stay on the machine that ran it; nothing uploads them yet.
+why and the risks. Anything still owed comes back to you in the terminal,
+not as a PR comment. You rewrite the description before marking it ready.
+Screenshots from verification stay on the machine that ran it; nothing
+uploads them yet.
 
 ## Why these work
 
