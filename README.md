@@ -237,7 +237,9 @@ after you sign off on the exact text.
 `/pr --auto` is for when nobody's around. It opens a draft PR whose body says,
 in plain English, what changed for the people using the product and why. No
 file paths or commit SHAs. Risks, tradeoffs, and open questions go up as inline
-comments on the lines they're about. You rewrite the description before
+comments on the lines they're about, each with a plain-English version in the
+style of `/eli5`: an everyday analogy, and an ASCII drawing when the order of
+events is the point. You rewrite the description before
 marking it ready. Off GitHub, it replies with the title, body, and notes
 instead.
 

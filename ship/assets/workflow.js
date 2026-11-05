@@ -445,11 +445,14 @@ const checked = await agent(
   'description against the code. Run `git diff ' + opened.base + '...HEAD` and read ' +
   'it yourself; the SPEC is ' + SPEC + '.\n\n' +
   'Look for: a claim the diff does not back, a why with no source (a commit sha or ' +
-  'the SPEC), a risk it missed, and a note that would still be true with the diff ' +
-  'hidden. Skip wording.\n\n' +
+  'the SPEC), a risk it missed, a note that would still be true with the diff ' +
+  'hidden, and anything in the body or a note\'s plain paragraph a non-technical ' +
+  'reader would trip on. Skip wording. An analogy or drawing that is wrong gets ' +
+  'fixed, not cut.\n\n' +
   'Keep the line naming the model at the end of the body and of each note. A note ' +
   'you add or rewrite ends with your own model name and ID from your system prompt, ' +
-  'like `_Claude Opus 5.5 (claude-opus-5-5)_`.\n\n' +
+  'like `_Claude Opus 5.5 (claude-opus-5-5)_`, and keeps the shape the others have: ' +
+  'the technical sentence, then a plain paragraph for a non-technical reader.\n\n' +
   (opened.prUrl
     ? 'Fix each one on ' + opened.prUrl + ' itself: the body with `gh pr edit ' +
       '--body-file`, a wrong note by editing that review comment, a missed risk as a ' +

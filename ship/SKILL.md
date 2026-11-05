@@ -71,7 +71,8 @@ Needs you: nobody ran the app. 2 screenshots in tmp/ship/, not on the PR.
 PR not opened? After the four lines, hand over `title`, `body`, `notes` (as
 `path:line` bullets), each in its own fenced block under a bold
 label (**Title**, **Body**, …), ready to paste. Copy each note's body
-whole, down to the line naming the model that wrote it.
+whole, down to the line naming the model that wrote it. Fence notes with
+`~~~`, since a note's drawing has its own ```.
 
 Then at most three items from `afterward` a reviewer should know before
 merging: open questions first, then assumptions. Quote them, label each by

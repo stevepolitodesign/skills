@@ -171,8 +171,18 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
 - **Write in Steve's voice.** See [Voice](#voice).
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
-  `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
-  branches get two to four; a typo fix gets none.
+  `**Tradeoff:**`, or `**Open question:**`. One to two sentences, for the
+  engineer. Most branches get two to four; a typo fix gets none.
+- **Then say each note plainly.** A short paragraph under it for someone
+  who's never read code, written the way `/eli5` explains (steps 3 and 4 of
+  `../eli5/SKILL.md`): what happens to a person, then one everyday analogy.
+  No code names or programmer words like job or callback. When order or
+  flow is the point, add a small drawing in a code block, under 60
+  characters wide, since GitHub's comment column is narrow. Real values
+  from the branch only; no drawing beats an invented one. Read that
+  skill, don't run it; it sends out agents, and this is a paragraph.
+  Where the two disagree, this bullet wins: no drawing unless order
+  matters, and no real name after the plain version.
 - **Sign what you wrote.** The body and every note end with a line naming
   the model that wrote them, so a reader can tell AI text from a human's.
   See [Attribution](#attribution).
@@ -193,8 +203,9 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   base branch, and reads the commits and diff itself. Ask for: claims the
   diff doesn't back, a reason the commits, SPEC, and diff never give, a
   risk you missed, any note that would still be true with the diff hidden,
-  and anything in the body a non-technical reader would trip on. Skip
-  wording. Fix once.
+  and anything in the body or a note's plain paragraph a non-technical
+  reader would trip on. Skip wording. Fix once. An analogy or drawing
+  that's wrong gets fixed, not cut.
 - **Title** as in step 3.
 
 The default body:
@@ -209,6 +220,26 @@ The default body:
 
 {the attribution line}
 ```
+~~~
+
+A note:
+
+~~~markdown
+**Risk:** `PaymentsController#create` charges the card before saving
+the `Payment`, so a failed save leaves a charge with no record.
+
+The customer pays, but their invoice still says unpaid, and support
+has nothing to look up. It's a cashier who runs your card and then
+drops the receipt in the bin.
+
+```
+card charged $40 --> saving the payment fails
+                          |
+                          v
+     invoice still "unpaid", no payment on file
+```
+
+_Claude Opus 5.5 (claude-opus-5-5)_
 ~~~
 
 ### Attribution
@@ -271,7 +302,7 @@ Inline notes go up as one review, so the PR gets one notification, not ten:
 gh api repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
 # {"event": "COMMENT", "commit_id": "<head sha>", "comments": [
 #   {"path": "app/models/order.rb", "line": 4, "side": "RIGHT",
-#    "body": "**Risk:** ...\n\n_Claude Opus 5.5 (claude-opus-5-5)_"}]}
+#    "body": "**Risk:** ...\n\n{plain paragraph}\n\n_Claude Opus 5.5 (claude-opus-5-5)_"}]}
 ```
 
 `line` has to be a line in the diff, numbered in the new file.
@@ -281,4 +312,5 @@ is the handoff.
 
 The reply: the PR URL, or why it wasn't opened plus the title and body in a
 fenced block. Any notes that didn't get posted go there too, as `path:line`
-bullets with their attribution line, ready to paste. Then what the check changed, one line each.
+bullets with their attribution line, ready to paste. Fence each note with
+`~~~`, so a drawing's ``` doesn't close it early. Then what the check changed, one line each.
