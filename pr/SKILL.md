@@ -181,6 +181,8 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   characters wide, since GitHub's comment column is narrow. Real values
   from the branch only; no drawing beats an invented one. Read that
   skill, don't run it; it sends out agents, and this is a paragraph.
+  Where the two disagree, this bullet wins: no drawing unless order
+  matters, and no real name after the plain version.
 - **Sign what you wrote.** The body and every note end with a line naming
   the model that wrote them, so a reader can tell AI text from a human's.
   See [Attribution](#attribution).
