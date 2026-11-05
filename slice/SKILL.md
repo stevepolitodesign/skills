@@ -136,9 +136,9 @@ What changes:
 The final reply is the comment, so it carries nothing else:
 
 ~~~
-```markdown
+<!-- spec -->
 {the filled-in template, in full}
-```
+<!-- /spec -->
 
 **What I cut:**
 - {cut} — {why, with the file that grounds it}
@@ -146,6 +146,8 @@ The final reply is the comment, so it carries nothing else:
 **What the review changed:**
 - {finding} — {fixed / rejected, and why}
 ~~~
+
+No code block around the SPEC: GitHub would show it as raw text. Write the two marker lines exactly as shown, each on its own line. GitHub hides them, so the SPEC renders, and the next step finds the SPEC by them.
 
 ## Job story craft
 
