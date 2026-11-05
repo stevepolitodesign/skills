@@ -65,7 +65,9 @@ const prep = await agent(
   'The skill is right that you identify and do not edit. Change nothing. Nobody is ' +
   'watching this run, so there is no one to show the naive diff to — write it, use ' +
   'it, and fold what it proves into the report.\n\n' +
-  'Return the report verbatim in `report`, and the moves you would defend. ' + AFTERWARD,
+  'Return the report verbatim in `report`, and the moves you would defend. A move is ' +
+  'a refactor to make. When the skill says no preparation is needed, `moves` is ' +
+  'empty — "no refactor" is the absence of a move, never a move of its own. ' + AFTERWARD,
   { label: 'prepare:identify', phase: 'Prepare', schema: {
     type: 'object',
     properties: {
@@ -101,6 +103,9 @@ if (justified.length) {
     'behavior-preserving once you are in the files, stop and say so rather than ' +
     'reshaping it into something that is. Set `made` false and name the reason; ' +
     'stopping is a real result here and the run records it.\n\n' +
+    'If the report below proposes no refactor at all — it says to skip preparation ' +
+    'and go straight to the feature — set `nothingProposed` true, `made` false, and ' +
+    'change nothing. A move you judged unsafe is a stop, not this.\n\n' +
     prep.report + '\n\n' +
     'The suite that covers the site: ' + (prep.testCommand || 'find it yourself') + '. ' +
     'It passes now and passes after, unchanged. A move that needs a new test is the ' +
@@ -110,6 +115,7 @@ if (justified.length) {
       properties: {
         report: { type: 'string' },
         made: { type: 'boolean' },
+        nothingProposed: { type: 'boolean' },
         movesMade: { type: 'array', items: { type: 'string' } },
         stopReason: { type: 'string' },
         suiteGreen: { type: 'boolean' },
@@ -124,14 +130,17 @@ if (justified.length) {
     return halt('Prepare', 'the refactor agent was skipped or died — the tree may hold a ' +
                 'partial refactor, so check it before rerunning')
   }
-  if (!made.made) {
-    return halt('Prepare', 'the refactor was not made: ' + (made.stopReason || 'no reason given'))
-  }
   if (made.suiteGreen === false) {
     return halt('Prepare', 'the suite is red after a refactor that was supposed to be ' +
                 'behavior-preserving — that is the one thing it promised')
+  } else if (made.nothingProposed && !made.made && !(made.movesMade || []).length) {
+    log('The preparatory report proposed no refactor — going straight to the feature')
+    sofar.preparatoryMoves = []
+  } else if (!made.made) {
+    return halt('Prepare', 'the refactor was not made: ' + (made.stopReason || 'no reason given'))
+  } else {
+    sofar.preparatoryMoves = made.movesMade || justified.map(m => m.move)
   }
-  sofar.preparatoryMoves = made.movesMade || justified.map(m => m.move)
 } else {
   log('The preparatory pass found no move worth defending — going straight to the feature')
   sofar.preparatoryMoves = []
