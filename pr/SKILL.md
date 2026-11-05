@@ -296,12 +296,14 @@ The notes, like a teammate's review comment:
 
 - **Two sentences, no more.** What we do and why, with "since" or
   "because". Then a suggestion, not an order: "We might want ...",
-  "This feels like a separate PR." Cut detail to fit; the plain
+  "This feels like a separate PR." An open question ends on its
+  question instead. Cut detail to fit; the plain
   paragraph covers who it hurts.
   "We retry every failed charge, since `rescue` catches all errors. We
   might want to rescue only `CardDeclined`."
-- **Ask with a case**: "What happens if we pass an empty cart?", then
-  the call that shows it, with real values, in a code block.
+- **Ask with a case**, when a case makes the question: "What happens if
+  we pass an empty cart?", then the call that shows it, with real
+  values, in a code block. The block doesn't count as a sentence.
 - **Say when it can wait**, only when the branch backs it: "That's OK
   for now, since nothing calls it yet."
 
