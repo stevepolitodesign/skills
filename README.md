@@ -246,6 +246,29 @@ with `--screenshots`, and it embeds them in the body:
 
 ``` /pr --auto --screenshots https://example.com/orders-before.png https://example.com/orders-after.png ```
 
+### Risk score
+
+[`/risk-score`][43] scores how risky a PR or branch is and replies with JSON,
+so CI can act on it. A script does the scoring with fixed rules, so the same
+diff always gets the same score. Claude only picks the diff and hands back what
+the script printed, even when you tell it the change is tiny.
+
+```
+/risk-score            # this branch vs. its base
+/risk-score 123        # PR 123, via gh
+/risk-score release    # this branch vs. release
+```
+
+The rules and their points are listed in the skill. They recognize the
+migrations, config, and dependency files of most stacks, not just Rails: a Knex
+`dropColumn` scores the same as a Rails `remove_column`. To change how
+something scores, change `scripts/score.py` in a PR of its own.
+
+The script doesn't need Claude. In CI, pipe a diff straight in and gate on the
+level:
+
+``` gh pr diff 123 | python3 risk-score/scripts/score.py | jq -e '.level != "high"' ```
+
 ### Rubber duck
 
 [`/rubber-duck`][22] is what the name implies. Use this when you want to slow
@@ -337,3 +360,4 @@ Use [`/eli5`][29] if you have no familiarity with the subject matter.
 [40]: https://code.claude.com/docs/en/plugin-evals
 [41]: https://code.claude.com/docs/en/plugins/manifest-reference
 [42]: https://github.com/stevepolitodesign/skills/discussions/71
+[43]: risk-score/SKILL.md
