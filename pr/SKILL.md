@@ -168,7 +168,7 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   - Bad: "Adds a PDF format to `InvoicesController#show` (a3e96d0)."
   - Good: "Support resends old invoices by hand a few times a week. Now
     customers can download them as PDFs."
-- **Write in Steve's voice.** See [Voice](#voice).
+- **Write the body and notes in Steve's voice.** See [Voice](#voice).
 - **Notes go on the lines.** Each risk, tradeoff, or open question becomes an
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences, for the
@@ -225,8 +225,8 @@ The default body:
 A note:
 
 ~~~markdown
-**Risk:** `PaymentsController#create` charges the card before saving
-the `Payment`, so a failed save leaves a charge with no record.
+**Risk:** We charge the card before saving the `Payment`, so a failed
+save leaves a charge with no record. We might want to save it first.
 
 The customer pays, but their invoice still says unpaid, and support
 has nothing to look up. It's a cashier who runs your card and then
@@ -259,30 +259,51 @@ co-author trailer on top of it.
 
 ### Voice
 
-The body should read like Steve wrote it. This comes from Steve's PRs on
-thoughtbot/top_secret.
+The body and the notes should read like Steve wrote them. This comes
+from Steve's PRs and review comments on thoughtbot/top_secret.
+
+Both:
+
+- **"We" for the team**, at least once in the body and in each note:
+  "Now we ...", "We send ...". Never "I"; you aren't Steve.
+- **Plain and a little casual**: "it feels like a good time to ...",
+  "That's OK for now." No sales words, and no stiff ones like
+  "Consider", "Ensure", or "potential issue".
+
+The body:
 
 - **Open with what prompted the change**, not what changed: "Now that
   ...", "Prior to this, ...", "In an effort to ...", "Follow-up to
   #77.", or the problem in one sentence. Pick what fits.
 - **Then what changed**, a sentence or two.
-- **"We" for the team.** Never "I"; you aren't Steve.
 - **Caveats get their own short paragraph**: "For the time being, ...",
   "Note that ...".
 - **Short paragraphs.** No headings or bold. Bullets only for a list of
   rules.
 - **Links go at the bottom**, reference-style: `this [discussion][1]`,
   then `[1]: https://...`.
-- **Plain and a little casual**: "it feels like a good time to ...".
-  No sales words.
 
 ```markdown
 Prior to this, support resent old invoices by hand a few times a week.
 
-Now customers can download any past invoice as a PDF.
+Now customers can download any past invoice as a PDF, so we can stop
+resending them.
 
 For the time being, invoices from before 2020 aren't included.
 ```
+
+The notes, like a teammate's review comment:
+
+- **Two sentences, no more.** What we do and why, with "since" or
+  "because". Then a suggestion, not an order: "We might want ...",
+  "This feels like a separate PR." Cut detail to fit; the plain
+  paragraph covers who it hurts.
+  "We retry every failed charge, since `rescue` catches all errors. We
+  might want to rescue only `CardDeclined`."
+- **Ask with a case**: "What happens if we pass an empty cart?", then
+  the call that shows it, with real values, in a code block.
+- **Say when it can wait**, only when the branch backs it: "That's OK
+  for now, since nothing calls it yet."
 
 Only the voice. Every claim still comes from the branch.
 
