@@ -429,6 +429,9 @@ const checked = await agent(
   'Look for: a claim the diff does not back, a why with no source (a commit sha or ' +
   'the SPEC), a risk it missed, and a note that would still be true with the diff ' +
   'hidden. Skip wording.\n\n' +
+  'Keep the line naming the model at the end of the body and of each note. A note ' +
+  'you add or rewrite ends with your own model name and ID from your system prompt, ' +
+  'like `_Claude Opus 5.5 (claude-opus-5-5)_`.\n\n' +
   (opened.prUrl
     ? 'Fix each one on ' + opened.prUrl + ' itself: the body with `gh pr edit ' +
       '--body-file`, a wrong note by editing that review comment, a missed risk as a ' +

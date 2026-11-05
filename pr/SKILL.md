@@ -173,6 +173,9 @@ inventing rationale. Short beats thorough; a reviewer skims a long PR.
   inline comment on the line it's about, starting `**Risk:**`,
   `**Tradeoff:**`, or `**Open question:**`. One to two sentences. Most
   branches get two to four; a typo fix gets none.
+- **Sign what you wrote.** The body and every note end with a line naming
+  the model that wrote them, so a reader can tell AI text from a human's.
+  See [Attribution](#attribution).
 - **House style sets the shape.** A PR template replaces the default body
   below: keep its headings in order, fill each under these rules, and
   delete its instruction comments (`<!-- -->`). Tick a box only when the
@@ -203,8 +206,25 @@ The default body:
 {each --screenshots URL as ![](url). Leave out when none were passed.}
 
 {Closes #N. Leave out when recon found no issue.}
+
+{the attribution line}
 ```
 ~~~
+
+### Attribution
+
+Name the model from your system prompt: its name and exact ID, like
+`Claude Opus 5.5 (claude-opus-5-5)`. Don't know it? Write `Claude` alone.
+Never guess a model.
+
+- **Body**, last line, its own paragraph:
+  `_Written by Claude Opus 5.5 (claude-opus-5-5) with /pr --auto. No human
+  has edited this yet._`
+- **Each note**, its own last line: `_Claude Opus 5.5 (claude-opus-5-5)_`.
+  Notes show up one at a time on GitHub, so each one needs it.
+
+This is the only attribution. No "Generated with Claude Code" line or
+co-author trailer on top of it.
 
 ### Voice
 
@@ -251,7 +271,7 @@ Inline notes go up as one review, so the PR gets one notification, not ten:
 gh api repos/{owner}/{repo}/pulls/<n>/reviews --input review.json
 # {"event": "COMMENT", "commit_id": "<head sha>", "comments": [
 #   {"path": "app/models/order.rb", "line": 4, "side": "RIGHT",
-#    "body": "**Risk:** ..."}]}
+#    "body": "**Risk:** ...\n\n_Claude Opus 5.5 (claude-opus-5-5)_"}]}
 ```
 
 `line` has to be a line in the diff, numbered in the new file.
@@ -261,4 +281,4 @@ is the handoff.
 
 The reply: the PR URL, or why it wasn't opened plus the title and body in a
 fenced block. Any notes that didn't get posted go there too, as `path:line`
-bullets, ready to paste. Then what the check changed, one line each.
+bullets with their attribution line, ready to paste. Then what the check changed, one line each.
