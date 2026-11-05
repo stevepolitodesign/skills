@@ -440,7 +440,8 @@ const checked = await agent(
   'hidden. Skip wording.\n\n' +
   'Keep the line naming the model at the end of the body and of each note. A note ' +
   'you add or rewrite ends with your own model name and ID from your system prompt, ' +
-  'like `_Claude Opus 5.5 (claude-opus-5-5)_`.\n\n' +
+  'like `_Claude Opus 5.5 (claude-opus-5-5)_`, and keeps the shape the others have: ' +
+  'the technical sentence, then a plain paragraph for a non-technical reader.\n\n' +
   (opened.prUrl
     ? 'Fix each one on ' + opened.prUrl + ' itself: the body with `gh pr edit ' +
       '--body-file`, a wrong note by editing that review comment, a missed risk as a ' +
