@@ -407,7 +407,7 @@ const opened = await agent(
   'branch builds is ' + SPEC + '.\n\n' +
   'Its "Have it checked" step needs a subagent, and you have no tool for spawning ' +
   'one. Skip that step only; a fresh agent checks your work after you.\n\n' +
-  'Post no comment of your own on the PR.\n\n' +
+  'Post the line notes `/pr --auto` calls for. Post no other comment on the PR.\n\n' +
   ARTIFACTS + ' They are not the uncommitted changes the skill stops for, and not a ' +
   'risk to report. Anything else uncommitted still stops you.\n\n' +
   'Return what you sent in `title`, `body` and `notes` whether or not the PR opened, ' +
