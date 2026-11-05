@@ -13,11 +13,16 @@ export const meta = {
 const SPEC = args && args.spec
 if (!SPEC) throw new Error('ship: pass {spec: "<path to the SPEC>"} as args')
 
+const ARTIFACTS =
+  'The SPEC (' + SPEC + ') and anything made to report on the work, like ' +
+  'screenshots, captured diffs, notes, HTML pages and logs, stay out of every commit. ' +
+  'If they are untracked, leave them untracked.'
+
 const COMMIT =
-  'Then invoke the `commit` skill. Commit only what this step produced. Later steps ' +
-  'read these messages instead of the sessions that wrote the code, so each message ' +
-  'should state what the change does, what it does not cover, and anything left ' +
-  'unverified.'
+  'Then invoke the `commit` skill. Commit only what this step produced. ' + ARTIFACTS +
+  ' Later steps read these messages instead of the sessions that wrote the code, so ' +
+  'each message should state what the change does, what it does not cover, and ' +
+  'anything left unverified.'
 
 const NO_NESTING =
   'You have no tool for spawning subagents. Where the skill says to dispatch them, ' +
@@ -199,7 +204,9 @@ const target = await agent(
   'the intent step and before dispatch; five reviewers run after you and they need the ' +
   'diff you capture.\n\n' +
   'The target is the working tree against its base. Capture the diff to a temp file ' +
-  'exactly as the skill says, including the staging dance for untracked files.\n\n' +
+  'exactly as the skill says, including the staging dance for untracked files. Leave ' +
+  'the SPEC out of the diff with `\':!' + SPEC + '\'`; it is what the change is ' +
+  'measured against, not part of it.\n\n' +
   'The skill tells you to ask when the base will not resolve. Nobody is here to ask, ' +
   'and the failure it warns about is silent — the substitution collapses `git diff ' +
   '$base` into unstaged changes only, which is empty on a tree where every step has ' +
@@ -401,6 +408,8 @@ const opened = await agent(
   'Its "Have it checked" step needs a subagent, and you have no tool for spawning ' +
   'one. Skip that step only; a fresh agent checks your work after you.\n\n' +
   'Post no comment of your own on the PR.\n\n' +
+  ARTIFACTS + ' They are not the uncommitted changes the skill stops for, and not a ' +
+  'risk to report. Anything else uncommitted still stops you.\n\n' +
   'Return what you sent in `title`, `body` and `notes` whether or not the PR opened, ' +
   'and the base branch you used. ' + AFTERWARD,
   { label: 'open:pr', phase: 'Open', schema: {

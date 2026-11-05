@@ -119,7 +119,9 @@ Three places, each because nobody is watching the run:
 - `/implement-with-tdd` says leave everything uncommitted. Overridden; every step
   commits through `/commit`, because the next one diffs against what the last one
   left, and `Open` never saw the sessions that wrote the code. The commit
-  messages are its only record of why.
+  messages are its only record of why. The SPEC and the run's own artifacts
+  (screenshots, diffs, notes) never go in a commit, and `/pr --auto` opens the
+  PR with them still untracked.
 - `/pr --auto` checks its own description with a subagent. A workflow agent
   can't spawn one, so the script runs that check as its own agent, after the PR
   is open, and the check edits the PR in place.
