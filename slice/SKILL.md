@@ -145,9 +145,13 @@ The final reply is the comment, so it carries nothing else:
 
 **What the review changed:**
 - {finding} — {fixed / rejected, and why}
+
+_Written by {model name} ({model ID}) with /slice --auto. No human has edited this yet._
 ~~~
 
 No code block around the SPEC: GitHub would show it as raw text. Write the two marker lines exactly as shown, each on its own line. GitHub hides them, so the SPEC renders, and the next step finds the SPEC by them.
+
+The last line says which model wrote the comment, so a reader can tell AI text from a human's. Take the name and exact ID from your system prompt, like `Claude Opus 5.5 (claude-opus-5-5)`. Don't know it? Write `Claude` alone; never guess a model. Keep it below `<!-- /spec -->`, so it never lands in the SPEC.
 
 ## Job story craft
 
